@@ -59,11 +59,12 @@ end
 DIST_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 
+
  if bound_spec==0         
      [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 else
     [x_0_cell,fun_0_cell,other_output_0]=fun_bdd_func(...
-        x_0_cell,other_input_cell,x_max_cell,x_min_cell,n_var);
+        fun,x_0_cell,other_input_cell,x_max_cell,x_min_cell,n_var);
 end
 
     
@@ -84,6 +85,7 @@ other_output_k=other_output_0;
 
 %%%%%%%% Loop %%%%%%%%%%%
 
+eps_val=1e-6;
 eps_val=0;
 
 
@@ -91,7 +93,6 @@ if DIST>TOL
 for k=0:ITER_MAX-1
 
    %%% In the current iteration, fun_k_cell is assumed to be far from zero
-
 
     for i=1:n_var
      if k>=1
@@ -131,7 +132,7 @@ for k=0:ITER_MAX-1
         alpha_k_i=numer_i./denom_i;%scalar or vector (wrt the dimension specified in "vec")
      else
         alpha_k_i=1;
-    end
+     end
 
     alpha_k_i((isnan(alpha_k_i)==1))=1;%%%
     alpha_k_i((isinf(alpha_k_i)==1))=1;%%%
@@ -160,9 +161,10 @@ for k=0:ITER_MAX-1
     %%% Update variables %%%%%%%%%%%%%%%
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
     other_output_k_plus_1,DIST_vec,n]=...
-    spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
-    n_var,line_search_spec,...
-    DIST_table,ITER_MAX_LINE_SEARCH);
+        spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
+        n_var,line_search_spec,...
+        DIST_table,ITER_MAX_LINE_SEARCH,bound_spec,...
+        x_max_cell,x_min_cell);
 
     ITER_table_LINE_SEARCH(k+2,1)=n;%% Number of line search iterations
 
@@ -202,11 +204,10 @@ else % no iteration
     count=1;
     k=0;
     x_k_plus_1_cell=x_k_cell;
-     x_sol_cell=x_0_cell;
-        other_output_k=other_output_0;
-        DIST_MAT=[];
-        fun_k_cell=fun_0_cell;
-
+    x_sol_cell=x_0_cell;
+    other_output_k=other_output_0;
+    DIST_MAT=[];
+    fun_k_cell=fun_0_cell;
 end
 
 %% Output

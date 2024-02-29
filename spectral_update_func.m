@@ -3,7 +3,8 @@ function [x_k_plus_1_cell, fun_k_plus_1_cell,...
 other_output_k_plus_1,DIST_vec,n]=...
 spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
 n_var,line_search_spec,...
-DIST_table,ITER_MAX_LINE_SEARCH)
+DIST_table,ITER_MAX_LINE_SEARCH,bound_spec,x_max_cell,x_min_cell)
+
     rho=0.8;
     M=10;gamma=10^(-4);
 
@@ -14,9 +15,15 @@ DIST_table,ITER_MAX_LINE_SEARCH)
             x_k_plus_1_cell{1,i}=x_k_cell{1,i}-alpha_k{1,i}.*fun_k_cell{1,i};
        end % for loop wrt i
 
-       [fun_k_plus_1_cell,other_output_k_plus_1]=...
+       if bound_spec==0
+        [fun_k_plus_1_cell,other_output_k_plus_1]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});
-  
+       else
+        [x_k_plus_1_cell,fun_k_plus_1_cell,other_output_k_plus_1]=...
+            fun_bdd_func(...
+            fun,x_k_plus_1_cell,other_input_cell,x_max_cell,x_min_cell,n_var);
+       end
+
         %%% DIST: sup norm of F(x)=x-Phi(x). 
         DIST_vec=ones(1,n_var);
         for i=1:n_var
