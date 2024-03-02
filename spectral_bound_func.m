@@ -1,4 +1,4 @@
-function [x_sol_cell,other_output_k,DIST_table,iter_info,fun_k_cell]=...
+function [x_sol_cell,other_output_k_plus_1,DIST_table,iter_info,fun_k_cell]=...
     spectral_bound_func(fun,n_var,vec,dampening_param,...
     x_0_cell,x_max_cell,x_min_cell,varargin)
 
@@ -12,10 +12,10 @@ function [x_sol_cell,other_output_k,DIST_table,iter_info,fun_k_cell]=...
 tic
 
 global DEBUG FLAG_ERROR DIST count ITER_MAX TOL
-global k ITER_table_LINE_SEARCH 
-global x_k_plus_1_cell
+%global k ITER_table_LINE_SEARCH 
+%global x_k_plus_1_cell
 
-TOL=1e-10;
+TOL=1e-12;
 alpha_0=1;
 alpha_0=1e-1; %% large alpha_0 lead to divergence or slow convergence...
 
@@ -79,7 +79,7 @@ end
 
 x_k_cell=x_0_cell;
 fun_k_cell=fun_0_cell;
-other_output_k=other_output_0;
+other_output_k_plus_1=other_output_0;
 
 %%%%%%%% Loop %%%%%%%%%%%
 
@@ -203,7 +203,7 @@ else % no iteration
     k=0;
     x_k_plus_1_cell=x_k_cell;
     x_sol_cell=x_0_cell;
-    other_output_k=other_output_0;
+    other_output_k_plus_1=other_output_0;
     DIST_MAT=[];
     fun_k_cell=fun_0_cell;
 end
