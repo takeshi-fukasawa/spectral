@@ -1,4 +1,4 @@
-function [x_sol_cell,other_output_k_plus_1,DIST_table,iter_info,fun_k_cell]=...
+function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
     spectral_bound_func(fun,n_var,vec,dampening_param,...
     x_0_cell,x_max_cell,x_min_cell,varargin)
 
@@ -12,8 +12,6 @@ function [x_sol_cell,other_output_k_plus_1,DIST_table,iter_info,fun_k_cell]=...
 tic
 
 global DEBUG FLAG_ERROR DIST count ITER_MAX TOL
-%global k ITER_table_LINE_SEARCH 
-%global x_k_plus_1_cell
 
 TOL=1e-12;
 alpha_0=1;
@@ -55,6 +53,7 @@ end
 
 
 DIST_table=NaN(ITER_MAX,n_var);
+alpha_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 
 
@@ -74,6 +73,7 @@ end
 
     DIST=nanmax(DIST_vec);
     DIST_table(1,:)=DIST_vec;
+    alpha_table(1,:)=alpha_0;
 
     
 
@@ -158,15 +158,16 @@ for k=0:ITER_MAX-1
      
     %%% Update variables %%%%%%%%%%%%%%%
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
-    other_output_k_plus_1,DIST_vec,n]=...
+    other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec]=...
         spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
         n_var,line_search_spec,...
         DIST_table,ITER_MAX_LINE_SEARCH,bound_spec,...
         x_max_cell,x_min_cell,k);
 
-    ITER_table_LINE_SEARCH(k+2,1)=n;%% Number of line search iterations
+    ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
 
     DIST_table(k+2,:)=DIST_vec;
+    alpha_table(k+2,:)=alpha_vec;
     DIST=nanmax(DIST_vec);
 
     if isnan(DIST)==1|isinf(sum(DIST))==1|isnan(sum(DIST))==1
@@ -215,6 +216,10 @@ t_cpu=toc;
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k;
 iter_info.ITER_MAX=ITER_MAX;
+
+conv_table.DIST_table=DIST_table;
+conv_table.alpha_table=alpha_table;
+conv_table.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 
 return
 
