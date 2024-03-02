@@ -32,7 +32,6 @@ ITER_MAX=3000;
 
 line_search_spec=0;
 
-
 ITER_MAX_LINE_SEARCH=10;
 
 if line_search_spec==0
@@ -45,6 +44,7 @@ fun_k_cell={};
 
 %% Read inputs
 other_input_cell=varargin;
+
 
 bound_spec=0;
 for i=1:n_var
@@ -162,7 +162,7 @@ for k=0:ITER_MAX-1
         spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
         n_var,line_search_spec,...
         DIST_table,ITER_MAX_LINE_SEARCH,bound_spec,...
-        x_max_cell,x_min_cell);
+        x_max_cell,x_min_cell,k);
 
     ITER_table_LINE_SEARCH(k+2,1)=n;%% Number of line search iterations
 
