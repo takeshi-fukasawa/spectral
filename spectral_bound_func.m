@@ -5,8 +5,8 @@ function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
 %%% Allow output of additional vars %%%%
 %%% Input %%%%
 % x1_0,x2_0,...: initial value
-% vec: dimension of a variable whose updating tune parameters  should be independently chosen (e.g. time)
-%%% vec==0 => Implement standard fixed point iteration
+% update_spec: dimension of a variable whose updating tune parameters  should be independently chosen (e.g. time)
+%%% update_spec==0 => Implement standard fixed point iteration
 % dampening_param
 
 tic
@@ -14,7 +14,6 @@ tic
 global FLAG_ERROR DIST count
 
 
-%%%spec=[];%%%%%
 run preliminary_spectral.m
 
 n_var=size(x_0_cell,2);
@@ -79,15 +78,15 @@ for k=0:ITER_MAX-1
      Delta_x_i=x_k_cell{i}-x_k_minus_1_cell{i};
      Delta_fun_i=fun_k_cell{i}-fun_k_minus_1_cell{i};
 
-      if isempty(vec)==1
+      if isempty(update_spec)==1
         sum_dim_ids='all';
 
-      elseif sum(vec(:))>0 %%% XXX-dependent tune parameters
+      elseif sum(update_spec(:))>0 %%% XXX-dependent tune parameters
          sum_dim_ids=1:size(size(Delta_x_i),2);
-         sum_dim_ids=sum_dim_ids(sum_dim_ids~=vec(i));
+         sum_dim_ids=sum_dim_ids(sum_dim_ids~=update_spec(i));
       end
 
-      if isempty(vec)==1 | (isempty(vec)==0 & sum(vec(:))>0) 
+      if isempty(update_spec)==1 | (isempty(update_spec)==0 & sum(update_spec(:))>0) 
         sum_Delta_x_x=sum(Delta_x_i.*Delta_x_i,sum_dim_ids,'omitnan');%vector
         sum_Delta_fun_fun=sum(Delta_fun_i.*Delta_fun_i,sum_dim_ids,'omitnan');%vector      
         sum_Delta_x_fun=sum(Delta_x_i.*Delta_fun_i,sum_dim_ids,'omitnan');%vector
@@ -103,10 +102,10 @@ for k=0:ITER_MAX-1
       sum_Delta_fun_fun_cell{1,i}=sum_Delta_fun_fun;
      end
 
-     if isempty(vec)==1 | (isempty(vec)==0 & sum(vec(:))>0) %%%
+     if isempty(update_spec)==1 | (isempty(update_spec)==0 & sum(update_spec(:))>0) %%%
         %%sign_i=1;%%%%%% same sign spec %%%
-        %%alpha_k_i=sign_i.*numer_i./denom_i;%scalar or vector (wrt the dimension specified in "vec")
-        alpha_k_i=numer_i./denom_i;%scalar or vector (wrt the dimension specified in "vec")
+        %%alpha_k_i=sign_i.*numer_i./denom_i;%scalar or vector (wrt the dimension specified in "update_spec")
+        alpha_k_i=numer_i./denom_i;%scalar or vector (wrt the dimension specified in "update_spec")
      else
         alpha_k_i=1;
      end

@@ -1,7 +1,7 @@
-if isfield(spec,'vec')==0
-    vec=[];
+if isfield(spec,'update_spec')==0
+    update_spec=[];
 else
-    vec=spec.vec;
+    update_spec=spec.update_spec;
 end
 
 if isfield(spec,'dampening_param')==0
