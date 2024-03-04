@@ -1,5 +1,5 @@
 function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
-    spectral_bound_func(fun,n_var,vec,dampening_param,...
+    spectral_bound_func(fun,spec,...
     x_0_cell,x_max_cell,x_min_cell,varargin)
 
 %%% Allow output of additional vars %%%%
@@ -11,30 +11,13 @@ function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
 
 tic
 
-global DEBUG FLAG_ERROR DIST count ITER_MAX TOL
-
-TOL=1e-12;
-alpha_0=1;
-alpha_0=1e-1; %% large alpha_0 lead to divergence or slow convergence...
-
-common_alpha_spec=0;
-
-if isempty(vec)==0
-    if sum(vec(:))==0
-         alpha_0=0.1;
-    end
-end
+global FLAG_ERROR DIST count
 
 
-ITER_MAX=3000;
+%%%spec=[];%%%%%
+run preliminary_spectral.m
 
-line_search_spec=0;
-
-ITER_MAX_LINE_SEARCH=10;
-
-if line_search_spec==0
-    ITER_MAX_LINE_SEARCH=1;
-end
+n_var=size(x_0_cell,2);
 
 % varargin:1*XXX
 
@@ -42,7 +25,6 @@ fun_k_cell={};
 
 %% Read inputs
 other_input_cell=varargin;
-
 
 bound_spec=0;
 for i=1:n_var
@@ -101,7 +83,6 @@ for k=0:ITER_MAX-1
         sum_dim_ids='all';
 
       elseif sum(vec(:))>0 %%% XXX-dependent tune parameters
-
          sum_dim_ids=1:size(size(Delta_x_i),2);
          sum_dim_ids=sum_dim_ids(sum_dim_ids~=vec(i));
       end
@@ -136,11 +117,6 @@ for k=0:ITER_MAX-1
 
    else%% k==1
      alpha_k_i=alpha_0; 
-     if common_alpha_spec==1
-        sum_Delta_x_fun_cell{1,i}=0;
-        sum_Delta_x_x_cell{1,i}=0;
-        sum_Delta_fun_fun_cell{1,i}=0;
-     end
    end
 
     %%alpha_k_i=0.1;
@@ -152,6 +128,22 @@ for k=0:ITER_MAX-1
       alpha_k{1,i}=alpha_k_i;
 
    end % for loop wrt i
+
+   if common_alpha_spec==1 & k>=2
+       sum_Delta_x_fun=sum([sum_Delta_x_fun_cell{:}]);
+       sum_Delta_x_x=sum([sum_Delta_x_x_cell{:}]);
+       sum_Delta_fun_fun=sum([sum_Delta_fun_fun_cell{:}]);
+
+       numer=sqrt(sum_Delta_x_x)+eps_val;
+       denom=sqrt(sum_Delta_fun_fun)+eps_val;
+       alpha_k_val=numer./denom;
+
+       for i=1:n_var
+           alpha_k{1,i}=alpha_k_val;
+       end
+
+   end %common_alpha_spec==1 & k>=2
+   
 
      
     %%% Update variables %%%%%%%%%%%%%%%
