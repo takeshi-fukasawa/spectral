@@ -9,6 +9,11 @@ function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
 %%% update_spec==0 => Implement standard fixed point iteration
 % dampening_param
 
+tic
+
+global FLAG_ERROR DIST count
+
+
 run preliminary_spectral.m
 
 n_var=size(x_0_cell,2);
@@ -34,8 +39,6 @@ ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 
 FLAG_ERROR=[];
 
-
-tic
  if bound_spec==0         
      [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 else
@@ -166,9 +169,12 @@ for k=0:ITER_MAX-1
     fun_k_cell=fun_k_plus_1_cell;
    
 end %% end of for loop wrt k=0:ITER_MAX-1
-
+count=k;
+%DIST_vec
 
 else % no iteration
+    warning("XXX")
+    count=1;
     k=0;
     x_k_plus_1_cell=x_k_cell;
     x_sol_cell=x_0_cell;
@@ -184,8 +190,7 @@ t_cpu=toc;
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k;
 iter_info.ITER_MAX=ITER_MAX;
-iter_info.FLAG_ERROR=FLAG_ERROR;
-
+iter_i
 conv_table.DIST_table=DIST_table;
 conv_table.alpha_table=alpha_table;
 conv_table.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;

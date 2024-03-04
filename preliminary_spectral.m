@@ -57,3 +57,10 @@ if isfield(spec,'DEBUG')==0
 else
     DEBUG=spec.DEBUG;
 end
+
+if isfield(spec,'compute_alpha_spec')==0
+    compute_alpha_spec=3;
+else
+    compute_alpha_spec=spec.compute_alpha_spec;
+end
+
