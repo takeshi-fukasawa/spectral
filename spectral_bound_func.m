@@ -100,12 +100,10 @@ for k=0:ITER_MAX-1
       if isempty(vec)==1
         sum_dim_ids='all';
 
-      elseif isempty(vec)==0 & sum(vec(:))>0 %%% XXX-dependent tune parameters
+      elseif sum(vec(:))>0 %%% XXX-dependent tune parameters
 
-         sum_dim_ids=1:size(vec(:),1);
+         sum_dim_ids=1:size(size(Delta_x_i),2);
          sum_dim_ids=sum_dim_ids(sum_dim_ids~=vec(i));
-         sum_dim_ids=[1:3,5];%%%%%
-
       end
 
       if isempty(vec)==1 | (isempty(vec)==0 & sum(vec(:))>0) 
