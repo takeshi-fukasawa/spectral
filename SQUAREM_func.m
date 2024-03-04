@@ -1,18 +1,18 @@
 function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
-    SQUAREM_func(fun,n_var,vec,dampening_param,...
+    SQUAREM_func(fun,spec,...
     x_0_cell,varargin)
+
 
 %%% Allow output of additional vars %%%%
 %%% Input %%%%
 % x1_0,x2_0,...: initial value
-% vec: dimension of a variable whose updating tune parameters  should be independently chosen (e.g. time)
-%%% vec==0 => Implement standard fixed point iteration
+% update_spec: dimension of a variable whose updating tune parameters  should be independently chosen (e.g. time)
+%%% update_spec==0 => Implement standard fixed point iteration
 % dampening_param
-%%% function: fixed point iteration representation
+
 
 tic
 
-global DEBUG FLAG_ERROR DIST count ITER_MAX TOL
 
 TOL=1e-12;
 common_alpha_spec=0;
@@ -65,33 +65,6 @@ for k=0:ITER_MAX-1
 
    %%% alpha=-1 ??? %%%%%
 
-   %%% Compute alpha
-    for i*1:n_var
-     if isempty(vec)==1 | (isempty(vec)==0 & sum(vec(:))>0) %%%
-        %%sign_i=1;%%%%%% same sign spec %%%
-        %%alpha_k_i=sign_i.*numer_i./denom_i;%scalar or vector (wrt the dimension specified in "vec")
-        alpha_k_i=numer_i./denom_i;%scalar or vector (wrt the dimension specified in "vec")
-     else
-        alpha_k_i=1;
-     end
-
-    alpha_k_i((isnan(alpha_k_i)==1))=1;%%%
-    alpha_k_i((isinf(alpha_k_i)==1))=1;%%%
-    alpha_k_i(((alpha_k_i==0)))=1;%%%
-
-   else%% k==1
-     alpha_k_i=alpha_0; 
-   end
-
-    %%alpha_k_i=0.1;
-    
-    if isempty(dampening_param)==0
-        alpha_k_i=alpha_k_i*dampening_param(i);
-    end
-
-      alpha_k{1,i}=alpha_k_i;
-
-   end % for loop wrt i
   
     DIST_table(k+2,:)=DIST_vec;
     alpha_table(k+2,:)=alpha_vec;
@@ -128,9 +101,11 @@ t_cpu=toc;
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k;
 iter_info.ITER_MAX=ITER_MAX;
+iter_info.FLAG_ERROR=FLAG_ERROR;
 
 conv_table.DIST_table=DIST_table;
 conv_table.alpha_table=alpha_table;
+
 
 return
 
