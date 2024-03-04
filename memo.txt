@@ -1,0 +1,6 @@
+Application of spectral algorithms:
+* steel
+* egm
+* BLP
+
+When modifying the spectral code, be careful about the effect on applications.
