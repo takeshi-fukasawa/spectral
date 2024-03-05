@@ -64,3 +64,8 @@ else
     compute_alpha_spec=spec.compute_alpha_spec;
 end
 
+if isfield(spec,'max_opt_spec')==0
+    max_opt_spec=zeros(1,n_var);
+else
+    max_opt_spec=spec.max_opt_spec;
+end

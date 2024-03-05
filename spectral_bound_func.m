@@ -9,9 +9,10 @@ function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
 %%% update_spec==0 => Implement standard fixed point iteration
 % dampening_param
 
+n_var=size(x_0_cell,2);
+
 run preliminary_spectral.m
 
-n_var=size(x_0_cell,2);
 
 % varargin:1*XXX
 
@@ -40,7 +41,7 @@ tic
      [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 else
     [x_0_cell,fun_0_cell,other_output_0]=fun_bdd_func(...
-        fun,x_0_cell,other_input_cell,x_max_cell,x_min_cell,n_var);
+        fun,x_0_cell,other_input_cell,x_max_cell,x_min_cell,n_var,max_opt_spec);
 end
 
     
@@ -133,7 +134,7 @@ for k=0:ITER_MAX-1
         spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
         n_var,line_search_spec,...
         DIST_table,ITER_MAX_LINE_SEARCH,bound_spec,...
-        x_max_cell,x_min_cell,k);
+        x_max_cell,x_min_cell,k,max_opt_spec);
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
 

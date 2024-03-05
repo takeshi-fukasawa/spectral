@@ -26,7 +26,7 @@ end % compute_alpha_spec
 
     
     if isempty(dampening_param)==0
-        alpha_k_i=alpha_k_i*dampening_param(i);
+        alpha_k_i=alpha_k_i*dampening_param;
     end
 
 end
