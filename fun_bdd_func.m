@@ -8,8 +8,8 @@ function [x_cell,fun_cell,other_output]=...
 
             if max_opt_spec(i)==0
                 ub_dummy_cell{1,i}=(x_cell{1,i}==x_max_cell{1,i});% upper bound dummy
-          else
-               ub_dummy_cell{1,i}=(x_cell{1,i}==x_max_cell{1,i}&fun_cell{1,i}<0);% upper bound dummy
+            else
+                ub_dummy_cell{1,i}=(x_cell{1,i}==x_max_cell{1,i}&fun_cell{1,i}<0);% upper bound dummy
           end % max_opt_spec(i)==0 or 1
         end %isempty(x_max_cell{1,i})==0
 
@@ -18,8 +18,8 @@ function [x_cell,fun_cell,other_output]=...
 
             if max_opt_spec(i)==0
                 lb_dummy_cell{1,i}=(x_cell{1,i}==x_min_cell{1,i});% upper bound dummy
-          else
-               lb_dummy_cell{1,i}=(x_cell{1,i}==x_min_cell{1,i}&fun_cell{1,i}>0);% lower bound dummy
+            else
+                lb_dummy_cell{1,i}=(x_cell{1,i}==x_min_cell{1,i}&fun_cell{1,i}>0);% lower bound dummy
           end % max_opt_spec(i)==0 or 1
        end%isempty(x_max_cell{1,i})==0
    end% for loop

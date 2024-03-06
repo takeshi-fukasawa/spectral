@@ -10,14 +10,10 @@ function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
 %%% update_spec==0 => Implement standard fixed point iteration
 % dampening_param
 
+n_var=size(x_0_cell,2);
+run preliminary_spectral.m
 
 tic
-
-
-TOL=1e-12;
-common_alpha_spec=0;
-
-ITER_MAX=3000;
 
 % varargin:1*XXX
 
@@ -33,10 +29,6 @@ alpha_table=NaN(ITER_MAX,n_var);
 %%%%%%%% Loop %%%%%%%%%%%
 x_k_cell=x_0_cell;
 
-eps_val=1e-6;
-eps_val=0;
-
-
 if DIST>TOL
 for k=0:ITER_MAX-1
 
@@ -50,7 +42,7 @@ for k=0:ITER_MAX-1
        end % for loop wrt i
        if sum([DIST_k_1_cell{1,i}{:}])<TOL
         break;
-       end
+       end % if statement
 
         [fun_k_2_cell,other_output_k_2]=...
            fun(x_k_1_cell{:},other_input_cell{:});
@@ -61,11 +53,22 @@ for k=0:ITER_MAX-1
        end % for loop wrt i
        if sum([DIST_k_1_cell{1,i}{:}])<TOL
         break;
-       end
+       end % if statement
 
    %%% alpha=-1 ??? %%%%%
 
+    for i=1:n_var
+        r{1,i}=fun_k_1_cell{1,i}-x_k_cell{1,i};
+        v{1,i}=fun_k_2_cell{1,i}-2*fun_k_1_cell{1,i}+x_k_cell{1,i};
+     end % for loop wrt i
+
+    alpha_k=compute_alpha_func(...
+r,v,common_alpha_spec,dampening_param,update_spec);
   
+      for i=1:n_var
+            x_k_plus_1_cell{1,i}=x_k_cell{1,i}-2*alpha_k{1,i}.*r{1,i}+v{1,i}.*(alpha_k{1,i}).^2;
+       end % for loop wrt i
+
     DIST_table(k+2,:)=DIST_vec;
     alpha_table(k+2,:)=alpha_vec;
     DIST=nanmax(DIST_vec);
