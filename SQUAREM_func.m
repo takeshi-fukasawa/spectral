@@ -1,5 +1,5 @@
 function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
-    SQUAREM_func(fun,spec,...
+    SQUAREM_func(fun_resid,spec,...
     x_0_cell,varargin)
 
 
@@ -17,6 +17,7 @@ tic
 
 % varargin:1*XXX
 
+
 fun_k_cell={};
 
 %% Read inputs
@@ -28,12 +29,14 @@ alpha_table=NaN(ITER_MAX,n_var);
     
 %%%%%%%% Loop %%%%%%%%%%%
 x_k_cell=x_0_cell;
+count=0;
 
 if DIST>TOL
 for k=0:ITER_MAX-1
 
         [fun_k_1_cell,other_output_k_1]=...
-           fun(x_k_cell{:},other_input_cell{:});
+           fun_fp(x_k_cell{:},other_input_cell{:});
+       count=count+1;
 
        %%% Evaluate distance 
        for i=1:n_var
@@ -45,7 +48,8 @@ for k=0:ITER_MAX-1
        end % if statement
 
         [fun_k_2_cell,other_output_k_2]=...
-           fun(x_k_1_cell{:},other_input_cell{:});
+           fun_fp(x_k_1_cell{:},other_input_cell{:});
+       count=count+1;
 
        for i=1:n_var
            v_k{1,i}=fun_k_2_cell{1,i}-2*fun_k_2_cell{1,i}+x_k_cell{1,2};
@@ -103,12 +107,21 @@ x_sol_cell=x_k_plus_1_cell;
 t_cpu=toc;
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k;
+iter_info.feval=count;
+
 iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
 conv_table.DIST_table=DIST_table;
 conv_table.alpha_table=alpha_table;
 
+%%%% Nested function
+function out=fun_fp(x_cell,other_input_cell)
+     fun_resid_cell=fun_resid(x_cell{:},other_input_cell{:});
+     for i=1:n_var
+        out{1,i}=x{1,i}-fun_resid_cell{1,i};
+    end
+end
 
 return
 

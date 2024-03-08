@@ -44,6 +44,7 @@ else
         fun,x_0_cell,other_input_cell,x_max_cell,x_min_cell,n_var,max_opt_spec);
 end
 
+feval=1;
     
     %%% DIST: sup norm of F(x)=x-Phi(x). 
     DIST_vec=ones(1,n_var);
@@ -93,6 +94,8 @@ for k=0:ITER_MAX-1
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
 
+    feval=feval+iter_line_search;
+
     DIST_table(k+2,:)=DIST_vec;
     alpha_table(k+2,:)=alpha_vec;
     DIST=nanmax(DIST_vec);
@@ -139,6 +142,7 @@ x_sol_cell=x_k_plus_1_cell;
 t_cpu=toc;
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k;
+iter_info.feval=feval;
 iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
