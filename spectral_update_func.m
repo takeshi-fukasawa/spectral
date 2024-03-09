@@ -15,15 +15,13 @@ DIST_table,ITER_MAX_LINE_SEARCH,bound_spec,x_max_cell,x_min_cell,k,max_opt_spec)
             x_k_plus_1_cell{1,i}=x_k_cell{1,i}-alpha_k{1,i}.*fun_k_cell{1,i};
        end % for loop wrt i
 
-       if bound_spec==0
+       if bound_spec==1
+           x_k_plus_1_cell=projection_func(x_k_plus_1_cell,x_max_cell,x_min_cell);
+     end
+
         [fun_k_plus_1_cell,other_output_k_plus_1]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});
-       else
-        [x_k_plus_1_cell,fun_k_plus_1_cell,other_output_k_plus_1]=...
-            fun_bdd_func(...
-            fun,x_k_plus_1_cell,other_input_cell,x_max_cell,x_min_cell,n_var,max_opt_spec);
-       end
-
+       
         %%% DIST: sup norm of F(x)=x-Phi(x). 
         DIST_vec=ones(1,n_var);
         for i=1:n_var

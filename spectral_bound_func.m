@@ -37,12 +37,11 @@ FLAG_ERROR=[];
 
 
 tic
- if bound_spec==0         
+ if bound_spec==1
+           x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
+     end        
      [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
-else
-    [x_0_cell,fun_0_cell,other_output_0]=fun_bdd_func(...
-        fun,x_0_cell,other_input_cell,x_max_cell,x_min_cell,n_var,max_opt_spec);
-end
+
 
 feval=1;
     
@@ -74,10 +73,17 @@ for k=0:ITER_MAX-1
         Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
       end % loop wrt i
 
+      if update_spec==0
+          for i=1:n_var
+              alpha_k{1,i}=1;
+          end
+      else
         alpha_k=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,...
             common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
-    else % k==0
+      end
+
+  else % k==0
       for i=1:n_var
        alpha_k{1,i}=alpha_0;
      end% for loop wrt i

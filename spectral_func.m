@@ -14,7 +14,8 @@ else
 end
 
    
-   if spec.SQUAREM_spec==0 [x_sol_cell,other_output_k,DIST_table,iter_info,fun_k_cell]=...
+   if SQUAREM_spec==0 
+       [x_sol_cell,other_output_k,DIST_table,iter_info,fun_k_cell]=...
         spectral_bound_func(fun,spec,...
         x_0_cell,x_max_cell,x_min_cell,varargin{:});
 

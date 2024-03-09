@@ -6,19 +6,19 @@ n_var=size(Delta_x_cell,2);
 
 if common_alpha_spec==0
 for i=1:n_var
-if isempty(update_spec)==1
+      if isempty(update_spec)==1
         sum_dim_ids='all';
 
       elseif sum(update_spec(:))>0 %%% XXX-dependent tune parameters
-         sum_dim_ids=1:size(size(Delta_x_i),2);
+         sum_dim_ids=1:size(size(Delta_x_cell{1,i}),2);
          sum_dim_ids=sum_dim_ids(sum_dim_ids~=update_spec(i));
       end % isempty(update_spec)==1 or others?
 
-      if isempty(update_spec)==1 | (isempty(update_spec)==0 & sum(update_spec(:))>0) 
+      %%if isempty(update_spec)==1 | (isempty(update_spec)==0 & sum(update_spec(:))>0) 
         sum_Delta_x_x_cell{1,i}=sum(Delta_x_cell{1,i}.*Delta_x_cell{1,i},sum_dim_ids,'omitnan');%vector
         sum_Delta_fun_fun_cell{1,i}=sum(Delta_fun_cell{1,i}.*Delta_fun_cell{1,i},sum_dim_ids,'omitnan');%vector      
         sum_Delta_x_fun_cell{1,i}=sum(Delta_x_cell{1,i}.*Delta_fun_cell{1,i},sum_dim_ids,'omitnan');%vector  
-      end % if statement
+      %%end % if statement
 
 end % loop wrt i
 
