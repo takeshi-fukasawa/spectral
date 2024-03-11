@@ -1,4 +1,4 @@
-function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
+function [x_sol_cell,other_output_k_plus_1,iter_info]=...
     spectral_bound_func(fun,spec,...
     x_0_cell,x_max_cell,x_min_cell,varargin)
 
@@ -152,9 +152,11 @@ iter_info.feval=feval;
 iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
-conv_table.DIST_table=DIST_table;
-conv_table.alpha_table=alpha_table;
-conv_table.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
+iter_info.fun_cell=fun_k_cell;
+
+iter_info.DIST_table=DIST_table;
+iter_info.alpha_table=alpha_table;
+iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 
 return
 
