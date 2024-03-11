@@ -1,6 +1,6 @@
 function [x_sol_cell,other_output_k_plus_1,iter_info]=...
     spectral_bound_func(fun,spec,...
-    x_0_cell,x_max_cell,x_min_cell,varargin)
+    x_0_cell,varargin)
 
 %%% Allow output of additional vars %%%%
 %%% Input %%%%

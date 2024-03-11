@@ -1,3 +1,17 @@
+x_max_cell=spec.x_max_cell;
+x_min_cell=spec.x_min_cell;
+
+if isfield(spec,'x_max_cell')==0
+    %update_spec=[];
+else
+    %update_spec=spec.x_max_cell;
+end
+
+if isfield(spec,'x_min_cell')==0
+    %update_spec=[];
+else
+   % update_spec=spec.x_min_cell;
+end
 
 if isfield(spec,'update_spec')==0
     update_spec=[];
