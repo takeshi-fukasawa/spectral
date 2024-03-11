@@ -13,14 +13,15 @@ n_var=size(x_0_cell,2);
 
 run preliminary_spectral.m
 
+other_input_cell=varargin;
+
+if spec.SQUAREM_spec==0
 
 % varargin:1*XXX
 
 fun_k_cell={};
 
 %% Read inputs
-other_input_cell=varargin;
-
 
 DIST_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
@@ -32,7 +33,7 @@ FLAG_ERROR=[];
 tic
  if spec.bound_spec==1
     x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
- end    
+ end
  [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 
  if spec.fixed_point_iter_spec==1
@@ -154,6 +155,12 @@ iter_info.fun_cell=fun_k_cell;
 iter_info.DIST_table=DIST_table;
 iter_info.alpha_table=alpha_table;
 iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
+
+else % spec.SQUAREM_spec==1
+
+    [x_sol_cell,other_output_k_plus_1,iter_info]=...
+    SQUAREM_func(fun,spec,x_0_cell,other_input_cell{:});
+end
 
 return
 

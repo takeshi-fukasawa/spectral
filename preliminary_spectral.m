@@ -79,6 +79,10 @@ if isfield(spec,'max_opt_spec')==0
     spec.max_opt_spec=zeros(1,n_var);
 end
 
+if isfield(spec,'SQUAREM_spec')==0
+    spec.SQUAREM_spec=0;%%%
+end
+
 spec.bound_spec=0;
 for i=1:n_var
    if isempty(x_max_cell{1,i})==0 | isempty(x_min_cell{1,i})==0

@@ -2,7 +2,6 @@ function [x_sol_cell,other_output_k_2,iter_info]=...
     SQUAREM_func(fun_fp,spec,...
     x_0_cell,varargin)
 
-
 %%% Allow output of additional vars %%%%
 %%% Input %%%%
 % x1_0,x2_0,...: initial value
@@ -62,16 +61,22 @@ for k=0:ITER_MAX-1
            break;
        end % if statement
 
-    alpha_k=compute_alpha_func(...
-        r_k,v_k,common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
-
-    if compute_alpha_spec>=3
-        for i=1:n_var
-            alpha_k{i}=alpha_k{i}*(-1);
+       if update_spec==0
+          for i=1:n_var
+              alpha_k{1,i}=-1;% fixed point iterations
+          end
+      else
+        alpha_k=compute_alpha_func(...
+         r_k,v_k,...
+            common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
+        if compute_alpha_spec>=3
+            for i=1:n_var
+                alpha_k{i}=alpha_k{i}*(-1);
+            end
         end
-    end
+     end
 
-    %%% alpha_k=-1 => Standard fixed point iteration
+
 
       for i=1:n_var
             x_k_plus_1_cell{1,i}=...
