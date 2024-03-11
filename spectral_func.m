@@ -21,13 +21,6 @@ fun_k_cell={};
 %% Read inputs
 other_input_cell=varargin;
 
-bound_spec=0;
-for i=1:n_var
-   if isempty(x_max_cell{1,i})==0 | isempty(x_min_cell{1,i})==0
-     bound_spec=1;
-   end
-end
-
 
 DIST_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
@@ -37,9 +30,9 @@ FLAG_ERROR=[];
 
 
 tic
- if bound_spec==1
+ if spec.bound_spec==1
     x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
- end        
+ end    
  [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 
 feval=1;
@@ -93,9 +86,7 @@ for k=0:ITER_MAX-1
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
     other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec]=...
         spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
-        n_var,line_search_spec,...
-        DIST_table,ITER_MAX_LINE_SEARCH,bound_spec,...
-        x_max_cell,x_min_cell,k,max_opt_spec);
+        n_var,spec,x_max_cell,x_min_cell,k,DIST_table);
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
 

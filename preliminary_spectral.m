@@ -47,20 +47,15 @@ else
 end
 
 if isfield(spec,'line_search_spec')==0
-    line_search_spec=0;
-else
-    line_search_spec=spec.line_search_spec;
+    spec.line_search_spec=0;
 end
 
-if isfield(spec,'ITER_MAX_line_search')==0
-    line_search=0;
-else
-    ITER_MAX_line_search=spec.ITER_MAX_line_search;
+if isfield(spec,'ITER_MAX_LINE_SEARCH')==0
+    spec.ITER_MAX_LINE_SEARCH=10;
 end
 
-
-if line_search_spec==0
-    ITER_MAX_LINE_SEARCH=1;
+if spec.line_search_spec==0
+    spec.ITER_MAX_LINE_SEARCH=1;
 end
 
 
@@ -77,7 +72,12 @@ else
 end
 
 if isfield(spec,'max_opt_spec')==0
-    max_opt_spec=zeros(1,n_var);
-else
-    max_opt_spec=spec.max_opt_spec;
+    spec.max_opt_spec=zeros(1,n_var);
+end
+
+spec.bound_spec=0;
+for i=1:n_var
+   if isempty(x_max_cell{1,i})==0 | isempty(x_min_cell{1,i})==0
+     spec.bound_spec=1;
+   end
 end
