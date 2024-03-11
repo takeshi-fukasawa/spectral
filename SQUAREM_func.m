@@ -1,5 +1,5 @@
-function [x_sol_cell,other_output_k_plus_1,conv_table,iter_info,fun_k_cell]=...
-    SQUAREM_func(fun_resid,spec,...
+function [x_sol_cell,other_output_k_2,iter_info]=...
+    SQUAREM_func(fun_fp,spec,...
     x_0_cell,varargin)
 
 
@@ -31,32 +31,33 @@ alpha_table=NaN(ITER_MAX,n_var);
 x_k_cell=x_0_cell;
 count=0;
 
-if DIST>TOL
+FLAG_ERROR=0;
 for k=0:ITER_MAX-1
 
         [fun_k_1_cell,other_output_k_1]=...
            fun_fp(x_k_cell{:},other_input_cell{:});
-       count=count+1;
+        count=count+1;
 
        %%% Evaluate distance 
        for i=1:n_var
            r_k{1,i}=fun_k_1_cell{1,i}-x_k_cell{1,i};
            DIST_k_1(1,i)=max(abs(r_k{1,i}(:)));
        end % for loop wrt i
-       if sum([DIST_k_1_cell{1,i}{:}])<TOL
-        break;
+       if sum(DIST_k_1(1,:))<TOL
+            other_output_k_2=other_output_k_1;
+            break;
        end % if statement
 
         [fun_k_2_cell,other_output_k_2]=...
-           fun_fp(x_k_1_cell{:},other_input_cell{:});
-       count=count+1;
+           fun_fp(fun_k_1_cell{:},other_input_cell{:});
+            count=count+1;
 
        for i=1:n_var
-           v_k{1,i}=fun_k_2_cell{1,i}-2*fun_k_2_cell{1,i}+x_k_cell{1,2};
+           v_k{1,i}=fun_k_2_cell{1,i}-2*fun_k_2_cell{1,i}+x_k_cell{1,i};
            DIST_k_2(1,i)=max(abs(v_k{1,i}(:)));
        end % for loop wrt i
-       if sum([DIST_k_1_cell{1,i}{:}])<TOL
-        break;
+       if sum(DIST_k_2(1,:))<TOL
+           break;
        end % if statement
 
    %%% alpha=-1 ??? %%%%%
@@ -67,15 +68,20 @@ for k=0:ITER_MAX-1
      end % for loop wrt i
 
     alpha_k=compute_alpha_func(...
-r,v,common_alpha_spec,dampening_param,update_spec);
+        r,v,common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
   
       for i=1:n_var
             x_k_plus_1_cell{1,i}=x_k_cell{1,i}-2*alpha_k{1,i}.*r{1,i}+v{1,i}.*(alpha_k{1,i}).^2;
        end % for loop wrt i
 
-    DIST_table(k+2,:)=DIST_vec;
+    DIST_table(k+2,:)=DIST_k_2;
+
+    for i=1:n_var
+        alpha_vec(1,i)=mean(alpha_k{i});
+    end
+
     alpha_table(k+2,:)=alpha_vec;
-    DIST=nanmax(DIST_vec);
+    DIST=nanmax(DIST_k_2);
 
     if isnan(DIST)==1|isinf(sum(DIST))==1|isnan(sum(DIST))==1
        %warning("Error ?? ")
@@ -97,9 +103,10 @@ r,v,common_alpha_spec,dampening_param,update_spec);
 
 end %% end of for loop wrt k=0:ITER_MAX-1
 count=k;
+
 %DIST_vec
 
-end
+
 
 %% Output
 x_sol_cell=x_k_plus_1_cell;
@@ -112,17 +119,10 @@ iter_info.feval=count;
 iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
-conv_table.DIST_table=DIST_table;
-conv_table.alpha_table=alpha_table;
+iter_info.DIST_table=DIST_table;
+iter_info.alpha_table=alpha_table;
 
-%%%% Nested function
-function out=fun_fp(x_cell,other_input_cell)
-     fun_resid_cell=fun_resid(x_cell{:},other_input_cell{:});
-     for i=1:n_var
-        out{1,i}=x{1,i}-fun_resid_cell{1,i};
-    end
+
 end
-
-return
 
 

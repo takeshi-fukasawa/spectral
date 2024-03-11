@@ -38,10 +38,9 @@ FLAG_ERROR=[];
 
 tic
  if bound_spec==1
-           x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
-     end        
-     [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
-
+    x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
+ end        
+ [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 
 feval=1;
     
