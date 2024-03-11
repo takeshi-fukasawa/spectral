@@ -22,6 +22,13 @@ x_max_cell,x_min_cell,k,DIST_table)
         [fun_k_plus_1_cell,other_output_k_plus_1]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});
        
+
+        if spec.fixed_point_iter_spec==1
+             for i=1:n_var
+                 fun_k_plus_1_cell{1,i}=x_k_plus_1_cell{1,i}-fun_k_plus_1_cell{1,i};
+             end
+        end
+ 
         %%% DIST: sup norm of F(x)=x-Phi(x). 
         DIST_vec=ones(1,n_var);
         for i=1:n_var

@@ -35,6 +35,13 @@ tic
  end    
  [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 
+ if spec.fixed_point_iter_spec==1
+     for i=1:n_var
+         fun_0_cell{1,i}=x_0_cell{1,i}-fun_0_cell{1,i};
+     end
+ end
+
+
 feval=1;
     
     %%% DIST: sup norm of F(x)=x-Phi(x). 

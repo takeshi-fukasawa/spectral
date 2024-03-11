@@ -10,6 +10,10 @@ else
     x_min_cell=spec.x_min_cell;
 end
 
+if isfield(spec,'fixed_point_iter_spec')==0
+    spec.fixed_point_iter_spec=1;%%%%%
+end
+
 if isfield(spec,'update_spec')==0
     update_spec=[];
 else
