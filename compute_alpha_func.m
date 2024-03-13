@@ -59,7 +59,7 @@ end % compute_alpha_spec
 
 
     if isempty(dampening_param)==0
-        alpha_k{1,i}=alpha_k{1,i}*dampening_param;
+        alpha_k{1,i}=alpha_k{1,i}*dampening_param{1,i};
     end
 
    end % for loop wrt i

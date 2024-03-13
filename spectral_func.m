@@ -48,7 +48,8 @@ feval=1;
     %%% DIST: sup norm of F(x)=x-Phi(x). 
     DIST_vec=ones(1,n_var);
     for i=1:n_var
-      DIST_vec(1,i)=max(abs(fun_0_cell{1,i}),[],'all','omitnan');
+      %DIST_vec(1,i)=max(abs(fun_0_cell{1,i}),[],'all','omitnan');
+      DIST_vec(1,i)=sqrt(sum(fun_0_cell{1,i}.^2,'all','omitnan'));
     end
 
     DIST=nanmax(DIST_vec);
@@ -81,11 +82,19 @@ for k=0:ITER_MAX-1
         alpha_k=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,...
             common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
+
+        %alpha_k{1,1}=0.1;%%%%%
+        %alpha_k{1,2}=min(1,alpha_k{1,2});
+        alpha_k{1,3}=1;%%%%%
       end
 
   else % k==0
       for i=1:n_var
        alpha_k{1,i}=alpha_0;
+       if isempty(dampening_param)==0
+        alpha_k{1,i}=alpha_k{1,i}*dampening_param{1,i};
+       end
+
      end% for loop wrt i
    end
 

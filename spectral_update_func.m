@@ -32,28 +32,28 @@ x_max_cell,x_min_cell,k,DIST_table)
         %%% DIST: sup norm of F(x)=x-Phi(x). 
         DIST_vec=ones(1,n_var);
         for i=1:n_var
-            DIST_vec(1,i)=max(abs(fun_k_plus_1_cell{1,i}),[],'all','omitnan');
+            %DIST_vec(1,i)=max(abs(fun_k_plus_1_cell{1,i}),[],'all','omitnan');
+
+DIST_vec(1,i)=sqrt(sum(fun_k_plus_1_cell{1,i}.^2,'all','omitnan'));
+
         end
    
         if spec.line_search_spec==1
 
-            id=1;
-            if spec.iter_line_search==3
-                alpha_k{1,id}=alpha_k{1,id}*1;
-            end
+            DIST_PAST_MAX_vec=max(sum(DIST_table(max(1,k+1-M+1):k+1,:).^2));
 
-            DIST_PAST_MAX_vec=max(DIST_table(max(1,k+1-M+1):k+1,:),[],1);
-
-            eta_k=DIST_table(1,id)/((1+k)^2);
-            LHS=DIST_vec(id);
-
-            %%%%% alpha_x^2+alpha_y^2???
-            RHS=DIST_PAST_MAX_vec(id)+eta_k-gamma*(sum(alpha_k{1,id}(:).^2))*DIST_table(k+1,id);
+            eta_k=sqrt(sum(DIST_table(1,:).^2))/((1+k)^2);
+            LHS=sum(DIST_vec(:).^2);
+            RHS=DIST_PAST_MAX_vec+eta_k-gamma*(sum(alpha_k{1,id}(:).^2))*sum(DIST_table(k+1,:).^2);
 
             if LHS>RHS & mod(iter_line_search,2)==0
-                alpha_k{1,id}=alpha_k{1,id}.*(-rho);
+               for i=1:n_var
+                  alpha_k{1,i}=alpha_k{1,i}.*(-rho);
+              end
             elseif LHS>RHS & mod(iter_line_search,2)==1
-                alpha_k{1,id}=alpha_k{1,id}*(-1);
+                for i=1:n_var
+                   alpha_k{1,i}=alpha_k{1,i}*(-1);
+                end
             else
                 break;
             end
