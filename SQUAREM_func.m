@@ -80,7 +80,7 @@ for k=0:ITER_MAX-1
 
       for i=1:n_var
             x_k_plus_1_cell{1,i}=...
-                x_k_cell{1,i}-2*alpha_k{1,i}.*r_k{1,i}+v_k{1,i}.*(alpha_k{1,i}).^2;
+                x_k_cell{1,i}+2*alpha_k{1,i}.*r_k{1,i}+v_k{1,i}.*(alpha_k{1,i}).^2;
        end % for loop wrt i
 
     DIST_table(k+2,:)=DIST_k_2;

@@ -12,7 +12,7 @@ x_max_cell,x_min_cell,k,DIST_table)
     for iter_line_search=1:spec.ITER_MAX_LINE_SEARCH
      
        for i=1:n_var
-            x_k_plus_1_cell{1,i}=x_k_cell{1,i}-alpha_k{1,i}.*fun_k_cell{1,i};
+            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+alpha_k{1,i}.*fun_k_cell{1,i};
        end % for loop wrt i
 
        if spec.bound_spec==1
@@ -25,7 +25,7 @@ x_max_cell,x_min_cell,k,DIST_table)
 
         if spec.fixed_point_iter_spec==1
              for i=1:n_var
-                 fun_k_plus_1_cell{1,i}=x_k_plus_1_cell{1,i}-fun_k_plus_1_cell{1,i};
+                 fun_k_plus_1_cell{1,i}=fun_k_plus_1_cell{1,i}-x_k_plus_1_cell{1,i};
              end
         end
  

@@ -41,16 +41,16 @@ if compute_alpha_spec>=3
 
     if compute_alpha_spec==4
         %%% Sign can be negative
-        alpha_k{1,i}=alpha_k{1,i}.*sign(sum_Delta_x_fun_cell{1,i});
+        alpha_k{1,i}=-alpha_k{1,i}.*sign(sum_Delta_x_fun_cell{1,i});
     end % if statement
 
 elseif compute_alpha_spec==1
     %%%% BB first spec
-    alpha_k{1,i}=sum_Delta_x_fun_cell{1,i}./sum_Delta_fun_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
+    alpha_k{1,i}=-sum_Delta_x_fun_cell{1,i}./sum_Delta_fun_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
 
 elseif compute_alpha_spec==2
     %%%% BB second spec
-    alpha_k{1,i}=sum_Delta_x_x_cell{1,i}./sum_Delta_x_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
+    alpha_k{1,i}=-sum_Delta_x_x_cell{1,i}./sum_Delta_x_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
 end % compute_alpha_spec
     
     alpha_k{1,i}((isnan(alpha_k{1,i})==1))=1;%%%

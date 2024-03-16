@@ -39,7 +39,7 @@ else
 end
 
 if isfield(spec,'alpha_0')==0
-    alpha_0=1e-1;
+    alpha_0=1;
 else
     alpha_0=spec.alpha_0;
 end

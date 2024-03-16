@@ -38,7 +38,7 @@ tic
 
  if spec.fixed_point_iter_spec==1
      for i=1:n_var
-         fun_0_cell{1,i}=x_0_cell{1,i}-fun_0_cell{1,i};
+         fun_0_cell{1,i}=fun_0_cell{1,i}-x_0_cell{1,i};
      end
  end
 
@@ -83,9 +83,6 @@ for k=0:ITER_MAX-1
          Delta_x_cell,Delta_fun_cell,...
             common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
 
-        %alpha_k{1,1}=0.1;%%%%%
-        %alpha_k{1,2}=min(1,alpha_k{1,2});
-        alpha_k{1,3}=1;%%%%%
       end
 
   else % k==0
