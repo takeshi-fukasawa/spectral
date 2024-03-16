@@ -55,9 +55,13 @@ for k=0:ITER_MAX-1
 
        for i=1:n_var
            v_k{1,i}=fun_k_2_cell{1,i}-2*fun_k_1_cell{1,i}+x_k_cell{1,i};
-           DIST_k_2(1,i)=max(abs(v_k{1,i}(:)));
+           %%DIST_k_2(1,i)=max(abs(v_k{1,i}(:)));
+           DIST_k_2(1,i)=max(abs(...
+               fun_k_2_cell{1,i}(:)-fun_k_1_cell{1,i}(:)...
+               ));
        end % for loop wrt i
        if sum(DIST_k_2(1,:))<TOL
+           x_k_plus_1_cell=fun_k_2_cell;
            break;
        end % if statement
 
