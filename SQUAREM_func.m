@@ -63,17 +63,12 @@ for k=0:ITER_MAX-1
 
        if update_spec==0
           for i=1:n_var
-              alpha_k{1,i}=-1;% fixed point iterations
+              alpha_k{1,i}=1;% fixed point iterations
           end
       else
         alpha_k=compute_alpha_func(...
          r_k,v_k,...
             common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
-        if compute_alpha_spec>=3
-            for i=1:n_var
-                alpha_k{i}=alpha_k{i}*(-1);
-            end
-        end
      end
 
 
@@ -120,7 +115,7 @@ x_sol_cell=x_k_plus_1_cell;
 
 t_cpu=toc;
 iter_info.t_cpu=t_cpu;
-iter_info.n_iter=k;
+iter_info.n_iter=count;%%%%%
 iter_info.feval=count;
 
 iter_info.ITER_MAX=ITER_MAX;
