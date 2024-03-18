@@ -148,7 +148,7 @@ x_sol_cell=x_k_plus_1_cell;
 
 t_cpu=toc;
 iter_info.t_cpu=t_cpu;
-iter_info.n_iter=k;
+iter_info.n_iter=k+1;
 iter_info.feval=feval;
 iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;

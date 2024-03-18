@@ -43,7 +43,8 @@ for k=0:floor(ITER_MAX/2)-1
        for i=1:n_var
            r_k{1,i}=fun_k_1_cell{1,i}-x_k_cell{1,i};
            DIST_k_1(1,i)=norm_func(r_k{1,i}(:),spec.norm_spec);
-           
+           DIST_table(k*2+1,:)=DIST_k_1;
+
        end % for loop wrt i
        if sum(DIST_k_1(1,:))<TOL
             other_output_k_2=other_output_k_1;
@@ -81,7 +82,8 @@ for k=0:floor(ITER_MAX/2)-1
                 x_k_cell{1,i}+2*alpha_k{1,i}.*r_k{1,i}+v_k{1,i}.*(alpha_k{1,i}).^2;
        end % for loop wrt i
 
-    DIST_table(k+2,:)=DIST_k_2;
+    %%DIST_table(k+2,:)=DIST_k_2;
+    DIST_table(k*2+2,:)=DIST_k_2;
 
     for i=1:n_var
         alpha_vec(1,i)=mean(alpha_k{i});
@@ -118,7 +120,7 @@ x_sol_cell=x_k_plus_1_cell;
 
 t_cpu=toc;
 iter_info.t_cpu=t_cpu;
-iter_info.n_iter=k;
+iter_info.n_iter=k+1;
 iter_info.feval=count;
 
 iter_info.ITER_MAX=ITER_MAX;
