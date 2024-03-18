@@ -33,7 +33,7 @@ x_k_cell=x_0_cell;
 count=0;
 
 FLAG_ERROR=0;
-for k=0:ITER_MAX-1
+for k=0:floor(ITER_MAX/2)-1
 
         [fun_k_1_cell,other_output_k_1]=...
            fun_fp(x_k_cell{:},other_input_cell{:});
@@ -43,6 +43,10 @@ for k=0:ITER_MAX-1
        for i=1:n_var
            r_k{1,i}=fun_k_1_cell{1,i}-x_k_cell{1,i};
            DIST_k_1(1,i)=max(abs(r_k{1,i}(:)));
+
+           difference=r_k{1,i}(:);
+           DIST_k_1(1,i)=sqrt(difference'*difference);
+           
        end % for loop wrt i
        if sum(DIST_k_1(1,:))<TOL
             other_output_k_2=other_output_k_1;
@@ -55,10 +59,12 @@ for k=0:ITER_MAX-1
 
        for i=1:n_var
            v_k{1,i}=fun_k_2_cell{1,i}-2*fun_k_1_cell{1,i}+x_k_cell{1,i};
-           %%DIST_k_2(1,i)=max(abs(v_k{1,i}(:)));
-           DIST_k_2(1,i)=max(abs(...
-               fun_k_2_cell{1,i}(:)-fun_k_1_cell{1,i}(:)...
-               ));
+
+           difference=fun_k_2_cell{1,i}(:)-fun_k_1_cell{1,i}(:);
+           DIST_k_2(1,i)=max(abs(difference));
+           DIST_k_2(1,i)=sqrt(difference'*difference);
+
+           
        end % for loop wrt i
        if sum(DIST_k_2(1,:))<TOL
            x_k_plus_1_cell=fun_k_2_cell;
@@ -119,7 +125,7 @@ x_sol_cell=x_k_plus_1_cell;
 
 t_cpu=toc;
 iter_info.t_cpu=t_cpu;
-iter_info.n_iter=count;%%%%%
+iter_info.n_iter=k;
 iter_info.feval=count;
 
 iter_info.ITER_MAX=ITER_MAX;
