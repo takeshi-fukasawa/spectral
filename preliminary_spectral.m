@@ -33,7 +33,7 @@ else
 end
 
 if isfield(spec,'TOL')==0
-    TOL=1e-12;
+    TOL=1e-14;
 else
     TOL=spec.TOL;
 end
@@ -83,9 +83,20 @@ if isfield(spec,'SQUAREM_spec')==0
     spec.SQUAREM_spec=0;%%%
 end
 
+if isfield(spec,'norm_spec')==0
+    spec.norm_spec=0;
+else
+    spec.norm_spec=spec.norm_spec;
+end
+
+if spec.line_search_spec==1
+    spec.norm_spec=2;
+end
+
 spec.bound_spec=0;
 for i=1:n_var
    if isempty(x_max_cell{1,i})==0 | isempty(x_min_cell{1,i})==0
      spec.bound_spec=1;
    end
 end
+
