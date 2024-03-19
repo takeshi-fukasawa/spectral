@@ -11,7 +11,9 @@ for i=1:n_var
 
       elseif sum(update_spec(:))>0 %%% XXX-dependent tune parameters
          sum_dim_ids=1:size(size(Delta_x_cell{1,i}),2);
-         sum_dim_ids=sum_dim_ids(sum_dim_ids~=update_spec(i));
+         %%%sum_dim_ids=sum_dim_ids(sum_dim_ids~=update_spec(i));
+         sum_dim_ids=sum_dim_ids(sum_dim_ids~=update_spec);
+         
       end % isempty(update_spec)==1 or others?
 
       %%if isempty(update_spec)==1 | (isempty(update_spec)==0 & sum(update_spec(:))>0) 

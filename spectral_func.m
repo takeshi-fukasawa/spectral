@@ -15,20 +15,18 @@ run preliminary_spectral.m
 
 other_input_cell=varargin;
 
+FLAG_ERROR=0;
+
 if spec.SQUAREM_spec==0
 
 % varargin:1*XXX
 
 fun_k_cell={};
-
 %% Read inputs
 
 DIST_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
-
-FLAG_ERROR=[];
-
 
 tic
  if spec.bound_spec==1
@@ -61,8 +59,8 @@ other_output_k_plus_1=other_output_0;
 
 %%%%%%%% Loop %%%%%%%%%%%
 
-if DIST>TOL
-for k=0:ITER_MAX-1
+if DIST>TOL & ITER_MAX>=2
+for k=0:ITER_MAX-2
 
 
    if k>=1

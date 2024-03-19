@@ -20,6 +20,7 @@ tic
 
 
 fun_k_cell={};
+FLAG_ERROR=0;
 
 %% Read inputs
 other_input_cell=varargin;
