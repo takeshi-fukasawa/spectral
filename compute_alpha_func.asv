@@ -4,7 +4,7 @@ Delta_x_cell,Delta_fun_cell,...
 
 n_var=size(Delta_x_cell,2);
 
-
+if common_alpha_spec==0
 for i=1:n_var
       if isempty(update_spec)==1
         sum_dim_ids='all';
@@ -24,15 +24,10 @@ for i=1:n_var
 
 end % loop wrt i
 
-if common_alpha_spec==1
-    sum_Delta_x_x=0;
-    sum_Delta_fun_fun=0;
-    sum_Delta_x_fun=0;
-    for i=1:n_var
-        sum_Delta_x_x=sum_Delta_x_x+sum_Delta_x_x_cell{i};
-        sum_Delta_fun_fun=sum_Delta_fun_fun+sum_Delta_fun_fun_cell{i};
-        sum_Delta_x_fun=sum_Delta_x_fun+sum_Delta_x_fun_cell{i};
-    end
+elseif common_alpha_spec==1
+       sum_Delta_x_x=sum([Delta_x_cell{:}].*[Delta_x_cell{:}],'omitnan');%vector
+       sum_Delta_fun_fun=sum([Delta_fun_cell{:}].*[Delta_fun_cell{:}],'omitnan');%vector
+ sum_Delta_x_fun=sum([Delta_x_cell{:}].*[Delta_fun_cell{:}],'omitnan');%vector      
 
 for i=1:n_var
     sum_Delta_x_x_cell{1,i}=sum_Delta_x_x;

@@ -87,7 +87,7 @@ for k=0:floor(ITER_MAX/2)-1
     DIST_table(k*2+2,:)=DIST_k_2;
 
     for i=1:n_var
-        alpha_vec(1,i)=mean(alpha_k{i});
+        alpha_vec(1,i)=mean(alpha_k{i}(:));
     end
 
     alpha_table(k+2,:)=alpha_vec;
