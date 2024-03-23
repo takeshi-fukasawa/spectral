@@ -46,7 +46,7 @@ feval=1;
     %%% DIST: sup norm of F(x)=x-Phi(x). 
     DIST_vec=ones(1,n_var);
     for i=1:n_var
-      DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),spec.norm_spec);
+      DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),x_0_cell{1,i}(:),spec.norm_spec);
     end
 
     DIST=nanmax(DIST_vec);
