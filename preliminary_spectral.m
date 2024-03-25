@@ -38,11 +38,6 @@ else
     TOL=spec.TOL;
 end
 
-if isfield(spec,'alpha_0')==0
-    alpha_0=1;
-else
-    alpha_0=spec.alpha_0;
-end
 
 if isfield(spec,'ITER_MAX')==0
     ITER_MAX=3000;

@@ -54,15 +54,16 @@ feval=1;
       elseif isfield(spec,'alpha_0_spec')==1
           if spec.alpha_0_spec==2
  
-              max_val_i=max(abs(fun_0_cell{1,i}(:)));
-            alpha_0{1,i}=min(1,1/max_val_i);%% adjust the scale of alpha0 for stabilization
+            alpha_0{1,i}=min(1,1/max(fun_0_cell{1,i}(:)));%% adjust the scale of alpha0 for stabilization
           end
       end
+      max(fun_0_cell{1,i}(:))
 
       if update_spec==0
           alpha_0{1,i}=1;
       end
 
+      %DIST_vec(1,:)
       %alpha_0{1,i}=0.01;%%%%%%
       
       alpha_table(1,i)=alpha_0{1,i};
