@@ -1,6 +1,7 @@
 function alpha_k=compute_alpha_func(...
 Delta_x_cell,Delta_fun_cell,...
-    common_alpha_spec,compute_alpha_spec,dampening_param,update_spec)
+    common_alpha_spec,compute_alpha_spec,dampening_param,update_spec,...
+    alpha_max)
 
 n_var=size(Delta_x_cell,2);
 
@@ -64,6 +65,7 @@ end % compute_alpha_spec
     alpha_k{1,i}((isinf(alpha_k{1,i})==1))=1;%%%
     alpha_k{1,i}(((alpha_k{1,i}==0)))=1;%%%
 
+    alpha_k{1,i}=min(alpha_max,alpha_k{1,i});%%%%%
 
     if isempty(dampening_param)==0
         alpha_k{1,i}=alpha_k{1,i}*dampening_param{1,i};

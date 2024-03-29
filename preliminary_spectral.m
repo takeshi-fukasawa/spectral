@@ -26,6 +26,18 @@ else
     dampening_param=spec.dampening_param;
 end
 
+if isfield(spec,'alpha_0')==0
+    alpha_0_param=[];
+else
+    alpha_0_param=spec.alpha_0;
+end
+
+if isfield(spec,'alpha_max')==0
+    alpha_max=10^10;
+else
+    alpha_max=spec.alpha_max;
+end
+
 if isfield(spec,'common_alpha_spec')==0
     common_alpha_spec=0;
 else

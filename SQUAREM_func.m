@@ -75,7 +75,8 @@ for k=0:floor(ITER_MAX/2)-1
       else
         alpha_k=compute_alpha_func(...
          r_k,v_k,...
-            common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
+            common_alpha_spec,compute_alpha_spec,dampening_param,update_spec,...
+            alpha_max);
      end
 
       for i=1:n_var
@@ -87,7 +88,9 @@ for k=0:floor(ITER_MAX/2)-1
     DIST_table(k*2+2,:)=DIST_k_2;
 
     for i=1:n_var
-        alpha_vec(1,i)=mean(alpha_k{i}(:));
+        %%alpha_vec(1,i)=mean(alpha_k{i}(:));
+        alpha_vec(1,i)=max(alpha_k{i}(:));
+        
     end
 
     alpha_table(k+2,:)=alpha_vec;

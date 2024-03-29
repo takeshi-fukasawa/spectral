@@ -50,23 +50,30 @@ feval=1;
 
       if isfield(spec,'alpha_0_spec')==0
           alpha_0{1,i}=1;
-
       elseif isfield(spec,'alpha_0_spec')==1
           if spec.alpha_0_spec==2
- 
-              max_val_i=max(abs(fun_0_cell{1,i}(:)));
-            alpha_0{1,i}=min(1,1/max_val_i);%% adjust the scale of alpha0 for stabilization
+              max_val_i(1,i)=max(abs(fun_0_cell{1,i}(:)));
+          else
+              alpha_0{1,i}=1;
           end
+      else
+          alpha_0{1,i}=1;
       end
+
+      alpha_0{1,i}=1;
+
 
       if update_spec==0
           alpha_0{1,i}=1;
       end
 
-      %alpha_0{1,i}=0.01;%%%%%%
-      
+      if isempty(alpha_0_param)==0
+          alpha_0{1,i}=alpha_0_param;
+      end
       alpha_table(1,i)=alpha_0{1,i};
-    end
+      
+    end % loop wrt i
+
 
     DIST=nanmax(DIST_vec);
     DIST_table(1,:)=DIST_vec;
@@ -95,7 +102,8 @@ for k=0:ITER_MAX-2
       else
         alpha_k=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,...
-            common_alpha_spec,compute_alpha_spec,dampening_param,update_spec);
+            common_alpha_spec,compute_alpha_spec,dampening_param,update_spec,...
+            alpha_max);
 
       end
 
@@ -109,7 +117,6 @@ for k=0:ITER_MAX-2
      end% for loop wrt i
    end
 
-     
     %%% Update variables %%%%%%%%%%%%%%%
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
     other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec]=...

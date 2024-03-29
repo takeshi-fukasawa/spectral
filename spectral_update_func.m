@@ -58,7 +58,9 @@ x_max_cell,x_min_cell,k,DIST_table)
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
 
     for i=1:n_var
-        alpha_vec(1,i)=mean(alpha_k{i}(:));
+        %%alpha_vec(1,i)=mean(alpha_k{i}(:));
+        alpha_vec(1,i)=max(alpha_k{i}(:));
+        
     end
 
 end
