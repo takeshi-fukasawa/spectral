@@ -100,10 +100,12 @@ for k=0:ITER_MAX-2
               alpha_k{1,i}=1;
           end
       else
-        alpha_k=compute_alpha_func(...
+
+
+        [alpha_k,alpha_max]=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,...
             common_alpha_spec,compute_alpha_spec,dampening_param,update_spec,...
-            alpha_max);
+            alpha_max,k);
 
       end
 

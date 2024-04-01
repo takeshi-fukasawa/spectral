@@ -34,6 +34,7 @@ end
 
 if isfield(spec,'alpha_max')==0
     alpha_max=10^10;
+    %%alpha_max=1.5;%%%
 else
     alpha_max=spec.alpha_max;
 end
