@@ -63,7 +63,7 @@ feval=1;
       alpha_0{1,i}=1;
 
 
-      if update_spec==0
+      if spec.update_spec==0
           alpha_0{1,i}=1;
       end
 
@@ -83,6 +83,7 @@ x_k_cell=x_0_cell;
 fun_k_cell=fun_0_cell;
 other_output_k_plus_1=other_output_0;
 
+
 %%%%%%%% Loop %%%%%%%%%%%
 
 if DIST>TOL & ITER_MAX>=2
@@ -95,25 +96,21 @@ for k=0:ITER_MAX-2
         Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
       end % loop wrt i
 
-      if update_spec==0
+      if spec.update_spec==0
           for i=1:n_var
               alpha_k{1,i}=1;
           end
       else
-
-
         [alpha_k,alpha_max]=compute_alpha_func(...
-         Delta_x_cell,Delta_fun_cell,...
-            common_alpha_spec,compute_alpha_spec,dampening_param,update_spec,...
-            alpha_max,k);
-
+         Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
+         spec.alpha_max=alpha_max;
       end
 
   else % k==0
       for i=1:n_var
        alpha_k{1,i}=alpha_0{1,i};
-       if isempty(dampening_param)==0
-        alpha_k{1,i}=alpha_k{1,i}*dampening_param{1,i};
+       if isempty(spec.dampening_param)==0
+        alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
        end
 
      end% for loop wrt i

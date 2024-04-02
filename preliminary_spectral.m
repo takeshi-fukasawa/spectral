@@ -15,15 +15,19 @@ if isfield(spec,'fixed_point_iter_spec')==0
 end
 
 if isfield(spec,'update_spec')==0
-    update_spec=[];
-else
-    update_spec=spec.update_spec;
+    spec.update_spec=[];
 end
 
 if isfield(spec,'dampening_param')==0
-    dampening_param=[];
+    spec.dampening_param=[];
 else
     dampening_param=spec.dampening_param;
+end
+
+if isfield(spec,'stabilize_spec')==0
+    spec.stabilize_spec=0;
+else
+    spec.stabilize_spec=spec.stabilize_spec;
 end
 
 if isfield(spec,'alpha_0')==0
@@ -33,16 +37,12 @@ else
 end
 
 if isfield(spec,'alpha_max')==0
-    alpha_max=10^10;
+    spec.alpha_max=10^10;
     %%alpha_max=1.5;%%%
-else
-    alpha_max=spec.alpha_max;
 end
 
 if isfield(spec,'common_alpha_spec')==0
-    common_alpha_spec=0;
-else
-    common_alpha_spec=spec.common_alpha_spec;
+    spec.common_alpha_spec=0;
 end
 
 if isfield(spec,'TOL')==0
@@ -78,9 +78,7 @@ else
 end
 
 if isfield(spec,'compute_alpha_spec')==0
-    compute_alpha_spec=3;
-else
-    compute_alpha_spec=spec.compute_alpha_spec;
+    spec.compute_alpha_spec=3;
 end
 
 if isfield(spec,'max_opt_spec')==0
@@ -107,4 +105,8 @@ for i=1:n_var
      spec.bound_spec=1;
    end
 end
+
+
+%%% Used under stabilization; cf. Burdakov et al. (2019)
+spec.Delta=0.3;%%%%%%%
 

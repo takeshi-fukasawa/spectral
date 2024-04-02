@@ -68,15 +68,14 @@ for k=0:floor(ITER_MAX/2)-1
            break;
        end % if statement
 
-       if update_spec==0
+       if spec.update_spec==0
           for i=1:n_var
               alpha_k{1,i}=1;% fixed point iterations
           end
       else
         [alpha_k,alpha_max]=compute_alpha_func(...
-         r_k,v_k,...
-            common_alpha_spec,compute_alpha_spec,dampening_param,update_spec,...
-            alpha_max,k);
+         r_k,v_k,spec,k,DIST_table(k*2+1,:));
+        spec.alpha_max=alpha_max;
      end
 
       for i=1:n_var
