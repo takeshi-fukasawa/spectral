@@ -14,7 +14,7 @@ run preliminary_spectral.m
 
 %%spec.compute_alpha_spec=1;
 
-tic
+t_SQUAREM=tic;
 
 % varargin:1*XXX
 
@@ -121,7 +121,7 @@ end %% end of for loop wrt k=0:ITER_MAX-1
 %% Output
 x_sol_cell=x_k_plus_1_cell;
 
-t_cpu=toc;
+t_cpu=toc(t_SQUAREM);
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k+1;
 iter_info.feval=count;

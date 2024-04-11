@@ -63,13 +63,14 @@ end % compute_alpha_spec
     alpha_k{1,i}((isinf(alpha_k{1,i})==1))=1;%%%
     alpha_k{1,i}(((alpha_k{1,i}==0)))=1;%%%
 
-    %%%alpha_max=10;%%%%
     alpha_max=spec.alpha_max;
     alpha_k{1,i}=min(alpha_max,alpha_k{1,i});%%%%%
 
-    if spec.stabilize_spec==1 & 1==0
+    alpha_min=spec.alpha_min;
+    alpha_k{1,k}=max(alpha_min,alpha_k{1,i});%%%%%
+
+    if spec.stabilize_spec==1
       Delta=spec.Delta;
-      Delta=0.01;%%%
 	    alpha_k{1,i}=min(alpha_k{1,i},Delta./norm_fun_k(1,i));
     end
 

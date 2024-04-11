@@ -28,7 +28,7 @@ DIST_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 
-tic
+tic_spectral=tic;
  if spec.bound_spec==1
     x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
  end
@@ -169,7 +169,7 @@ end
 %% Output
 x_sol_cell=x_k_plus_1_cell;
 
-t_cpu=toc;
+t_cpu=toc(tic_spectral);
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k+1;
 iter_info.feval=feval;

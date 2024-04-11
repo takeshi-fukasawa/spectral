@@ -38,7 +38,10 @@ end
 
 if isfield(spec,'alpha_max')==0
     spec.alpha_max=10^10;
-    %%alpha_max=1.5;%%%
+end
+
+if isfield(spec,'alpha_min')==0
+    spec.alpha_min=-10^10;
 end
 
 if isfield(spec,'common_alpha_spec')==0
@@ -108,5 +111,10 @@ end
 
 
 %%% Used under stabilization; cf. Burdakov et al. (2019)
-spec.Delta=0.3;%%%%%%%
+if isfield(spec,'Delta')==0
+    spec.Delta=0;
+else
+    spec.Delta=0.3;%%%%%%%
+end
+
 
