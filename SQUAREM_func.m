@@ -72,11 +72,10 @@ for k=0:floor(ITER_MAX/2)-1
           for i=1:n_var
               alpha_k{1,i}=1;% fixed point iterations
           end
-      else
+       else
         [alpha_k,alpha_max]=compute_alpha_func(...
          r_k,v_k,spec,k,DIST_table(k*2+1,:));
-        spec.alpha_max=alpha_max;
-     end
+        end
 
       for i=1:n_var
             x_k_plus_1_cell{1,i}=...

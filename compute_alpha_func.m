@@ -67,7 +67,7 @@ end % compute_alpha_spec
     alpha_k{1,i}=min(alpha_max,alpha_k{1,i});%%%%%
 
     alpha_min=spec.alpha_min;
-    alpha_k{1,k}=max(alpha_min,alpha_k{1,i});%%%%%
+    alpha_k{1,i}=max(alpha_min,alpha_k{1,i});%%%%%
 
     if spec.stabilize_spec==1
       Delta=spec.Delta;
