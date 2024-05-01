@@ -2,12 +2,7 @@ function [x_sol_cell,other_output_k_2,iter_info]=...
     SQUAREM_func(fun_fp,spec,...
     x_0_cell,varargin)
 
-%%% Allow output of additional vars %%%%
-%%% Input %%%%
-% x1_0,x2_0,...: initial value
-% update_spec: dimension of a variable whose updating tune parameters  should be independently chosen (e.g. time)
-%%% update_spec==0 => Implement standard fixed point iteration
-% dampening_param
+%%% Written by Takeshi Fukasawa in May 2024.
 
 n_var=size(x_0_cell,2);
 run preliminary_spectral.m
