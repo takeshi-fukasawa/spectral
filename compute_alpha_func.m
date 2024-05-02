@@ -15,11 +15,9 @@ for i=1:n_var
          
       end % isempty(update_spec)==1 or others?
 
-      %%if isempty(update_spec)==1 | (isempty(update_spec)==0 & sum(update_spec(:))>0) 
         sum_Delta_x_x_cell{1,i}=sum(Delta_x_cell{1,i}.*Delta_x_cell{1,i},sum_dim_ids,'omitnan');%vector
         sum_Delta_fun_fun_cell{1,i}=sum(Delta_fun_cell{1,i}.*Delta_fun_cell{1,i},sum_dim_ids,'omitnan');%vector      
         sum_Delta_x_fun_cell{1,i}=sum(Delta_x_cell{1,i}.*Delta_fun_cell{1,i},sum_dim_ids,'omitnan');%vector  
-      %%end % if statement
 
 end % loop wrt i
 
@@ -51,11 +49,11 @@ if spec.compute_alpha_spec>=3
     end % if statement
 
 elseif spec.compute_alpha_spec==1
-    %%%% BB first spec
+    %%%% Barzilai and Borwein (1988) first spec
     alpha_k{1,i}=-sum_Delta_x_fun_cell{1,i}./sum_Delta_fun_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
 
 elseif spec.compute_alpha_spec==2
-    %%%% BB second spec
+    %%%% Barzilai and Borwein (1988) second spec
     alpha_k{1,i}=-sum_Delta_x_x_cell{1,i}./sum_Delta_x_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
 end % compute_alpha_spec
     
@@ -68,25 +66,6 @@ end % compute_alpha_spec
 
     alpha_min=spec.alpha_min;
     alpha_k{1,i}=max(alpha_min,alpha_k{1,i});%%%%%
-
-    if spec.stabilize_spec==1
-      Delta=spec.Delta;
-	    alpha_k{1,i}=min(alpha_k{1,i},Delta./norm_fun_k(1,i));
-    end
-
-    %%%%%%%
-    %%%if k<=300
-    %%%    alpha_k{1,i}=1;%%%%
-    %%%end
-
-    %temp=(alpha_k{1,i}==alpha_max);
-    %if sum(temp(:))>0
-    %    if alpha_max<=5
-    %        step_factor=1.5;
-    %        alpha_max=alpha_max*step_factor;
-    %    end
-    %end
-    %%%%%%
 
     if isempty(spec.dampening_param)==0
        dampening_param=spec.dampening_param;

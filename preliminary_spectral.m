@@ -24,11 +24,6 @@ else
     dampening_param=spec.dampening_param;
 end
 
-if isfield(spec,'stabilize_spec')==0
-    spec.stabilize_spec=0;
-else
-    spec.stabilize_spec=spec.stabilize_spec;
-end
 
 if isfield(spec,'alpha_0')==0
     alpha_0_param=[];
@@ -49,14 +44,14 @@ if isfield(spec,'common_alpha_spec')==0
 end
 
 if isfield(spec,'TOL')==0
-    TOL=1e-14;
+    TOL=1e-10;
 else
     TOL=spec.TOL;
 end
 
 
 if isfield(spec,'ITER_MAX')==0
-    ITER_MAX=3000;
+    ITER_MAX=1000;
 else
     ITER_MAX=spec.ITER_MAX;
 end
@@ -84,10 +79,6 @@ if isfield(spec,'compute_alpha_spec')==0
     spec.compute_alpha_spec=3;
 end
 
-if isfield(spec,'max_opt_spec')==0
-    spec.max_opt_spec=zeros(1,n_var);
-end
-
 if isfield(spec,'SQUAREM_spec')==0
     spec.SQUAREM_spec=0;%%%
 end
@@ -110,11 +101,5 @@ for i=1:n_var
 end
 
 
-%%% Used under stabilization; cf. Burdakov et al. (2019)
-if isfield(spec,'Delta')==0
-    spec.Delta=0;
-else
-    spec.Delta=0.3;%%%%%%%
-end
 
 

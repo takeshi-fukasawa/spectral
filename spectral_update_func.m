@@ -5,6 +5,7 @@ spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,DIST_table)
 
+    %%% Additional parameters used in globalization steps
     rho=0.8;
     M=10;gamma=10^(-4);
 
@@ -58,7 +59,6 @@ x_max_cell,x_min_cell,k,DIST_table)
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
 
     for i=1:n_var
-        %%alpha_vec(1,i)=mean(alpha_k{i}(:));
         alpha_vec(1,i)=max(alpha_k{i}(:));
         
     end
