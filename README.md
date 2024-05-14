@@ -1,15 +1,15 @@
-This repository contains MATLAB codes of the spectral algorithm (e.g., Barzilai and Borwein (1988), La Cruz et al. (2006)) and the SQUAREM algorithm (e.g., Varadhan and Roland (2008)) for solving nonlinear equations and fixed point problems, based on the discussion in Section 5 of Fukasawa (2024).
+This repository contains MATLAB codes of the spectral algorithm (e.g., Barzilai and Borwein, 1988; La Cruz et al., 2006) and the SQUAREM algorithm (e.g., Varadhan and Roland, 2008) for solving nonlinear equations and fixed point problems, based on the discussion in Section 5 of Fukasawa (2024).
 
 Spectral_func is the main function. It is designed to apply the spectral algorithm to solve nonlinear equations or fixed point problems.
 
 It also introduces variable-type-specific step sizes in the spectral algorithm, which sometimes accelerate the convergence. For details, see Section 5.3 of Fukasawa (2024).
 
-Besides, if we let spec.SQUAREM_spec==1, we can alternatively use the SQUAREM algorithm (SQUAREM_func). 
+Besides, if we let `spec.SQUAREM_spec==1`, we can alternatively use the SQUAREM algorithm (SQUAREM_func). 
 
 The section "Examples" concisely describes the usage of the function. My other repository takeshi-fukasawa/BLP_algorithm shows the usage of the function, in the context of BLP estimation (estimation of random coefficient logit models using aggregate data) in economics. 
 
-### Inputs of spectral_func
-The essential inputs of the function are as follows:
+### Input of spectral_func
+The essential input of the function is as follows:
 * fun: fixed-point mapping we want to solve (fun(x_sol)=x_sol), or nonlinear function that should satisfy fun(x_sol)=0.
 Note that there should be two outputs regarding the function. The first is the cell of variables, and the second one is a structure array containing other variables.
 The second is the middle output of the function, and it can be used for further analysis. If there is no other variables, let the second output be []. For details of the usage, see also examples shown below.
@@ -17,8 +17,8 @@ The second is the middle output of the function, and it can be used for further 
 If there is no problem in choosing the default values, setting spec=[] is sufficient.
 * x_0_cell (Cell):  Initial values of variables
 
-### Outputs of spectral_func
-The outputs of the function are:
+### Output of spectral_func
+The output of the function is:
 * output_cell (cell): Variables that should be solved
 * other_vars: Other variables, which are not in output_cell
 * iter_info (structure array): Information on the iteration;
@@ -99,30 +99,31 @@ If we use sup norm, then, we assume that an iteration converges when $||f(x_1,x_
 * SQUAREM_spec (default: 0)
 If SQUAREM_spec==0, we apply the spectral algorithm. If SQUAREM_spec==1, alternatively apply the SQUAREM algorithm, by using SQUAREM_func.
 
-* x_min_cell (default: []): minimum value of each type of variable. For instance, x_min_cell={zeros(100,10),[]} implies that the first variable we want to solve (100 by 10 dimensional array) should be nonnegative, and there is no restriction on the second variable.
+* x_min_cell (default: []): minimum value of each type of variable. For instance, `x_min_cell={zeros(100,10),[]}` implies that the first variable we want to solve (100 by 10 dimensional array) should be nonnegative, and there is no restriction on the second variable.
 
 * x_max_cell (default: []): maximum value of each type of variable.
 
 
-* update_spec (default: []): If update_spec==0, apply the standard fixed point iteration. If update_spec==[], apply the spectral algorithm. Here, the step size for each type of variable is a scalar. 
-If update_spec>=1, we introduce variable-dimension-specific step sizes for each type of variable. For instance, suppose we want to solve a fixed point problem f(x)=x, where x is a J by T array. If we expect that the properties of the arrays x[:,t] (t=1,..,T) are largely different across t (time), it might be useful to introduce time-specific step sizes. If we let spec.update_spec==2, the values of x is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)}  f(x^{(n)})$ in the spectral algorithm. Here, $\alpha^{(n)}$ is an 1 by T dimensional array. "2" implies that we introduce heterogeneity in the second dimension of the values of $\alpha^{(n)}$.
+* update_spec (default: []):  
+If update_spec==0, apply the standard fixed point iteration. If update_spec==[], apply the spectral algorithm. Here, the step size for each type of variable is a scalar. 
+If update_spec>=1, we introduce variable-dimension-specific step sizes for each type of variable. For instance, suppose we want to solve a fixed point problem f(x)=x, where x is a J by T array. If we expect that the properties of the arrays `x[:,t]` (t=1,..,T) are largely different across t (time), it might be useful to introduce time-specific step sizes. If we let spec.update_spec==2, the values of x is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)}  f(x^{(n)})$ in the spectral algorithm. Here, $\alpha^{(n)}$ is an 1 by T dimensional array. "2" implies that we introduce heterogeneity in the second dimension of the values of $\alpha^{(n)}$.
  For details, see also Section 5.3 of Fukasawa (2024).
 
-* dampening_param (default: [])
+* dampening_param (default: []):  
 Suppose we want to solve f(x)=0.
-In the spectral algorithm, x, the variable we want to solve, is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)} * f(x^{(n)})$.
-$\alpha^{(n)}$ is computed by the prespecified formula.
-If we further introduce dampening_param, the variable is alternatively updated by $x^{(n+1)}=x^{(n)}+\text{dampening param} \cdot \alpha^{(n)}  f(x^{(n)})$.
-The introduction may lead to a more stable convergence of the algorithm.
+In the spectral algorithm, x, the variable we want to solve, is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)} f(x^{(n)})$.
+$\alpha^{(n)}$ is computed by a prespecified formula.
+If we further introduce dampening_param, the variable is alternatively updated by $x^{(n+1)}=x^{(n)}+\text{(dampening param)} \cdot \alpha^{(n)}  f(x^{(n)})$.
+The introduction may lead to more stable convergence of the algorithm.
 
 
-* alpha_0 (default: 0): The value of alpha_0, which should be exogenously determined in the spectral algorithm.
+* alpha_0 (default: 1): The value of alpha_0, which should be exogenously determined in the spectral algorithm.
 
-* alpha_max (default: 10^10): Maximum value of the step size $\alpha^{(n)}$. If the value exceeds alpha_max, let $\alpha^{(n)}=$alpha_max.
+* alpha_max (default: 10^10): Maximum value of the step size $\alpha^{(n)}$. If the value exceeds alpha_max, let $\alpha^{(n)}=$ alpha_max.
 
 * alpha_min (default: -10^10): Minimum value of the step size $\alpha^{(n)}$.
 
-* common_alpha_spec (default:0):
+* common_alpha_spec (default: 0):
 Suppose we want to solve a nonlinear equation $f(x_1,x_2)=0$. If common_alpha_spec==0, two types of variables x1 and x2 are updated by
 $x_1^{(n+1)}=x_1^{(n)}+\alpha_{1}^{(n)} f(x_1^{(n)},x_2^{(n)})$, $x_2^{(n+1)}=x_2^{(n)}+\alpha_{2}^{(n)} f(x_1^{(n)},x_2^{(n)})$. 
 If common_alpha_spec==1, we do not distinguish the type of variables, and the updating equations are $x_1^{(n+1)}=x_1^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$, 
@@ -133,14 +134,13 @@ $x_2^{(n+1)}=x_2^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$. See also Section 5.
 *  DEBUG (default: 0): If 1, display the convergence process during the iteration every 10 iterations.
 
 
-* compute_alpha_spec (default: 3):
+* compute_alpha_spec (default: 3):  
 compute_alpha_spec specifies the formula of $\alpha^{(n)}$. 
-If compute_alpha_spec==1,2,3, we use the step size S1,S2,S3 defined in Fukasawa (2024). Note that they are equivalent to the three specifications in Varadhan and Roland (2008). S1 corresponds to the first step size used in Barzilai and Borwein (1988), and S2 corresponds to the second step size used in Barzilai and Borwein (1988) and the one used by La Cruz et al. (2006). Please note that some of the previous studies and built-in packages have specified the sign of the step size differently, and we should be careful about it. For details, see also Fukasawa (2024).
-If we let compute_alpha_spec==4, we use the step size corresponding to the third specification used in the BB package (R language; Varadhan and Gilbert (2010)).
-
-Suppose we want to solve a nonlinear equation f(x)=0. Let $s^{(n)}=x^{(n)}-x^{(n-1)}$, and $y^{(n)}=f(x^{(n)})- f(x^{(n-1)})$.  
-If compute_alpha_spec==1, let $alpha^{(n)}=-\frac{s^{(n)\prime}y^{(n)}}{y^{(n)\prime}y^{(n)}}$.  
-If compute_alpha_spec==2, let $alpha^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\prime}y^{(n)}}$.  
+If compute_alpha_spec==1,2,3, we use the step size S1,S2,S3 defined in Fukasawa (2024). Note that they are equivalent to the three specifications in Varadhan and Roland (2008). S1 corresponds to the first step size used in Barzilai and Borwein (1988), and S2 corresponds to the second step size used in Barzilai and Borwein (1988) and the one used by La Cruz et al. (2006). Please note that some of the previous studies and built-in packages have specified the sign of the step sizes differently, and we should be careful about it. For details, see also Fukasawa (2024).
+If we let compute_alpha_spec==4, we use the step size corresponding to the third specification used in the BB package (R language; Varadhan and Gilbert (2010)).  
+More specifically, it is mathematically formulated as follows. Suppose we want to solve a nonlinear equation f(x)=0. Let $s^{(n)}\equiv x^{(n)}-x^{(n-1)}$, and $y^{(n)}\equiv f(x^{(n)})- f(x^{(n-1)})$.  
+If compute_alpha_spec==1, let $\alpha^{(n)}=-\frac{s^{(n)\prime}y^{(n)}}{y^{(n)\prime}y^{(n)}}$.  
+If compute_alpha_spec==2, let $\alpha^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\prime}y^{(n)}}$.  
 If compute_alpha_spec==3, let $\alpha^{(n)}=\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.  
 If compute_alpha_spec==4, let $\alpha^{(n)}=sgn\left(s^{(n)\prime}y^{(n)}\right)\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.
 
