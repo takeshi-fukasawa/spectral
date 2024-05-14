@@ -1,4 +1,5 @@
-This repository contains MATLAB codes of the spectral algorithm (e.g., Barzilai and Borwein, 1988; La Cruz et al., 2006) and the SQUAREM algorithm (e.g., Varadhan and Roland, 2008) for solving nonlinear equations and fixed point problems, based on the discussion in Section 5 of Fukasawa (2024).
+# MATLAB code of the Spectral and SQUAREM algorithm
+This repository contains the MATLAB code of the spectral algorithm (e.g., Barzilai and Borwein, 1988; La Cruz et al., 2006) and the SQUAREM algorithm (e.g., Varadhan and Roland, 2008) for solving nonlinear equations and fixed point problems, based on the discussion in Section 5 of Fukasawa (2024).
 
 Spectral_func is the main function. It is designed to apply the spectral algorithm to solve nonlinear equations or fixed point problems.
 
