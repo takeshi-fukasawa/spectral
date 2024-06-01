@@ -55,8 +55,6 @@ feval=1;
           alpha_0{1,i}=1;
       end
 
-      alpha_0{1,i}=1;
-
 
       if spec.update_spec==0
           alpha_0{1,i}=1;
@@ -138,8 +136,8 @@ for k=0:ITER_MAX-2
     end
 
     if DIST<TOL
-        %DIST
         FLAG_ERROR=0;
+        %DIST
         break;
     end
 
@@ -149,6 +147,7 @@ for k=0:ITER_MAX-2
 	fun_k_minus_1_cell=fun_k_cell;
     fun_k_cell=fun_k_plus_1_cell;
    
+
 end %% end of for loop wrt k=0:ITER_MAX-1
 
 

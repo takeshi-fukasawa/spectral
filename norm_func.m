@@ -6,7 +6,6 @@ function norm=norm_func(dist,scale,norm_spec)
     elseif norm_spec==10 % unit free sup norm
         unit_free_dist=dist./scale;
         norm=sqrt(sum(unit_free_dist(:)'*unit_free_dist(:),'omitnan'));
-     end
-
+    end
 end
 
