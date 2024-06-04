@@ -91,9 +91,11 @@ Let f(x) be the function specified as the input of spectral_func.
 If fixed_point_iter_spec==1, we assume that f(x) is a fixed point mapping, and we solve a nonlinear equation f(x)-x=0 by the spectral algorithm.
 If fixed_point_iter_spec==0, we solve for f(x)=0 by the spectral algorithm.
 
-* TOL (default: 1e-10): Tolerance level of the convergence. 
+* TOL (default: 1e-10; scalar or vector): Tolerance level of the convergence. 
 Suppose we want to solve a nonlinear equation $f(x_1,x_2)=0$.
-If we use sup norm, then, we assume that an iteration converges when $||f(x_1,x_2)||_{\infty}<$ TOL. 
+If we use sup norm, then, we assume that an iteration converges when $||f(x_1,x_2)||_{\infty}<$ TOL.   
+If TOL is a 1 by n_var dimensional vector, we assume that an iteration converges when $||f_{1}(x_1,x_2)||_{\infty}<$ TOL(1) and $||f_{2}(x_1,x_2)||_{\infty}<$ TOL(2) hold.
+
 
 * ITER_MAX (default:1000): Maximum number of iterations
 

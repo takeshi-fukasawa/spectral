@@ -71,6 +71,7 @@ feval=1;
     DIST=nanmax(DIST_vec);
     DIST_table(1,:)=DIST_vec;
     
+    conv=(sum((DIST_vec<TOL),'all')==n_var);
 
 x_k_cell=x_0_cell;
 fun_k_cell=fun_0_cell;
@@ -79,7 +80,7 @@ other_output_k_plus_1=other_output_0;
 
 %%%%%%%% Loop %%%%%%%%%%%
 
-if DIST>TOL & ITER_MAX>=2
+if conv==0 & ITER_MAX>=2
 for k=0:ITER_MAX-2
 
 
@@ -135,7 +136,7 @@ for k=0:ITER_MAX-2
         DIST_vec
     end
 
-    if DIST<TOL
+    if sum((DIST_vec<TOL),'all')==n_var
         FLAG_ERROR=0;
         %DIST
         break;
