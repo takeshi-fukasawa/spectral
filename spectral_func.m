@@ -124,7 +124,7 @@ for k=0:ITER_MAX-2
     alpha_table(k+2,:)=alpha_vec;
     DIST=nanmax(DIST_vec);
 
-    if isnan(DIST)==1|isinf(sum(DIST))==1|isnan(sum(DIST))==1
+    if isnan(DIST)==1|isinf(sum(DIST_table(k+2,:)))==1|isnan(sum(DIST_table(k+2,:)))==1
        %warning("Error ?? ")
        x_k_plus_1_cell=x_k_cell;
        FLAG_ERROR=1;
