@@ -89,6 +89,10 @@ else
     spec.norm_spec=spec.norm_spec;
 end
 
+if size(spec.norm_spec(:),1)==1
+    spec.norm_spec=ones(1,n_var).*(spec.norm_spec);
+end
+
 if spec.line_search_spec==1
     spec.norm_spec=2;
 end

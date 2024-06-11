@@ -38,7 +38,7 @@ for k=0:floor(ITER_MAX/2)-1
        %%% Evaluate distance 
        for i=1:n_var
            r_k{1,i}=fun_k_1_cell{1,i}-x_k_cell{1,i};
-           DIST_k_1(1,i)=norm_func(r_k{1,i}(:),x_k_cell{1,i}(:),spec.norm_spec);
+           DIST_k_1(1,i)=norm_func(r_k{1,i}(:),x_k_cell{1,i}(:),spec.norm_spec(i));
            DIST_table(k*2+1,:)=DIST_k_1;
 
        end % for loop wrt i
@@ -55,7 +55,7 @@ for k=0:floor(ITER_MAX/2)-1
            v_k{1,i}=fun_k_2_cell{1,i}-2*fun_k_1_cell{1,i}+x_k_cell{1,i};
 
            difference=fun_k_2_cell{1,i}(:)-fun_k_1_cell{1,i}(:);
-           DIST_k_2(1,i)=norm_func(difference(:),fun_k_1_cell{1,i}(:),spec.norm_spec);
+           DIST_k_2(1,i)=norm_func(difference(:),fun_k_1_cell{1,i}(:),spec.norm_spec(i));
            
        end % for loop wrt i
        if sum(DIST_k_2(1,:))<TOL
@@ -125,6 +125,7 @@ iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.DIST_table=DIST_table;
 iter_info.alpha_table=alpha_table;
+iter_info.norm_spec=spec.norm_spec;
 
 
 end

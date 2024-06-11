@@ -41,7 +41,7 @@ feval=1;
     %%% DIST: sup norm of F(x)=x-Phi(x). 
     DIST_vec=ones(1,n_var);
     for i=1:n_var
-      DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),x_0_cell{1,i}(:),spec.norm_spec);
+      DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),x_0_cell{1,i}(:),spec.norm_spec(i));
 
       if isfield(spec,'alpha_0_spec')==0
           alpha_0{1,i}=1;
@@ -176,6 +176,7 @@ iter_info.fun_cell=fun_k_cell;
 iter_info.DIST_table=DIST_table;
 iter_info.alpha_table=alpha_table;
 iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
+iter_info.norm_spec=spec.norm_spec;
 
 else % spec.SQUAREM_spec==1
 
