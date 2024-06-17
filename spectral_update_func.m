@@ -69,12 +69,18 @@ x_max_cell,x_min_cell,k,obj_val_table)
                     RHS_i=obj_val_PAST_MAX_i+eta_k_i-gamma*(max(alpha_k{i}(:)).^2)*(obj_val_table(k+1,i));%1*n_var
 
                 else % minimization_spec==1
-                    RHS_i=obj_val_PAST_MAX_i+gamma*(max(alpha_k{i}(:)))*sum(fun_k_cell{1,i}(:).*d_k_cell{1,i}(:));%1*n_var
+                    %RHS_i=obj_val_PAST_MAX_i+gamma*(max(alpha_k{i}(:)))*sum(fun_k_cell{1,i}(:).*d_k_cell{1,i}(:));%1*n_var
+                    RHS_i=obj_val_PAST_MAX_i+gamma*sum(fun_k_cell{1,i}(:).*d_k_cell{1,i}(:));%1*n_var%%%%%%%
+                    
                 end %if spec.minimization_spec(1,i)==0
             end % for loop wrt i
 
             %%% If LHS<=RHS, exit the iteration
             continue_backtracing_dummy=(RHS_i-LHS<0);
+
+            if iter_line_search==1
+                %[LHS,RHS_i]
+            end
 
             if sum(continue_backtracing_dummy(:))>0 & spec.positive_alpha_spec==1 
                 for i=1:n_var
