@@ -24,7 +24,6 @@ else
     dampening_param=spec.dampening_param;
 end
 
-
 if isfield(spec,'alpha_0')==0
     alpha_0_param=[];
 else
@@ -38,6 +37,8 @@ end
 if isfield(spec,'alpha_min')==0
     spec.alpha_min=-10^10;
 end
+
+
 
 if isfield(spec,'common_alpha_spec')==0
     spec.common_alpha_spec=0;
@@ -97,6 +98,10 @@ if spec.line_search_spec==1
     spec.norm_spec=2;
 end
 
+if isfield(spec,'minimization_spec')==0
+     spec.minimization_spec=zeros(1,n_var);
+end
+
 spec.bound_spec=0;
 for i=1:n_var
    if isempty(x_max_cell{1,i})==0 | isempty(x_min_cell{1,i})==0
@@ -104,6 +109,17 @@ for i=1:n_var
    end
 end
 
+if isfield(spec,'positive_alpha_spec')==0
+    spec.positive_alpha_spec=0;
+end
+
+if sum(spec.minimization_spec(:))>0
+    spec.positive_alpha_spec=1;
+end
+
+if spec.positive_alpha_spec==1
+    spec.alpha_min=1e-5; %% Restrict alpha to be positive
+end
 
 
 

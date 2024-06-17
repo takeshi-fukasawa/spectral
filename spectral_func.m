@@ -20,56 +20,63 @@ fun_k_cell={};
 %% Read inputs
 
 DIST_table=NaN(ITER_MAX,n_var);
+obj_val_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 
 tic_spectral=tic;
- if spec.bound_spec==1
+if spec.bound_spec==1
     x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
- end
- [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
+end
 
- if spec.fixed_point_iter_spec==1
-     for i=1:n_var
-         fun_0_cell{1,i}=fun_0_cell{1,i}-x_0_cell{1,i};
-     end
- end
+if sum(spec.minimization_spec(:))==0
+    [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
+else
+    [obj_fun_0_cell,fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
+end
+
+if spec.fixed_point_iter_spec==1
+    for i=1:n_var
+        if spec.minimization_spec(1,i)==0
+            fun_0_cell{1,i}=fun_0_cell{1,i}-x_0_cell{1,i};
+        end
+    end
+end
 
 
 feval=1;
     
-    %%% DIST: sup norm of F(x)=x-Phi(x). 
-    DIST_vec=ones(1,n_var);
-    for i=1:n_var
-      DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),x_0_cell{1,i}(:),spec.norm_spec(i));
+%%% DIST: sup norm of F(x)=x-Phi(x). 
+DIST_vec=ones(1,n_var);
+for i=1:n_var
+    DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),x_0_cell{1,i}(:),spec.norm_spec(i));
 
-      if isfield(spec,'alpha_0_spec')==0
-          alpha_0{1,i}=1;
-      elseif isfield(spec,'alpha_0_spec')==1
-          if spec.alpha_0_spec==2
-              max_val_i(1,i)=max(abs(fun_0_cell{1,i}(:)));
-          else
-              alpha_0{1,i}=1;
-          end
-      else
-          alpha_0{1,i}=1;
-      end
+    if isfield(spec,'alpha_0_spec')==0
+        alpha_0{1,i}=1;
+    elseif isfield(spec,'alpha_0_spec')==1
+        if spec.alpha_0_spec==2
+            max_val_i(1,i)=max(abs(fun_0_cell{1,i}(:)));
+        else
+            alpha_0{1,i}=1;
+        end
+    else
+        alpha_0{1,i}=1;
+    end
 
 
-      if spec.update_spec==0
-          alpha_0{1,i}=1;
-      end
+    if spec.update_spec==0
+        alpha_0{1,i}=1;
+    end
 
-      if isempty(alpha_0_param)==0
-          alpha_0{1,i}=alpha_0_param;
-      end
-      alpha_table(1,i)=alpha_0{1,i};
+    if isempty(alpha_0_param)==0
+        alpha_0{1,i}=alpha_0_param;
+    end
+    alpha_table(1,i)=alpha_0{1,i};
       
-    end % loop wrt i
+end % loop wrt i
 
-
-    DIST=nanmax(DIST_vec);
     DIST_table(1,:)=DIST_vec;
+    obj_val_table(1,:)=DIST_vec.^2;%%%%%%
     
     conv=(sum((DIST_vec<TOL),'all')==n_var);
 
@@ -85,6 +92,7 @@ for k=0:ITER_MAX-2
 
 
    if k>=1
+
       for i=1:n_var
         Delta_x_cell{1,i}=x_k_cell{i}-x_k_minus_1_cell{i};
         Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
@@ -112,15 +120,16 @@ for k=0:ITER_MAX-2
 
     %%% Update variables %%%%%%%%%%%%%%%
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
-    other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec]=...
+    other_output_k_plus_1,DIST_vec,obj_val_vec,iter_line_search,alpha_vec]=...
         spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
-        n_var,spec,x_max_cell,x_min_cell,k,DIST_table);
+        n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
 
     feval=feval+iter_line_search;
 
     DIST_table(k+2,:)=DIST_vec;
+    obj_val_table(k+2,:)=obj_val_vec;
     alpha_table(k+2,:)=alpha_vec;
     DIST=nanmax(DIST_vec);
 
