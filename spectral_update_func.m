@@ -42,7 +42,7 @@ x_max_cell,x_min_cell,k,DIST_table)
 
             eta_k=sqrt(sum(DIST_table(1,:).^2))/((1+k)^2);
             LHS=sum(DIST_vec(:).^2);
-            RHS=DIST_PAST_MAX_vec+eta_k-gamma*(sum(alpha_k{1,id}(:).^2))*sum(DIST_table(k+1,:).^2);
+            RHS=DIST_PAST_MAX_vec+eta_k-gamma*(sum(alpha_k{1,i}(:).^2))*sum(DIST_table(k+1,:).^2);
 
             if LHS>RHS & mod(iter_line_search,2)==0
                for i=1:n_var
