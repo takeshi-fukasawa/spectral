@@ -76,8 +76,14 @@ for i=1:n_var
 end % loop wrt i
 
     DIST_table(1,:)=DIST_vec;
-    obj_val_table(1,:)=DIST_vec.^2;%%%%%%
-    
+    if sum(spec.minimization_spec(:))==0
+        obj_val_table(1,:)=DIST_vec.^2;%%%%%%
+    else
+        for i=1:n_var
+            obj_val_table(1,i)=obj_fun_0_cell{i};
+        end
+    end
+
     conv=(sum((DIST_vec<TOL),'all')==n_var);
 
 x_k_cell=x_0_cell;
@@ -143,6 +149,10 @@ for k=0:ITER_MAX-2
    interval=10;
     if k-floor(k/interval)*interval==0&DEBUG==1
         DIST_vec
+
+        if sum(spec.minimization_spec(:))>0
+            obj_val_vec
+        end
     end
 
     if sum((DIST_vec<TOL),'all')==n_var
@@ -186,6 +196,10 @@ iter_info.DIST_table=DIST_table;
 iter_info.alpha_table=alpha_table;
 iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 iter_info.norm_spec=spec.norm_spec;
+
+if sum(spec.minimization_spec(:))>0
+    iter_info.obj_val_table=obj_val_table;
+end
 
 else % spec.SQUAREM_spec==1
 
