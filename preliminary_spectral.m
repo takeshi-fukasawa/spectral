@@ -121,5 +121,9 @@ if spec.positive_alpha_spec==1
     spec.alpha_min=1e-5; %% Restrict alpha to be positive
 end
 
+if isfield(spec,'conjugate_gradient_spec')==0
+    spec.conjugate_gradient_spec=0;
+end
+
 
 

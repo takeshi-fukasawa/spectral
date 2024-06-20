@@ -67,11 +67,6 @@ end % compute_alpha_spec
     alpha_min=spec.alpha_min;
     alpha_k{1,i}=max(alpha_min,alpha_k{1,i});%%%%%
 
-    if isempty(spec.dampening_param)==0
-       dampening_param=spec.dampening_param;
-        alpha_k{1,i}=alpha_k{1,i}*dampening_param{1,i};
-    end
-
    end % for loop wrt i
 
 end
