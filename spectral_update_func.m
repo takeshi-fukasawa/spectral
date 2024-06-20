@@ -70,7 +70,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
                     RHS_i=obj_val_PAST_MAX_i+eta_k_i-(gamma*step_size^2)*(obj_val_table(k+1,i));%1*n_var
 
                 else % minimization_spec==1
-                    RHS_i=obj_val_PAST_MAX_i+gamma*step_size*sum(fun_k_cell{1,i}(:).*d_k_cell{1,i}(:));%1*n_var                    
+                    RHS_i=obj_val_PAST_MAX_i+gamma*step_size*fun_k_cell{1,i}(:)'*d_k_cell{1,i}(:);%1*n_var                    
                 end %if spec.minimization_spec(1,i)==0
             end % for loop wrt i
 
