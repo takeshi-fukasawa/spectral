@@ -6,7 +6,7 @@ n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
     %%% Additional parameters used in globalization steps
-    rho=0.8;
+    rho=0.1;
     M=5;gamma=10^(-4);
     step_size=1;
 
@@ -60,34 +60,16 @@ x_max_cell,x_min_cell,k,obj_val_table)
    
         if spec.line_search_spec==1
 
-            LHS=obj_val_vec;%1*n_var
-           
-            for i=1:n_var 
-                obj_val_PAST_MAX_i=max(obj_val_table(max(1,k+1-M+1):k+1,i));
 
-                if spec.minimization_spec(1,i)==0   %% Nonlinear eq; La Cruz (2006)      
-                    eta_k_i=sqrt(obj_val_table(1,i))/((1+k)^2);
-                    RHS_i=obj_val_PAST_MAX_i+eta_k_i-(gamma*step_size^2)*(obj_val_table(k+1,i));%1*n_var
+continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,M,gamma,step_size,fun_k_cell,d_k_cell,spec);
 
-                else % minimization_spec==1
-                    RHS_i=obj_val_PAST_MAX_i+gamma*step_size*fun_k_cell{1,i}(:)'*d_k_cell{1,i}(:);%1*n_var                    
-                end %if spec.minimization_spec(1,i)==0
-            end % for loop wrt i
-
-            %%% If LHS<=RHS, exit the iteration
-            continue_backtracing_dummy=(RHS_i-LHS<0);
-
-            if iter_line_search==1
-                %[LHS,RHS_i]
-            end
-
-            if sum(continue_backtracing_dummy(:))>0 & spec.positive_alpha_spec==1
+            if sum(continue_backtracking_dummy(:))>0 & spec.positive_alpha_spec==1
                     step_size=step_size.*rho; 
 
-            elseif sum(continue_backtracing_dummy(:))>0 & (mod(iter_line_search,2)==0)  & spec.positive_alpha_spec==0
+            elseif sum(continue_backtracking_dummy(:))>0 & (mod(iter_line_search,2)==0)  & spec.positive_alpha_spec==0
                     step_size=step_size.*(-rho); 
 
-            elseif sum(continue_backtracing_dummy(:))>0 & mod(iter_line_search,2)==1 & spec.positive_alpha_spec==0
+            elseif sum(continue_backtracking_dummy(:))>0 & mod(iter_line_search,2)==1 & spec.positive_alpha_spec==0
                     step_size=step_size.*(-1); 
             else
                 break;

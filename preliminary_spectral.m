@@ -125,5 +125,7 @@ if isfield(spec,'conjugate_gradient_spec')==0
     spec.conjugate_gradient_spec=0;
 end
 
-
+if isfield(spec,'BFGS_spec')==0
+     spec.BFGS_spec=0;
+end
 
