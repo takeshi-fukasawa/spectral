@@ -5,9 +5,6 @@ spectral_update_func(fun,x_k_cell,fun_k_cell,d_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
-    %%% Additional parameters used in globalization steps
-    rho=0.1;
-    M=5;gamma=10^(-4);
     step_size=1;
 
     %%% Update variables in the spectral algorithm %%%%%%%%%%%%%%%
@@ -61,7 +58,9 @@ x_max_cell,x_min_cell,k,obj_val_table)
         if spec.line_search_spec==1
 
 
-continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,M,gamma,step_size,fun_k_cell,d_k_cell,spec);
+continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,step_size,fun_k_cell,d_k_cell,spec);
+
+           rho=spec.rho;
 
             if sum(continue_backtracking_dummy(:))>0 & spec.positive_alpha_spec==1
                     step_size=step_size.*rho; 

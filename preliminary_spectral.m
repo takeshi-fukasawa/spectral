@@ -129,3 +129,17 @@ if isfield(spec,'BFGS_spec')==0
      spec.BFGS_spec=0;
 end
 
+%%%% Line search parameters
+if isfield(spec,'M')==0
+    spec.M=5;
+end
+
+if isfield(spec,'gamma')==0
+    spec.gamma=10^(-4);
+end
+
+if isfield(spec,'rho')==0
+    spec.rho=0.1;
+end
+
+
