@@ -16,7 +16,6 @@ if spec.SQUAREM_spec==0
 
 % varargin:1*XXX
 
-fun_k_cell={};
 %% Read inputs
 
 DIST_table=NaN(ITER_MAX,n_var);
@@ -39,7 +38,9 @@ end
 if spec.fixed_point_iter_spec==1
     for i=1:n_var
             fun_0_cell{1,i}=fun_0_cell{1,i}-x_0_cell{1,i};
+
     end
+
 end
 
 
@@ -90,6 +91,7 @@ fun_k_cell=fun_0_cell;
 other_output_k_plus_1=other_output_0;
 
 
+
 %%%%%%%% Loop %%%%%%%%%%%
 
 if conv==0 & ITER_MAX>=2
@@ -107,15 +109,20 @@ for k=0:ITER_MAX-2
           for i=1:n_var
               alpha_k{1,i}=1;
           end
+
       elseif spec.BFGS_spec==0
         [alpha_k,alpha_max]=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
          spec.alpha_max=alpha_max;
-      end
 
-      if spec.BFGS_spec==1
+      elseif spec.BFGS_spec==1
          s=Delta_x_cell{1,1}(:);
+
          y=Delta_fun_cell{1,1}(:);
+         
+         if spec.fixed_point_iter_spec==1
+            y=y.*(-1);%%%####
+         end
 
          I=eye(size(s,1));
          syp=s*y';
@@ -126,6 +133,8 @@ for k=0:ITER_MAX-2
          H_k=(I-syp./spy)*H_k_minus_1*(I-ysp./spy)+ssp./spy;
 
          alpha_k{1,1}=1;%%%%%
+
+    
     end
 
   else % k==0
@@ -149,36 +158,40 @@ for k=0:ITER_MAX-2
 
     %%% Update variables %%%%%%%%%%%%%%%
    for i=1:n_var
-            %%alpha_k_i{1,i}=1;%%%%%%%%%%%
+        %%alpha_k_i{1,i}=1;%%%%%%%%%%%
 
-            d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
-            if spec.minimization_spec(i)==1
-                d_k_cell{1,i}=-d_k_cell{1,i};% Direction of descending
-            end
+        d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
 
-            if spec.conjugate_gradient_spec==1 & k>=1
+        if spec.minimization_spec(i)==1
+            d_k_cell{1,i}=-d_k_cell{1,i};% Direction of descending
+        end
 
-              d_k_cell=conjugate_gradient_func(d_k_cell,i,alpha_k,Delta_fun_cell,Delta_x_cell,fun_k_cell,fun_k_minus_1_cell);
+        
+        if spec.conjugate_gradient_spec==1 & k>=1
+            d_k_cell{1,i}=conjugate_gradient_func(...
+            d_k_cell,i,alpha_k,Delta_fun_cell,Delta_x_cell,fun_k_cell,fun_k_minus_1_cell);
+        end
 
-            end
+        if spec.BFGS_spec==1 & k>=2
+            %H_k=eye(size(d_k_cell{1,i}(:),1));
+            
+            d_k_cell{1,i}=H_k*d_k_cell{1,i}(:);
+        end
 
-      if spec.BFGS_spec==1 & k>=2
-          %H_k=eye(size(d_k_cell{1,i}(:),1));
-          
-          d_k_cell{1,i}=H_k*d_k_cell{1,i}(:);
-     end
-
-            alpha_table(k+1,i)=max(alpha_k{1,i}(:));
-   end % for loop wrt i
+        alpha_table(k+1,i)=max(alpha_k{1,i}(:));
+    end % for loop wrt i
 
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
     other_output_k_plus_1,DIST_vec,obj_val_vec,iter_line_search,step_size]=...
         spectral_update_func(fun,x_k_cell,fun_k_cell,d_k_cell,other_input_cell,...
         n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
 
+        
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
 
     feval=feval+iter_line_search;
+
+
 
     DIST_table(k+2,:)=DIST_vec;
     obj_val_table(k+2,:)=obj_val_vec;
@@ -213,9 +226,10 @@ for k=0:ITER_MAX-2
 	fun_k_minus_1_cell=fun_k_cell;
     fun_k_cell=fun_k_plus_1_cell;
    
-      if spec.BFGS_spec==1
+
+    if spec.BFGS_spec==1
        H_k_minus_1=H_k;
-   end
+    end
 
 
 end %% end of for loop wrt k=0:ITER_MAX-1
