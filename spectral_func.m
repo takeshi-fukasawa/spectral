@@ -120,6 +120,7 @@ for k=0:ITER_MAX-2
 
          y=Delta_fun_cell{1,1}(:);
          
+         
          if spec.fixed_point_iter_spec==1
             y=y.*(-1);%%%####
          end
@@ -131,6 +132,12 @@ for k=0:ITER_MAX-2
          ssp=s*s';
 
          H_k=(I-syp./spy)*H_k_minus_1*(I-ysp./spy)+ssp./spy;
+
+         if n_var>=2
+            [alpha_k,alpha_max]=compute_alpha_func(...
+                Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
+                spec.alpha_max=alpha_max;
+         end
 
          alpha_k{1,1}=1;%%%%%
 
@@ -144,7 +151,7 @@ for k=0:ITER_MAX-2
 
 
       if spec.BFGS_spec==1
-         H_k=eye(size(fun_k_cell{1,i}(:),1));
+         H_k=eye(size(fun_k_cell{1,1}(:),1));
       end
    end
 
@@ -172,10 +179,13 @@ for k=0:ITER_MAX-2
             d_k_cell,i,alpha_k,Delta_fun_cell,Delta_x_cell,fun_k_cell,fun_k_minus_1_cell);
         end
 
-        if spec.BFGS_spec==1 & k>=2
-            %H_k=eye(size(d_k_cell{1,i}(:),1));
-            
-            d_k_cell{1,i}=H_k*d_k_cell{1,i}(:);
+        if spec.BFGS_spec==1 & k>=2 & i==1
+
+            if alpha_k{1}==0%%%%###
+                H_k=eye(size(d_k_cell{1,i}(:),1));
+            end
+
+            d_k_cell{1,1}=H_k*d_k_cell{1,1}(:);
         end
 
         alpha_table(k+1,i)=max(alpha_k{1,i}(:));
@@ -194,12 +204,13 @@ for k=0:ITER_MAX-2
 
 
     DIST_table(k+2,:)=DIST_vec;
+    
     obj_val_table(k+2,:)=obj_val_vec;
     step_size_table(k+2,:)=step_size;
     DIST=nanmax(DIST_vec);
 
     if isnan(DIST)==1|isinf(sum(DIST_table(k+2,:)))==1|isnan(sum(DIST_table(k+2,:)))==1
-       %warning("Error ?? ")
+       warning("Error ?? ")
        x_k_plus_1_cell=x_k_cell;
        FLAG_ERROR=1;
        break;
