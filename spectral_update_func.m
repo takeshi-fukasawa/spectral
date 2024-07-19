@@ -24,49 +24,40 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
        end
 
-        if sum(spec.minimization_spec(:))==0 % Solve nonlinear eq
-           [fun_k_plus_1_cell,other_output_k_plus_1]=...
-           fun(x_k_plus_1_cell{:},other_input_cell{:});
 
-            if spec.fixed_point_iter_spec==1
-                for i=1:n_var
-                    if spec.minimization_spec(1,i)==0
-                        fun_k_plus_1_cell{1,i}=fun_k_plus_1_cell{1,i}-x_k_plus_1_cell{1,i};
-                    end
-                    
-                end
-            end
-
-            %%% DIST: sup norm of F(x)=x-Phi(x). 
-            DIST_vec=NaN(1,n_var);
-            for i=1:n_var
-                DIST_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),spec.norm_spec(i));
-            end
-            obj_val_vec=DIST_vec.^2;
-
-        else % Minimization/ nonlinear eq spec
-
+        if spec.with_obj_val_spec==1
             [obj_fun_k_plus_1_cell]=...
-              fun(x_k_plus_1_cell{:},other_input_cell{:});
-
+                fun(x_k_plus_1_cell{:},other_input_cell{:});
+  
             for i=1:n_var
                 obj_val_vec(1,i)=obj_fun_k_plus_1_cell{1,i};
             end
-        end%if else
-       
-   
+
+        else % spec.with_obj_val_spec==0
+            [fun_k_plus_1_cell,other_output_k_plus_1]=...
+                fun(x_k_plus_1_cell{:},other_input_cell{:});
+     
+            %%% DIST: sup norm of F(x)=x-Phi(x). 
+            DIST_vec=NaN(1,n_var);
+            for i=1:n_var
+                if spec.fixed_point_iter_spec==1
+                    fun_k_plus_1_cell{1,i}=fun_k_plus_1_cell{1,i}-x_k_plus_1_cell{1,i};                    
+                end
+                DIST_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),spec.norm_spec(i));
+            end
+            obj_val_vec=DIST_vec.^2;
+        end
+
         if spec.line_search_spec==1
-
-
-continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,step_size,fun_k_cell,d_k_cell,spec);
+            continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,step_size,fun_k_cell,d_k_cell,spec);
 
            rho=spec.rho;
 
             if sum(continue_backtracking_dummy(:))>0 & spec.positive_alpha_spec==1
-                    step_size=step_size.*rho; 
+                step_size=step_size.*rho; 
 
             elseif sum(continue_backtracking_dummy(:))>0 & (mod(iter_line_search,2)==0)  & spec.positive_alpha_spec==0
-                    step_size=step_size.*(-rho); 
+                step_size=step_size.*(-rho); 
 
             elseif sum(continue_backtracking_dummy(:))>0 & mod(iter_line_search,2)==1 & spec.positive_alpha_spec==0
                     step_size=step_size.*(-1); 
@@ -78,9 +69,13 @@ continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
 
 
-    if sum(spec.minimization_spec(:))>0
+    if spec.with_obj_val_spec==1
         [obj_fun_k_plus_1_cell,fun_k_plus_1_cell,other_output_k_plus_1]=...
             fun(x_k_plus_1_cell{:},other_input_cell{:});
+
+        if spec.fixed_point_iter_spec==1
+            fun_k_plus_1_cell{1,i}=fun_k_plus_1_cell{1,i}-x_k_plus_1_cell{1,i};                    
+        end
 
         for i=1:n_var
             obj_val_vec(1,i)=obj_fun_k_plus_1_cell{1,i};

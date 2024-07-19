@@ -30,7 +30,7 @@ if spec.bound_spec==1
     x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
 end
 
-if sum(spec.minimization_spec(:))==0
+if spec.with_obj_val_spec==0
     [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 else
     [obj_fun_0_cell,fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
@@ -38,9 +38,7 @@ end
 
 if spec.fixed_point_iter_spec==1
     for i=1:n_var
-        if spec.minimization_spec(1,i)==0
             fun_0_cell{1,i}=fun_0_cell{1,i}-x_0_cell{1,i};
-        end
     end
 end
 
@@ -77,9 +75,9 @@ for i=1:n_var
 end % loop wrt i
 
     DIST_table(1,:)=DIST_vec;
-    if sum(spec.minimization_spec(:))==0
+    if spec.with_obj_val_spec==0
         obj_val_table(1,:)=DIST_vec.^2;% L2 norm
-    else
+    else%with_obj_val_spec==1
         for i=1:n_var
             obj_val_table(1,i)=obj_fun_0_cell{i};
         end
@@ -198,7 +196,7 @@ for k=0:ITER_MAX-2
     if k-floor(k/interval)*interval==0&DEBUG==1
         DIST_vec
 
-        if sum(spec.minimization_spec(:))>0
+        if spec.with_obj_val_spec==1
             obj_val_vec
         end
     end
@@ -250,7 +248,7 @@ iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 iter_info.step_size_table=step_size_table;
 iter_info.norm_spec=spec.norm_spec;
 
-if sum(spec.minimization_spec(:))>0
+if spec.with_obj_val_spec==1
     iter_info.obj_val_table=obj_val_table;
 end
 

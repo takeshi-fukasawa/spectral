@@ -102,6 +102,10 @@ if isfield(spec,'minimization_spec')==0
      spec.minimization_spec=zeros(1,n_var);
 end
 
+if isfield(spec,'with_obj_val_spec')==0
+     spec.with_obj_val_spec=0;
+end
+
 spec.bound_spec=0;
 for i=1:n_var
    if isempty(x_max_cell{1,i})==0 | isempty(x_min_cell{1,i})==0
@@ -116,6 +120,11 @@ end
 if sum(spec.minimization_spec(:))>0
     spec.positive_alpha_spec=1;
 end
+
+if sum(spec.minimization_spec(:))>0
+    spec.fixed_point_iter_spec=0;
+end
+
 
 if spec.positive_alpha_spec==1
     spec.alpha_min=1e-5; %% Restrict alpha to be positive
