@@ -118,11 +118,6 @@ for k=0:ITER_MAX-2
       elseif spec.BFGS_spec==1
          s=Delta_x_cell{1,1}(:);
 
-         if sum(abs(s(:)))==0 & spec.dampening_param{1,1}>0
-            warning("Zero division expected")
-                break;
-         end
-
          y=Delta_fun_cell{1,1}(:);
          
          

@@ -51,6 +51,13 @@ x_max_cell,x_min_cell,k,obj_val_table)
         if spec.line_search_spec==1
             continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,step_size,fun_k_cell,d_k_cell,spec);
 
+            for i=1:n_var
+                if spec.dampening_param{1,i}==0
+                    continue_backtracking_dummy(i)=0;%%%###
+                end
+            end
+            continue_backtracking_dummy(2:3)=0;%%%###
+
            rho=spec.rho;
 
             if sum(continue_backtracking_dummy(:))>0 & spec.positive_alpha_spec==1

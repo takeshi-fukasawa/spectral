@@ -25,7 +25,8 @@ function continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_
 
          end %if spec.minimization_spec(1,i)==0
 
-         %%% If LHS<=RHS, exit the iteration
+         %%% If LHS<=RHS, exit the iteration; 
+         %%% Otherwise (LHS>RHS), continue the iteration.
          continue_backtracking_dummy(1,i)=(RHS_i-LHS(1,i)<0);
 
      end % for loop wrt i
