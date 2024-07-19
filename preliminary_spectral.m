@@ -76,6 +76,10 @@ else
     DEBUG=spec.DEBUG;
 end
 
+if isfield(spec,'nonlinear_eq_spec')==0
+    spec.nonlinear_eq_spec=1;
+end
+
 if isfield(spec,'compute_alpha_spec')==0
     spec.compute_alpha_spec=3;
 end
@@ -127,7 +131,7 @@ end
 
 
 if spec.positive_alpha_spec==1
-    spec.alpha_min=1e-5; %% Restrict alpha to be positive
+    spec.alpha_min=1e-8; %% Restrict alpha to be positive
 end
 
 if isfield(spec,'conjugate_gradient_spec')==0

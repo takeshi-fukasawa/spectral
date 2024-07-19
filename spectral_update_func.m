@@ -15,13 +15,12 @@ x_max_cell,x_min_cell,k,obj_val_table)
        end % for loop wrt i
 
        if spec.bound_spec==1 & iter_line_search==1
-           x_k_plus_1_cell=projection_func(x_k_plus_1_cell,x_max_cell,x_min_cell);
-         if spec.line_search_spec==1
-        for i=1:n_var
-           d_k_cell{1,i}=x_k_plus_1_cell{1,i}-x_k_cell{1,i};
-       end
-        end
-
+            x_k_plus_1_cell=projection_func(x_k_plus_1_cell,x_max_cell,x_min_cell);
+            if spec.line_search_spec==1
+                for i=1:n_var
+                    d_k_cell{1,i}=x_k_plus_1_cell{1,i}-x_k_cell{1,i};
+                end
+            end
        end
 
 
