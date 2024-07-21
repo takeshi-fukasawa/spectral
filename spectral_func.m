@@ -161,10 +161,14 @@ for k=0:ITER_MAX-2
    end
 
     if isempty(spec.dampening_param)==0
+
+    
        dampening_param=spec.dampening_param;
        for i=1:n_var
         alpha_k{1,i}=alpha_k{1,i}*dampening_param{1,i};
        end
+
+       
     end
 
 
@@ -186,7 +190,7 @@ for k=0:ITER_MAX-2
 
         if spec.BFGS_spec==1 & k>=2 & i==1
 
-            if alpha_k{1}==0%%%%###
+            if alpha_k{1}==0
                 H_k=eye(size(d_k_cell{1,i}(:),1));
             end
 
@@ -212,7 +216,10 @@ for k=0:ITER_MAX-2
     
     obj_val_table(k+2,:)=obj_val_vec;
     step_size_table(k+2,:)=step_size;
+
+    %%DIST_vec(2:3)=0;%%%%#####
     DIST_vec
+
     DIST=nanmax(DIST_vec);
 
     if isnan(DIST)==1|isinf(sum(DIST_table(k+2,:)))==1|isnan(sum(DIST_table(k+2,:)))==1

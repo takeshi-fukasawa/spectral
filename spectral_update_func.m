@@ -51,12 +51,16 @@ x_max_cell,x_min_cell,k,obj_val_table)
         if spec.line_search_spec==1
             continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,step_size,fun_k_cell,d_k_cell,spec);
 
-            for i=1:n_var
-                if spec.dampening_param{1,i}==0
-                    continue_backtracking_dummy(i)=0;%%%###
-                end
-            end
-            continue_backtracking_dummy(2:3)=0;%%%###
+            %%%for i=1:n_var
+            %%%    if spec.dampening_param{1,i}==0
+            %%%        continue_backtracking_dummy(i)=0;%%%###
+            %%%    end
+            %%%end
+
+            %%%%%
+            %continue_backtracking_dummy(1)=0;%%%###
+            continue_backtracking_dummy(2:3)=0;
+            %%%%%%%%%%%%
 
            rho=spec.rho;
 
@@ -71,6 +75,10 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 step_size=step_size.*(-1);
                  
             else
+                break;
+            end
+
+            if step_size<spec.step_min
                 break;
             end
 
@@ -94,7 +102,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
             DIST_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),spec.norm_spec(i));
         end
 
-    
+
     end
 
 end

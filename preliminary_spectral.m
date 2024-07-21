@@ -155,4 +155,8 @@ if isfield(spec,'rho')==0
     spec.rho=0.1;
 end
 
+if isfield(spec,'step_min')==0
+    spec.step_min=1e-4;
+end
+
 
