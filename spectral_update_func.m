@@ -11,8 +11,18 @@ x_max_cell,x_min_cell,k,obj_val_table)
     %%% Update variables in the spectral algorithm %%%%%%%%%%%%%%%
     for iter_line_search=1:spec.ITER_MAX_LINE_SEARCH
      
+
+        if iter_line_search==spec.ITER_MAX_LINE_SEARCH
+            step_size=0;%%%###
+        end
+
        for i=1:n_var
+        if i==1
             x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size*d_k_cell{1,i};
+        else%%%%#####
+            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+d_k_cell{1,i};
+        end
+
        end % for loop wrt i
 
        if spec.bound_spec==1 & iter_line_search==1

@@ -30,4 +30,16 @@ function continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_
          continue_backtracking_dummy(1,i)=(RHS_i-LHS(1,i)<0);
 
      end % for loop wrt i
+
+     if 1==1
+          weight_param=10;
+          %%% Structural est
+          RHS=obj_val_table(k+1,1)+weight_param*sum(obj_val_table(k+1,2:end))+gamma*step_size*fun_k_cell{1,1}(:)'*d_k_cell{1,1}(:);%1*n_var
+          LHS=obj_val_vec(1,1)+weight_param*sum(obj_val_vec(1,2:end));
+          continue_backtracking_dummy(1,1:n_var)=(RHS-LHS<0);
+
+          %%[LHS,RHS]
+     end
+
+
 end

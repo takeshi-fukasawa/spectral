@@ -119,24 +119,22 @@ for k=0:ITER_MAX-2
          s=Delta_x_cell{1,1}(:);
 
          if sum(abs(s(:)))==0 & spec.dampening_param{1,1}>0
-            warning("Zero division expected")
-                break;
-         end
+            H_k=H_k_minus_1;
+         else
+            y=Delta_fun_cell{1,1}(:);
+            
+            if spec.fixed_point_iter_spec==1
+                y=y.*(-1);%%%####
+            end
 
-         y=Delta_fun_cell{1,1}(:);
-         
-         
-         if spec.fixed_point_iter_spec==1
-            y=y.*(-1);%%%####
-         end
+            I=eye(size(s,1));
+            syp=s*y';
+            spy=s'*y;% scalar
+            ysp=y*s';
+            ssp=s*s';
 
-         I=eye(size(s,1));
-         syp=s*y';
-         spy=s'*y;% scalar
-         ysp=y*s';
-         ssp=s*s';
-
-         H_k=(I-syp./spy)*H_k_minus_1*(I-ysp./spy)+ssp./spy;
+            H_k=(I-syp./spy)*H_k_minus_1*(I-ysp./spy)+ssp./spy;
+        end
 
          if n_var>=2
             [alpha_k,alpha_max]=compute_alpha_func(...
@@ -218,7 +216,7 @@ for k=0:ITER_MAX-2
     step_size_table(k+2,:)=step_size;
 
     %%DIST_vec(2:3)=0;%%%%#####
-    DIST_vec
+    log10(DIST_vec)
 
     DIST=nanmax(DIST_vec);
 
