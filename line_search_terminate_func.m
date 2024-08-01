@@ -31,7 +31,7 @@ function continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_
 
      end % for loop wrt i
 
-     if 1==1
+     if 1==0
           weight_param=10;
           %%% Structural est
           RHS=obj_val_table(k+1,1)+weight_param*sum(obj_val_table(k+1,2:end))+gamma*step_size*fun_k_cell{1,1}(:)'*d_k_cell{1,1}(:);%1*n_var

@@ -69,7 +69,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
             %%%%%
             %%continue_backtracking_dummy(1)=0;%%%###
-            continue_backtracking_dummy(2:3)=0;
+            %%continue_backtracking_dummy(2:3)=0;
             %%%%%%%%%%%%
 
            rho=spec.rho;

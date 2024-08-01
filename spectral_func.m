@@ -142,7 +142,7 @@ for k=0:ITER_MAX-2
                 spec.alpha_max=alpha_max;
          end
 
-         alpha_k{1,1}=1;%%%%%
+         %%alpha_k{1,1}=1;%%%%%
 
     
     end
@@ -288,6 +288,8 @@ iter_info.alpha_table=alpha_table;
 iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 iter_info.step_size_table=step_size_table;
 iter_info.norm_spec=spec.norm_spec;
+
+iter_info.spec=spec;
 
 if spec.with_obj_val_spec==1
     iter_info.obj_val_table=obj_val_table;
