@@ -98,7 +98,7 @@ for k=0:floor(ITER_MAX/2)-1
    
    interval=10;
     if k-floor(k/interval)*interval==0&DEBUG==1
-        DIST_vec
+        DIST_k_2
     end
 
     if DIST<TOL
