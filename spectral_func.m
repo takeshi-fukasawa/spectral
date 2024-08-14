@@ -16,12 +16,13 @@ if spec.SQUAREM_spec==0
 
 % varargin:1*XXX
 
-fun_k_cell={};
 %% Read inputs
 
 DIST_table=NaN(ITER_MAX,n_var);
+obj_val_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
+step_size_table=NaN(ITER_MAX,n_var);
 
 tic_spectral=tic;
  if spec.bound_spec==1
@@ -70,7 +71,8 @@ feval=1;
 
     DIST=nanmax(DIST_vec);
     DIST_table(1,:)=DIST_vec;
-    
+    obj_val_table(1,:)=DIST_vec.^2;% L2 norm
+
     conv=(sum((DIST_vec<TOL),'all')==n_var);
 
 x_k_cell=x_0_cell;
@@ -100,6 +102,11 @@ for k=0:ITER_MAX-2
          spec.alpha_max=alpha_max;
       end
 
+    for i=1:n_var      
+        d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
+    end
+
+
   else % k==0
       for i=1:n_var
        alpha_k{1,i}=alpha_0{1,i};
@@ -107,14 +114,17 @@ for k=0:ITER_MAX-2
         alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
        end
 
+       d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
+
      end% for loop wrt i
    end
 
     %%% Update variables %%%%%%%%%%%%%%%
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
-    other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec]=...
-        spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
-        n_var,spec,x_max_cell,x_min_cell,k,DIST_table);
+    other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
+    obj_val_vec,step_size]=...
+        spectral_update_func(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
+        n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
 
@@ -122,7 +132,10 @@ for k=0:ITER_MAX-2
 
     DIST_table(k+2,:)=DIST_vec;
     alpha_table(k+2,:)=alpha_vec;
+    obj_val_table(k+2,:)=obj_val_vec;
+    step_size_table(k+2,:)=step_size;
     DIST=nanmax(DIST_vec);
+    
 
     if isnan(DIST)==1|isinf(sum(DIST_table(k+2,:)))==1|isnan(sum(DIST_table(k+2,:)))==1
        %warning("Error ?? ")
@@ -177,6 +190,9 @@ iter_info.DIST_table=DIST_table;
 iter_info.alpha_table=alpha_table;
 iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 iter_info.norm_spec=spec.norm_spec;
+
+iter_info.step_size_table=step_size_table;
+iter_info.spec=spec;
 
 else % spec.SQUAREM_spec==1
 
