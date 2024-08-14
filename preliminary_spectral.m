@@ -116,7 +116,7 @@ end
 
 %%%% Line search parameters
 if isfield(spec,'M')==0
-    spec.M=5;
+    spec.M=10;
 end
 
 if isfield(spec,'gamma')==0
@@ -124,7 +124,7 @@ if isfield(spec,'gamma')==0
 end
 
 if isfield(spec,'rho')==0
-    spec.rho=0.5;
+    spec.rho=0.3;
 end
 
 if isfield(spec,'step_min')==0
