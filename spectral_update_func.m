@@ -41,6 +41,13 @@ x_max_cell,x_min_cell,k,obj_val_table)
             continue_backtracking_dummy=line_search_terminate_func(...
                 obj_val_vec,obj_val_table,n_var,k,step_size,spec);
 
+            %%%%%%%
+            merit_func=spec.merit_func;
+            merit_obj_k=merit_func(x_k_cell);
+            merit_obj_k_plus_1=merit_func(x_k_plus_1_cell);
+            continue_backtracking_dummy=(merit_obj_k_plus_1>=merit_obj_k);
+            %%%%%%%
+
             rho=spec.rho;
 
             if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
