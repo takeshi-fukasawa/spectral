@@ -1,13 +1,11 @@
+function spec=preliminary_spectral_func(spec,n_var);
+
 if isfield(spec,'x_max_cell')==0
-    x_max_cell=cell(1,n_var);
-else
-    x_max_cell=spec.x_max_cell;
+    spec.x_max_cell=cell(1,n_var);
 end
 
 if isfield(spec,'x_min_cell')==0
-    x_min_cell=cell(1,n_var);
-else
-    x_min_cell=spec.x_min_cell;
+    spec.x_min_cell=cell(1,n_var);
 end
 
 if isfield(spec,'fixed_point_iter_spec')==0
@@ -20,15 +18,11 @@ end
 
 if isfield(spec,'dampening_param')==0
     spec.dampening_param=[];
-else
-    dampening_param=spec.dampening_param;
 end
 
 
 if isfield(spec,'alpha_0')==0
-    alpha_0_param=[];
-else
-    alpha_0_param=spec.alpha_0;
+    spec.alpha_0_param=[];
 end
 
 if isfield(spec,'alpha_max')==0
@@ -44,16 +38,12 @@ if isfield(spec,'common_alpha_spec')==0
 end
 
 if isfield(spec,'TOL')==0
-    TOL=1e-10;
-else
-    TOL=spec.TOL;
+    spec.TOL=1e-10;
 end
 
 
 if isfield(spec,'ITER_MAX')==0
-    ITER_MAX=1000;
-else
-    ITER_MAX=spec.ITER_MAX;
+    spec.ITER_MAX=1000;
 end
 
 if isfield(spec,'line_search_spec')==0
@@ -70,9 +60,7 @@ end
 
 
 if isfield(spec,'DEBUG')==0
-    DEBUG=0;
-else
-    DEBUG=spec.DEBUG;
+    spec.DEBUG=0;
 end
 
 if isfield(spec,'compute_alpha_spec')==0
@@ -85,8 +73,6 @@ end
 
 if isfield(spec,'norm_spec')==0
     spec.norm_spec=0;
-else
-    spec.norm_spec=spec.norm_spec;
 end
 
 if spec.line_search_spec==1
@@ -100,7 +86,7 @@ end
 
 spec.bound_spec=0;
 for i=1:n_var
-   if isempty(x_max_cell{1,i})==0 | isempty(x_min_cell{1,i})==0
+   if isempty(spec.x_max_cell{1,i})==0 | isempty(spec.x_min_cell{1,i})==0
      spec.bound_spec=1;
    end
 end
@@ -131,6 +117,14 @@ if isfield(spec,'step_min')==0
     spec.step_min=1e-8;
 end
 
+if isfield(spec,'merit_func')==0 | spec.line_search_spec==0
+    spec.merit_func=[];
+    spec.merit_func_spec=0;
+else
+    spec.merit_func_spec=1;
+end
+
+end % function
 
 
 

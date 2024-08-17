@@ -6,20 +6,22 @@ function [x_sol_cell,other_output_k_plus_1,iter_info]=...
 
 n_var=size(x_0_cell,2);
 
-run preliminary_spectral.m
+spec=preliminary_spectral_func(spec,n_var);
 
 other_input_cell=varargin;
 
 FLAG_ERROR=0;
+
+x_max_cell=spec.x_max_cell;
+x_min_cell=spec.x_min_cell;
 
 if spec.SQUAREM_spec==0
 
 % varargin:1*XXX
 
 %% Read inputs
-
+ITER_MAX=spec.ITER_MAX;
 DIST_table=NaN(ITER_MAX,n_var);
-obj_val_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 step_size_table=NaN(ITER_MAX,n_var);
@@ -61,8 +63,8 @@ feval=1;
           alpha_0{1,i}=1;
       end
 
-      if isempty(alpha_0_param)==0
-          alpha_0{1,i}=alpha_0_param;
+      if isempty(spec.alpha_0_param)==0
+          alpha_0{1,i}=spec.alpha_0_param;
       end
       alpha_table(1,i)=alpha_0{1,i};
       
@@ -71,9 +73,17 @@ feval=1;
 
     DIST=nanmax(DIST_vec);
     DIST_table(1,:)=DIST_vec;
-    obj_val_table(1,:)=DIST_vec.^2;% L2 norm
 
-    conv=(sum((DIST_vec<TOL),'all')==n_var);
+   if spec.merit_func_spec==1 & spec.line_search_spec==1
+             obj_val_table=NaN(ITER_MAX,1);
+             merit_func=spec.merit_func;
+             obj_val_table(1,1)=merit_func(x_0_cell);%%%%%%
+  else
+       obj_val_table=NaN(ITER_MAX,n_var);
+       obj_val_table(1,:)=DIST_vec.^2;% L2 norm
+   end
+
+    conv=(sum((DIST_vec<spec.TOL),'all')==n_var);
 
 x_k_cell=x_0_cell;
 fun_k_cell=fun_0_cell;
@@ -145,11 +155,11 @@ for k=0:ITER_MAX-2
     end
    
    interval=10;
-    if k-floor(k/interval)*interval==0&DEBUG==1
+    if k-floor(k/interval)*interval==0&spec.DEBUG==1
         DIST_vec
     end
 
-    if sum((DIST_vec<TOL),'all')==n_var
+    if sum((DIST_vec<spec.TOL),'all')==n_var
         FLAG_ERROR=0;
         %DIST
         break;
@@ -181,7 +191,7 @@ t_cpu=toc(tic_spectral);
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k+1;
 iter_info.feval=feval;
-iter_info.ITER_MAX=ITER_MAX;
+iter_info.ITER_MAX=spec.ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.fun_cell=fun_k_cell;
