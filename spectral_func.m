@@ -193,6 +193,7 @@ iter_info.n_iter=k+1;
 iter_info.feval=feval;
 iter_info.ITER_MAX=spec.ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
+iter_info.obj_val_table=obj_val_table;
 
 iter_info.fun_cell=fun_k_cell;
 
