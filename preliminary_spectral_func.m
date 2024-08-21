@@ -16,6 +16,12 @@ if isfield(spec,'update_spec')==0
     spec.update_spec=[];
 end
 
+if isfield(spec,'dim_hetero_alpha')==0
+    spec.dim_hetero_alpha=[];
+elseif size(spec.dim_hetero_alpha(:),1)>1
+    spec.dim_hetero_alpha=ones(n_var,1)*(spec.dim_hetero_alpha);
+end
+
 if isfield(spec,'dampening_param')==0
     spec.dampening_param=[];
 end

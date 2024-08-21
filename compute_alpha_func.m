@@ -3,22 +3,18 @@ function [alpha_k,alpha_max]=compute_alpha_func(...
     
     n_var=size(Delta_x_cell,2);
     
-    update_spec=spec.update_spec;
-    
     for i=1:n_var
-          if isempty(update_spec)==1
+          if isempty(spec.dim_hetero_alpha)==1 || spec.dim_hetero_alpha(i)==0
             sum_dim_ids='all';
     
-          elseif sum(update_spec(:))>0 %%% XXX-dependent tune parameters
-             sum_dim_ids=1:size(size(Delta_x_cell{1,i}),2);
-                      sum_dim_ids=sum_dim_ids(sum_dim_ids~=update_spec);
-             
-          end % isempty(update_spec)==1 or others?
+          else  %%% XXX-dependent tune parameters
+            sum_dim_ids=1:size(size(Delta_x_cell{1,i}),2);
+            sum_dim_ids=sum_dim_ids(sum_dim_ids~=(spec.dim_hetero_alpha(i)));
+          end 
     
             sum_Delta_x_x_cell{1,i}=sum(Delta_x_cell{1,i}.*Delta_x_cell{1,i},sum_dim_ids,'omitnan');%vector
             sum_Delta_fun_fun_cell{1,i}=sum(Delta_fun_cell{1,i}.*Delta_fun_cell{1,i},sum_dim_ids,'omitnan');%vector      
             sum_Delta_x_fun_cell{1,i}=sum(Delta_x_cell{1,i}.*Delta_fun_cell{1,i},sum_dim_ids,'omitnan');%vector  
-    
     end % loop wrt i
     
     if spec.common_alpha_spec==1
@@ -41,7 +37,7 @@ function [alpha_k,alpha_max]=compute_alpha_func(...
     for i=1:n_var
     if spec.compute_alpha_spec>=3
         %%%% Specification proposed in Varadhan and Roland (2008)
-        alpha_k{1,i}=sqrt(sum_Delta_x_x_cell{1,i}./sum_Delta_fun_fun_cell{1,i});%scalar or vector (wrt the dimension specified in "update_spec")
+        alpha_k{1,i}=sqrt(sum_Delta_x_x_cell{1,i}./sum_Delta_fun_fun_cell{1,i});%scalar or vector (wrt the dimension specified in "dim_hetero_alpha")
     
         if spec.compute_alpha_spec==4
             %%% Sign can be negative
@@ -50,11 +46,11 @@ function [alpha_k,alpha_max]=compute_alpha_func(...
     
     elseif spec.compute_alpha_spec==1
         %%%% Barzilai and Borwein (1988) first spec
-        alpha_k{1,i}=-sum_Delta_x_fun_cell{1,i}./sum_Delta_fun_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
+        alpha_k{1,i}=-sum_Delta_x_fun_cell{1,i}./sum_Delta_fun_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "dim_hetero_alpha")
     
     elseif spec.compute_alpha_spec==2
         %%%% Barzilai and Borwein (1988) second spec
-        alpha_k{1,i}=-sum_Delta_x_x_cell{1,i}./sum_Delta_x_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "update_spec")
+        alpha_k{1,i}=-sum_Delta_x_x_cell{1,i}./sum_Delta_x_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "dim_hetero_alpha")
     end % compute_alpha_spec
         
         alpha_k{1,i}((isnan(alpha_k{1,i})==1))=1;%%%
