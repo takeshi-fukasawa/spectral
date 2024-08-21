@@ -18,7 +18,7 @@ end
 
 if isfield(spec,'dim_hetero_alpha')==0
     spec.dim_hetero_alpha=[];
-elseif size(spec.dim_hetero_alpha(:),1)>1
+elseif size(spec.dim_hetero_alpha(:),1)==1
     spec.dim_hetero_alpha=ones(n_var,1)*(spec.dim_hetero_alpha);
 end
 
