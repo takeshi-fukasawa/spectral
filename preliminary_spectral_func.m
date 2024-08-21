@@ -117,6 +117,10 @@ if isfield(spec,'step_min')==0
     spec.step_min=1e-8;
 end
 
+if isfield(spec,'other_input_merit_func')==0
+    spec.other_input_merit_func=[];
+end
+
 if isfield(spec,'merit_func')==0 | spec.line_search_spec==0
     spec.merit_func=[];
     spec.merit_func_spec=0;

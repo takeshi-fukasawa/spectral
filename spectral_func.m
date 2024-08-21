@@ -75,15 +75,20 @@ feval=1;
     DIST_table(1,:)=DIST_vec;
 
    if spec.merit_func_spec==1 & spec.line_search_spec==1
-             obj_val_table=NaN(ITER_MAX,1);
-             merit_func=spec.merit_func;
-             obj_val_table(1,1)=merit_func(x_0_cell);%%%%%%
+        obj_val_table=NaN(ITER_MAX,1);
+        merit_func=spec.merit_func;
+             
+        if isempty(spec.other_input_merit_func)==1
+            obj_val_table(1,1)=merit_func(x_0_cell);
+        else
+            obj_val_table(1,1)=merit_func(x_0_cell,spec.other_input_merit_func);
+        end     
   else
        obj_val_table=NaN(ITER_MAX,n_var);
        obj_val_table(1,:)=DIST_vec.^2;% L2 norm
-   end
+  end
 
-    conv=(sum((DIST_vec<spec.TOL),'all')==n_var);
+conv=(sum((DIST_vec<spec.TOL),'all')==n_var);
 
 x_k_cell=x_0_cell;
 fun_k_cell=fun_0_cell;

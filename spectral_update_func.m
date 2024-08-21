@@ -44,14 +44,19 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
            if spec.merit_func_spec==0
 
-                %%% Implicitly assume common step size for all the variables %%%%
-                 continue_backtracking_dummy=line_search_terminate_func(...
-                                obj_val_vec,obj_val_table,n_var,k,step_size(1),spec);
+              %%% Implicitly assume common step size for all the variables %%%%
+              continue_backtracking_dummy=line_search_terminate_func(...
+                       obj_val_vec,obj_val_table,n_var,k,step_size(1),spec);
 
             else% merit_func_spec==1
                 merit_func=spec.merit_func;
                 merit_obj_k=obj_val_table(k+1,1);
-                merit_obj_k_plus_1=merit_func(x_k_plus_1_cell);
+                if isempty(spec.other_input_merit_func)==1
+                    merit_obj_k_plus_1=merit_func(x_k_plus_1_cell);
+                else
+                    merit_obj_k_plus_1=merit_func(x_k_plus_1_cell,spec.other_input_merit_func);
+                end
+
                 obj_val_vec=merit_obj_k_plus_1;
                 continue_backtracking_dummy=(merit_obj_k_plus_1>=merit_obj_k);
             end
@@ -59,9 +64,9 @@ x_max_cell,x_min_cell,k,obj_val_table)
             rho=spec.rho;
 
             if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
-                %step_size=step_size.*rho; 
-                step_size(1)=step_size(1).*rho; %%%
-                step_size(2:3)=step_size(2:3).*1; %%%%
+                step_size=step_size.*rho; 
+                %step_size(1)=step_size(1).*rho; %%%
+                %step_size(2:3)=step_size(2:3).*1; %%%%
                 
                 
             elseif continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0)  & spec.positive_alpha_spec==0
