@@ -63,8 +63,8 @@ feval=1;
           alpha_0{1,i}=1;
       end
 
-      if isempty(spec.alpha_0_param)==0
-          alpha_0{1,i}=spec.alpha_0_param;
+      if isempty(spec.alpha_0)==0
+          alpha_0{1,i}=spec.alpha_0;
       end
       alpha_table(1,i)=alpha_0{1,i};
       

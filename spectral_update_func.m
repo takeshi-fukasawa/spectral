@@ -58,14 +58,47 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 end
 
                 obj_val_vec=merit_obj_k_plus_1;
+
+                merit_obj_k_plus_1=merit_obj_k_plus_1;
+                %%% Simple
                 continue_backtracking_dummy=(merit_obj_k_plus_1>=merit_obj_k);
-            end
+                
+                if 1==0
+                %%% Similar to Cruz et al. 2006
+                
+
+                M=spec.M;
+                gamma=spec.gamma;
+             
+                obj_val_table_sum=sum(obj_val_table,2);
+                LHS=sum(obj_val_vec);%1*n_var
+               
+                obj_val_PAST_MAX=max(obj_val_table_sum(max(1,k+1-M+1):k+1,:));
+                eta_k=sqrt(obj_val_table_sum(1,:))/((1+k)^2);
+                
+                eta_k=1*(obj_val_table_sum(1,:))/((1+k)^2);%%%%
+            
+                d_norm_squared=0;
+                for i=1:n_var
+                    d_norm_squared=d_norm_squared+sum(d_k_cell{1}(:).^2);
+                end
+
+                RHS=obj_val_PAST_MAX+eta_k-(gamma*step_size(1)^2)*(d_norm_squared);
+
+                continue_backtracking_dummy=(RHS-LHS<0);
+                end
+
+           end
 
             rho=spec.rho;
 
             if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
-                step_size=step_size.*rho; 
-                %step_size(1)=step_size(1).*rho; %%%
+                %step_size=step_size.*rho; 
+                %step_size=step_size.*(-rho); 
+                
+                %%%%%
+                %step_size(1)=step_size(1).*(rho); %%%
+                step_size(1)=0;
                 %step_size(2:3)=step_size(2:3).*1; %%%%
                 
                 
