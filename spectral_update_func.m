@@ -2,9 +2,16 @@
 function [x_k_plus_1_cell, fun_k_plus_1_cell,...
 other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
 obj_val_vec,step_size]=...
-spectral_update_func(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
+spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
+
+    global step_size
+
+    
+    for i=1:n_var      
+        d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
+    end
 
     step_size=ones(1,n_var);
 
@@ -18,7 +25,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
        if spec.bound_spec==1
            x_k_plus_1_cell=projection_func(x_k_plus_1_cell,x_max_cell,x_min_cell);
-     end
+       end
 
      if spec.merit_func_spec==0
         [fun_k_plus_1_cell,other_output_k_plus_1]=...
@@ -61,7 +68,11 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
                 merit_obj_k_plus_1=merit_obj_k_plus_1;
                 %%% Simple
-                continue_backtracking_dummy=(merit_obj_k_plus_1>=merit_obj_k);
+                eta_k=0/((1+k)^2);
+                LHS=merit_obj_k_plus_1+eta_k;
+                RHS=merit_obj_k;
+                %%[LHS,RHS]
+                continue_backtracking_dummy=(LHS>=RHS);
                 
                 if 1==0
                 %%% Similar to Cruz et al. 2006
@@ -85,6 +96,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
                 RHS=obj_val_PAST_MAX+eta_k-(gamma*step_size(1)^2)*(d_norm_squared);
 
+
                 continue_backtracking_dummy=(RHS-LHS<0);
                 end
 
@@ -92,14 +104,14 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
             rho=spec.rho;
 
+
+
             if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
                 %step_size=step_size.*rho; 
                 %step_size=step_size.*(-rho); 
                 
                 %%%%%
-                %step_size(1)=step_size(1).*(rho); %%%
-                step_size(1)=0;
-                %step_size(2:3)=step_size(2:3).*1; %%%%
+                step_size(1)=0;%%%%%%
                 
                 
             elseif continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0)  & spec.positive_alpha_spec==0

@@ -66,6 +66,9 @@ feval=1;
       if isempty(spec.alpha_0)==0
           alpha_0{1,i}=spec.alpha_0;
       end
+
+      %%alpha_0{1,1}=0.001;%%%%%%
+
       alpha_table(1,i)=alpha_0{1,i};
       
     end % loop wrt i
@@ -117,9 +120,8 @@ for k=0:ITER_MAX-2
          spec.alpha_max=alpha_max;
       end
 
-    for i=1:n_var      
-        d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
-    end
+      %alpha_k{1,1}=1;%%%%%%
+
 
 
   else % k==0
@@ -129,7 +131,6 @@ for k=0:ITER_MAX-2
         alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
        end
 
-       d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
 
      end% for loop wrt i
    end
@@ -138,7 +139,7 @@ for k=0:ITER_MAX-2
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
     other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
     obj_val_vec,step_size]=...
-        spectral_update_func(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
+        spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
         n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
