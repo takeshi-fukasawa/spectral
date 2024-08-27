@@ -28,10 +28,6 @@ for k=0:ITER_MAX-2
             H_k=H_k_minus_1;
          else
             y=Delta_fun_cell{1,1}(:);
-            
-            if spec.fixed_point_iter_spec==1
-                y=y.*(-1);%%%####
-            end
 
             I=eye(size(s,1));
             syp=s*y';

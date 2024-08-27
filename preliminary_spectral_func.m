@@ -12,6 +12,11 @@ if isfield(spec,'fixed_point_iter_spec')==0
     spec.fixed_point_iter_spec=1;%%%%%
 end
 
+if isfield(spec,'BFGS_spec')==0
+    spec.BFGS_spec=0;%%%%%
+end
+
+
 if isfield(spec,'update_spec')==0
     spec.update_spec=[];
 end

@@ -2,7 +2,7 @@
 function [x_k_plus_1_cell, fun_k_plus_1_cell,...
 other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
 obj_val_vec,step_size]=...
-spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
+spectral_update_func(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
@@ -15,12 +15,13 @@ x_max_cell,x_min_cell,k,obj_val_table)
      
         %%%%%%%%%%%%%%%%%%
         if spec.merit_func_spec==1 & iter_line_search==2%%%%%%
+            d_k_cell{1,1}=d_k_cell{1,1}./alpha_k{1,1};
             alpha_k{1,1}=1;%%%%%%
         end%%%%%
         %%%%%%%%%%%%%%%%%%
 
        for i=1:n_var
-            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*alpha_k{1,i}.*fun_k_cell{1,i};
+            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*d_k_cell{1,i};
        end % for loop wrt i
 
        if spec.bound_spec==1
@@ -90,8 +91,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 
                     d_norm_squared=0;
                     for i=1:n_var
-                        d_k_cell_1=alpha_k{1,1}.*fun_k_cell{1,1};
-                        d_norm_squared=d_norm_squared+sum(d_k_cell_1(:).^2);
+                        d_norm_squared=d_norm_squared+sum(d_k_cell(:).^2);
                     end
 
                     RHS=obj_val_PAST_MAX+eta_k-(gamma*step_size(1)^2)*(d_norm_squared);
@@ -140,7 +140,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
      if spec.merit_func_spec==1
         
        for i=1:n_var
-            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*alpha_k{1,i}.*fun_k_cell{1,i};
+            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*d_k_cell{1,i};
         end % for loop wrt i
 
         if spec.bound_spec==1
