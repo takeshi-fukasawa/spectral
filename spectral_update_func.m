@@ -6,21 +6,21 @@ spectral_update_func(fun,x_k_cell,alpha_k,fun_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
-    global step_size
-
-    
-    for i=1:n_var      
-        d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
-    end
 
     step_size=ones(1,n_var);
-
+    alpha_k_original=alpha_k;
 
     %%% Update variables in the spectral algorithm %%%%%%%%%%%%%%%
     for iter_line_search=1:spec.ITER_MAX_LINE_SEARCH
      
+        %%%%%%%%%%%%%%%%%%
+        if spec.merit_func_spec==1 & iter_line_search==2%%%%%%
+            alpha_k{1,1}=1;%%%%%%
+        end%%%%%
+        %%%%%%%%%%%%%%%%%%
+
        for i=1:n_var
-            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*d_k_cell{1,i};
+            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*alpha_k{1,i}.*fun_k_cell{1,i};
        end % for loop wrt i
 
        if spec.bound_spec==1
@@ -75,29 +75,29 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 continue_backtracking_dummy=(LHS>=RHS);
                 
                 if 1==0
-                %%% Similar to Cruz et al. 2006
+                    %%% Similar to Cruz et al. 2006
+
+                    M=spec.M;
+                    gamma=spec.gamma;
                 
-
-                M=spec.M;
-                gamma=spec.gamma;
-             
-                obj_val_table_sum=sum(obj_val_table,2);
-                LHS=sum(obj_val_vec);%1*n_var
-               
-                obj_val_PAST_MAX=max(obj_val_table_sum(max(1,k+1-M+1):k+1,:));
-                eta_k=sqrt(obj_val_table_sum(1,:))/((1+k)^2);
+                    obj_val_table_sum=sum(obj_val_table,2);
+                    LHS=sum(obj_val_vec);%1*n_var
                 
-                eta_k=1*(obj_val_table_sum(1,:))/((1+k)^2);%%%%
-            
-                d_norm_squared=0;
-                for i=1:n_var
-                    d_norm_squared=d_norm_squared+sum(d_k_cell{1}(:).^2);
-                end
+                    obj_val_PAST_MAX=max(obj_val_table_sum(max(1,k+1-M+1):k+1,:));
+                    eta_k=sqrt(obj_val_table_sum(1,:))/((1+k)^2);
+                    
+                    eta_k=1*(obj_val_table_sum(1,:))/((1+k)^2);%%%%
+                
+                    d_norm_squared=0;
+                    for i=1:n_var
+                        d_k_cell_1=alpha_k{1,1}.*fun_k_cell{1,1};
+                        d_norm_squared=d_norm_squared+sum(d_k_cell_1(:).^2);
+                    end
 
-                RHS=obj_val_PAST_MAX+eta_k-(gamma*step_size(1)^2)*(d_norm_squared);
+                    RHS=obj_val_PAST_MAX+eta_k-(gamma*step_size(1)^2)*(d_norm_squared);
 
 
-                continue_backtracking_dummy=(RHS-LHS<0);
+                    continue_backtracking_dummy=(RHS-LHS<0);
                 end
 
            end
@@ -107,12 +107,16 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
 
             if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
-                %step_size=step_size.*rho; 
-                %step_size=step_size.*(-rho); 
+
+                if spec.merit_func_spec==0
+                    step_size=step_size.*rho; 
+                end
                 
-                %%%%%
-                step_size(1)=0;%%%%%%
-                
+                %%%%%%%%
+                if spec.merit_func_spec==1 & iter_line_search==2
+                    step_size(1)=0;%%%%%%
+                end
+                %%%%%%%%%%%
                 
             elseif continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0)  & spec.positive_alpha_spec==0
                 step_size=step_size.*(-rho);
@@ -129,11 +133,20 @@ x_max_cell,x_min_cell,k,obj_val_table)
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
 
     for i=1:n_var
-        alpha_vec(1,i)=max(alpha_k{i}(:)); 
+        alpha_vec(1,i)=max(alpha_k_original{i}(:)); 
     end
 
 %%%%%%%%%%%%%
      if spec.merit_func_spec==1
+        
+       for i=1:n_var
+            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*alpha_k{1,i}.*fun_k_cell{1,i};
+        end % for loop wrt i
+
+        if spec.bound_spec==1
+            x_k_plus_1_cell=projection_func(x_k_plus_1_cell,x_max_cell,x_min_cell);
+        end
+        
         [fun_k_plus_1_cell,other_output_k_plus_1]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});
        

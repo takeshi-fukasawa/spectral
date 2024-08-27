@@ -172,9 +172,20 @@ for k=0:ITER_MAX-2
     end
 
     %%% Replace variables for the next iteration
-	x_k_minus_1_cell=x_k_cell;
+
+    if step_size(1)>0
+    	x_k_minus_1_cell=x_k_cell;
+	    fun_k_minus_1_cell=fun_k_cell;
+    else
+        if n_var>=2
+            for i=2:n_var
+                x_k_minus_1_cell{i}=x_k_cell{i};
+                fun_k_minus_1_cell{i}=fun_k_cell{i};
+            end
+        end
+    end
+
 	x_k_cell=x_k_plus_1_cell;
-	fun_k_minus_1_cell=fun_k_cell;
     fun_k_cell=fun_k_plus_1_cell;
    
 
