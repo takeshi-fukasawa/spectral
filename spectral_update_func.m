@@ -69,7 +69,9 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
                 merit_obj_k_plus_1=merit_obj_k_plus_1;
                 %%% Simple
-                eta_k=0/((1+k)^2);
+                eta_k=0.0001/((1+k)^2);
+                %eta_k=100/((1+k)^2);
+                
                 LHS=merit_obj_k_plus_1+eta_k;
                 RHS=merit_obj_k;
                 %%[LHS,RHS]

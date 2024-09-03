@@ -4,6 +4,7 @@ function [x_sol_cell,other_output_k_plus_1,iter_info]=...
 
 %%% Written by Takeshi Fukasawa in May 2024.
 global H_k
+global x_k_cell x_k_minus_1_cell k
 
 n_var=size(x_0_cell,2);
 
@@ -100,6 +101,8 @@ x_k_cell=x_0_cell;
 fun_k_cell=fun_0_cell;
 other_output_k_plus_1=other_output_0;
 
+x_k_minus_1_cell=x_0_cell;%%%
+fun_k_minus_1_cell=fun_0_cell;%%%
 
 %%%%%%%% Loop %%%%%%%%%%%
 
@@ -121,7 +124,7 @@ for k=0:ITER_MAX-2
         [alpha_k,alpha_max]=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
          spec.alpha_max=alpha_max;
-      
+
         elseif spec.BFGS_spec==1
 
         [alpha_k,alpha_max]=compute_alpha_func(...
@@ -162,13 +165,13 @@ for k=0:ITER_MAX-2
         alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
        end
 
-       
       if spec.BFGS_spec==1
         H_k=eye(size(fun_k_cell{1,1}(:),1));
-     end
-
+      end
 
      end% for loop wrt i
+
+     
    end
 
     %%% Update variables %%%%%%%%%%%%%%%
