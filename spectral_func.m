@@ -194,7 +194,6 @@ for k=0:ITER_MAX-2
             d_k_cell{1,1}=-H_k*d_k_cell{1,1}(:);
         end
 
-        alpha_table(k+1,i)=max(alpha_k{1,i}(:));
     end % for loop wrt i
 
 

@@ -70,11 +70,11 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 merit_obj_k_plus_1=merit_obj_k_plus_1;
                 %%% Simple
                 eta_k=0.0001/((1+k)^2);
-                %eta_k=100/((1+k)^2);
+                eta_k=1/((1+k)^2);%%%%
                 
-                LHS=merit_obj_k_plus_1+eta_k;
-                RHS=merit_obj_k;
-                %%[LHS,RHS]
+                LHS=merit_obj_k_plus_1;
+                RHS=merit_obj_k+eta_k;
+                [LHS,RHS]
                 continue_backtracking_dummy=(LHS>=RHS);
                 
                 if 1==0
@@ -107,7 +107,6 @@ x_max_cell,x_min_cell,k,obj_val_table)
             rho=spec.rho;
 
 
-
             if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
 
                 if spec.merit_func_spec==0
@@ -115,8 +114,9 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 end
                 
                 %%%%%%%%
-                if spec.merit_func_spec==1 & iter_line_search==2
+                if spec.merit_func_spec==1 & iter_line_search==2 & k<=200
                     step_size(1)=0;%%%%%%
+                    obj_val_vec=[];
                 end
                 %%%%%%%%%%%
                 
@@ -135,7 +135,10 @@ x_max_cell,x_min_cell,k,obj_val_table)
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
 
     for i=1:n_var
-        alpha_vec(1,i)=max(alpha_k_original{i}(:)); 
+        %alpha_k{1,1}
+        %alpha_vec(1,i)=max(alpha_k_original{i}(:)); 
+        alpha_vec(1,i)=max(alpha_k{1,i}(:)); 
+        
     end
 
 %%%%%%%%%%%%%
@@ -163,6 +166,15 @@ x_max_cell,x_min_cell,k,obj_val_table)
         DIST_vec=ones(1,n_var);
         for i=1:n_var
             DIST_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),spec.norm_spec(i));
+        end
+
+        if isempty(obj_val_vec)==1
+            
+            if isempty(spec.other_input_merit_func)==1
+                obj_val_vec=merit_func(x_k_plus_1_cell);
+            else
+                obj_val_vec=merit_func(x_k_plus_1_cell,spec.other_input_merit_func);
+            end
         end
 
     end
