@@ -21,18 +21,24 @@ function [alpha_k,alpha_max]=compute_alpha_func(...
         sum_Delta_x_x=0;
         sum_Delta_fun_fun=0;
         sum_Delta_x_fun=0;
-        for i=1:n_var
+
+        i_start=1;
+        if spec.merit_func_spec==1
+            i_start=1;
+        end
+
+        for i=i_start:n_var
             sum_Delta_x_x=sum_Delta_x_x+sum_Delta_x_x_cell{i};
             sum_Delta_fun_fun=sum_Delta_fun_fun+sum_Delta_fun_fun_cell{i};
             sum_Delta_x_fun=sum_Delta_x_fun+sum_Delta_x_fun_cell{i};
         end
     
-    for i=1:n_var
-        sum_Delta_x_x_cell{1,i}=sum_Delta_x_x;
-        sum_Delta_fun_fun_cell{1,i}=sum_Delta_fun_fun;
-        sum_Delta_x_fun_cell{1,i}=sum_Delta_x_fun;
-    end % for loop wrt i
-         end % if statement
+        for i=i_start:n_var
+            sum_Delta_x_x_cell{1,i}=sum_Delta_x_x;
+            sum_Delta_fun_fun_cell{1,i}=sum_Delta_fun_fun;
+            sum_Delta_x_fun_cell{1,i}=sum_Delta_x_fun;
+        end % for loop wrt i
+    end % if statement
     
     for i=1:n_var
     if spec.compute_alpha_spec>=3

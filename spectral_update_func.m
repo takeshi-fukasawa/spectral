@@ -59,6 +59,8 @@ x_max_cell,x_min_cell,k,obj_val_table)
             else% merit_func_spec==1
                 merit_func=spec.merit_func;
                 merit_obj_k=obj_val_table(k+1,1);
+
+
                 if isempty(spec.other_input_merit_func)==1
                     merit_obj_k_plus_1=merit_func(x_k_plus_1_cell);
                 else
@@ -68,13 +70,16 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 obj_val_vec=merit_obj_k_plus_1;
 
                 merit_obj_k_plus_1=merit_obj_k_plus_1;
+
                 %%% Simple
-                eta_k=0.0001/((1+k)^2);
-                eta_k=1/((1+k)^2);%%%%
+                %eta_k=0.0001/((1+k)^2);
+                %eta_k=0.1/((1+k)^2);
+                eta_k=10/((1+k)^2);%%%%
+                eta_k=0.1/((1+k)^2);%%%%
                 
                 LHS=merit_obj_k_plus_1;
                 RHS=merit_obj_k+eta_k;
-                [LHS,RHS]
+                %[LHS,RHS]
                 continue_backtracking_dummy=(LHS>=RHS);
                 
                 if 1==0
@@ -114,7 +119,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 end
                 
                 %%%%%%%%
-                if spec.merit_func_spec==1 & iter_line_search==2 & k<=200
+                if spec.merit_func_spec==1 & iter_line_search==2
                     step_size(1)=0;%%%%%%
                     obj_val_vec=[];
                 end
