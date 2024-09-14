@@ -42,9 +42,10 @@ for k=0:floor(ITER_MAX/2)-1
        for i=1:n_var
            r_k{1,i}=fun_k_1_cell{1,i}-x_k_cell{1,i};
            DIST_k_1(1,i)=norm_func(r_k{1,i}(:),x_k_cell{1,i}(:),spec.norm_spec(i));
-           DIST_table(k*2+1,:)=DIST_k_1;
-
        end % for loop wrt i
+       
+       DIST_table(k*2+1,:)=DIST_k_1;
+
        if sum(DIST_k_1(1,:))<spec.TOL
             other_output_k_2=other_output_k_1;
             break;
