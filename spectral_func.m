@@ -5,6 +5,7 @@ function [x_sol_cell,other_output_k_plus_1,iter_info]=...
 %%% Written by Takeshi Fukasawa in May 2024.
 global H_k
 global x_k_cell x_k_minus_1_cell k
+global alpha_k
 
 n_var=size(x_0_cell,2);
 
@@ -116,6 +117,12 @@ for k=0:ITER_MAX-2
         Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
       end % loop wrt i
 
+
+      %%%%%%% temp %%%%%%%%%%%%
+      %[alpha_k,alpha_max]=compute_alpha_func(...
+      %  Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
+      %%%%%%%%%%%%%%%%%%%%%%%%%
+
       if spec.update_spec==0
           for i=1:n_var
               alpha_k{1,i}=1;
@@ -176,9 +183,12 @@ for k=0:ITER_MAX-2
 
     %%% Update variables %%%%%%%%%%%%%%%
     for i=1:n_var
-        %%alpha_k_i{1,i}=1;%%%%%%%%%%%
 
         d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
+        
+        %%%%%%%%%%%
+        %%d_k_cell{1,1}=fun_k_cell{1,1};%%%%%
+        %%%%%%%%%%%%%
 
         %%%if spec.minimization_spec(i)==1
         %%%    d_k_cell{1,i}=-d_k_cell{1,i};% Direction of descending

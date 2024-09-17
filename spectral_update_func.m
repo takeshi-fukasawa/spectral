@@ -6,6 +6,7 @@ spectral_update_func(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
+global alpha_k_original
 
     step_size=ones(1,n_var);
     alpha_k_original=alpha_k;
@@ -166,6 +167,10 @@ x_max_cell,x_min_cell,k,obj_val_table)
                  fun_k_plus_1_cell{1,i}=fun_k_plus_1_cell{1,i}-x_k_plus_1_cell{1,i};
              end
         end
+
+        %%%%% temp; m==1 case only %%%%%
+        %%fun_k_plus_1_cell{1,1}=fun_k_plus_1_cell{1,1}./(alpha_k_original{1,1}-1);
+        %%%%%
  
         %%% DIST: sup norm of F(x)=x-Phi(x). 
         DIST_vec=ones(1,n_var);
