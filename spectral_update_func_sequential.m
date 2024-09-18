@@ -12,7 +12,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
     merit_func=spec.merit_func;
 
     %%% Update variables in the spectral algorithm %%%%%%%%%%%%%%%
-    for iter_line_search=1:spec.ITER_MAX_LINE_SEARCH
+    for iter_line_search=1:2
      
         %%%%%%%%%%%%%%%%%%
         if spec.merit_func_spec==1 & iter_line_search==2%%%%%%

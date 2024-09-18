@@ -9,7 +9,7 @@ function continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_
      obj_val_PAST_MAX=max(obj_val_table_sum(max(1,k+1-M+1):k+1,:));
      eta_k=sqrt(obj_val_table_sum(1,:))/((1+k)^2);
     
-     eta_k=(obj_val_table_sum(1,:))/((1+k)^2);%%%%
+     eta_k=1*(obj_val_table_sum(1,:))/((1+k)^2);%%%%
     
      RHS=obj_val_PAST_MAX+eta_k-(gamma*step_size^2)*(obj_val_table_sum(k+1,:));
 
