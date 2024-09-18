@@ -10,6 +10,8 @@ global alpha_k_original
 
     step_size=ones(1,n_var);
     alpha_k_original=alpha_k;
+    obj_val_vec=[];
+    merit_func=spec.merit_func;
 
     %%% Update variables in the spectral algorithm %%%%%%%%%%%%%%%
     for iter_line_search=1:spec.ITER_MAX_LINE_SEARCH
@@ -31,7 +33,6 @@ global alpha_k_original
 
         if spec.line_search_spec==1
 
-                merit_func=spec.merit_func;
                 merit_obj_k=obj_val_table(k+1,1);
 
 
@@ -53,7 +54,7 @@ global alpha_k_original
                 %eta_k=0.0001/((1+k)^2);
                 %eta_k=0.1/((1+k)^2);
                 eta_k=10/((1+k)^2);%%%%
-                %eta_k=0.1/((1+k)^2);%%%%
+                eta_k=1000/((1+k)^2);%%%%
                 
                 LHS=merit_obj_k_plus_1;
                 RHS=merit_obj_k+eta_k;
@@ -93,14 +94,35 @@ global alpha_k_original
     end
 
 %%%%%%%%%%%%%
-        
+    if 1==0
+        x_k_plus_1_cell_temp=x_k_plus_1_cell;
 
-            x_k_plus_1_cell{1,1}=x_k_cell{1,1}+step_size(1)*d_k_cell{1,1};
-            x_k_plus_1_cell{1,2}=x_k_cell{1,2};
-            x_k_plus_1_cell{1,3}=x_k_cell{1,3};
+        x_k_plus_1_cell{1,1}=x_k_cell{1,1}+d_k_cell{1,1}./alpha_k{1,1};
+        
+        x_k_plus_1_cell{1,2}=x_k_cell{1,2};
+        x_k_plus_1_cell{1,3}=x_k_cell{1,3};
         other_input_cell{end-1}=2;%%% Compute x_updated, dx_dparam_updated, using param_updated and x_initial,dx_dparam_initial
-        [x_k_plus_1_cell,other_output_k_plus_1]=...
+        [x_k_plus_1_cell,~]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});
+
+        %%alpha_k{1,1}=1;%%%%
+        x_k_plus_1_cell{1,1}=alpha_k{1,1}*x_k_plus_1_cell{1,1}+...
+            (1-alpha_k{1,1})*x_k_cell{1,1};
+
+        %%alpha_k{1,2}=1;alpha_k{1,3}=1;%%%%
+        x_k_plus_1_cell{1,2}=alpha_k{1,2}*x_k_plus_1_cell{1,2}+...
+            (1-alpha_k{1,2})*x_k_cell{1,2};
+        x_k_plus_1_cell{1,3}=alpha_k{1,3}*x_k_plus_1_cell{1,3}+...
+                (1-alpha_k{1,3})*x_k_cell{1,3};   
+
+        %x_k_plus_1_cell=x_k_plus_1_cell_temp;%%%%
+        %x_k_plus_1_cell{1,1}=x_k_plus_1_cell_temp{1,1};%%%%
+
+        %x_k_plus_1_cell{1,2}=x_k_plus_1_cell_temp{1,2};%%%%
+        %x_k_plus_1_cell{1,3}=x_k_plus_1_cell_temp{1,3};%%%%
+        
+        
+    end
   
 
         

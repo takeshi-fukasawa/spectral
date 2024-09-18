@@ -136,7 +136,7 @@ if isfield(spec,'other_input_merit_func')==0
     spec.other_input_merit_func=[];
 end
 
-if isfield(spec,'merit_func')==0 | spec.line_search_spec==0
+if isfield(spec,'merit_func')==0 %| spec.line_search_spec==0
     spec.merit_func=[];
     spec.merit_func_spec=0;
 else
