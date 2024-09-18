@@ -73,7 +73,7 @@ for k=0:floor(ITER_MAX/2)-1
           end
        else
         [alpha_k,alpha_max]=compute_alpha_func(...
-         r_k,v_k,spec,k,DIST_table(k*2+1,:));
+         r_k,v_k,spec,k);
         end
 
       for i=1:n_var

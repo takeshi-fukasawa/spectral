@@ -118,24 +118,19 @@ for k=0:ITER_MAX-2
       end % loop wrt i
 
 
-      %%%%%%% temp %%%%%%%%%%%%
-      %[alpha_k,alpha_max]=compute_alpha_func(...
-      %  Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
-      %%%%%%%%%%%%%%%%%%%%%%%%%
-
       if spec.update_spec==0
           for i=1:n_var
               alpha_k{1,i}=1;
           end
       elseif spec.BFGS_spec==0
         [alpha_k,alpha_max]=compute_alpha_func(...
-         Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
+         Delta_x_cell,Delta_fun_cell,spec,k);
          spec.alpha_max=alpha_max;
 
         elseif spec.BFGS_spec==1
 
         [alpha_k,alpha_max]=compute_alpha_func(...
-                Delta_x_cell,Delta_fun_cell,spec,k,DIST_table(k+1,:));
+                Delta_x_cell,Delta_fun_cell,spec,k);
                 spec.alpha_max=alpha_max;
             
             alpha_k{1,1}=1;

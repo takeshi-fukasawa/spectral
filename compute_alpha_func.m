@@ -1,5 +1,5 @@
 function [alpha_k,alpha_max]=compute_alpha_func(...
-    Delta_x_cell,Delta_fun_cell,spec,k,norm_fun_k)
+    Delta_x_cell,Delta_fun_cell,spec,k)
     
     n_var=size(Delta_x_cell,2);
     
