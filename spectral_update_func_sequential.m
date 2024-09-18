@@ -52,7 +52,7 @@ global alpha_k_original
 
                 %%% Simple
                 %eta_k=0.0001/((1+k)^2);
-                eta_k=0.1/((1+k)^2);
+                eta_k=0.01/((1+k)^2);
                 %eta_k=10/((1+k)^2);%%%%
                 %eta_k=1000/((1+k)^2);%%%%
                 
