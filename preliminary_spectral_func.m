@@ -12,8 +12,8 @@ if isfield(spec,'fixed_point_iter_spec')==0
     spec.fixed_point_iter_spec=1;%%%%%
 end
 
-if isfield(spec,'BFGS_spec')==0
-    spec.BFGS_spec=0;%%%%%
+if isfield(spec,'Broyden_spec')==0
+    spec.Broyden_spec=0;%%%%%
 end
 
 

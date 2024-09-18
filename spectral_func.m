@@ -3,13 +3,12 @@ function [x_sol_cell,other_output_k_plus_1,iter_info]=...
     x_0_cell,varargin)
 
 %%% Written by Takeshi Fukasawa in May 2024.
-global H_k
 global x_k_cell x_k_minus_1_cell k
-global alpha_k
+global alpha_k A_k
 
 n_var=size(x_0_cell,2);
 
-H_k=[];
+A_k=[];
 
 spec=preliminary_spectral_func(spec,n_var);
 
@@ -122,12 +121,12 @@ for k=0:ITER_MAX-2
           for i=1:n_var
               alpha_k{1,i}=1;
           end
-      elseif spec.BFGS_spec==0
+      elseif spec.Broyden_spec==0
         [alpha_k,alpha_max]=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,spec,k);
          spec.alpha_max=alpha_max;
 
-        elseif spec.BFGS_spec==1
+      elseif spec.Broyden_spec==1
 
         [alpha_k,alpha_max]=compute_alpha_func(...
                 Delta_x_cell,Delta_fun_cell,spec,k);
@@ -138,23 +137,21 @@ for k=0:ITER_MAX-2
             s=Delta_x_cell{1,1}(:);
    
             if sum(abs(s))==0 
-               H_k=H_k_minus_1;
+               A_k=A_k_minus_1;
             else
                y=Delta_fun_cell{1,1}(:);
                
-               if spec.fixed_point_iter_spec==1
-                   y=y.*(-1);%%%####
-               end
+               %%if spec.fixed_point_iter_spec==1
+               %    y=y.*(-1);%%%####
+               %end
    
-               I=eye(size(s,1));
-               syp=s*y';
-               spy=s'*y;% scalar
-               ysp=y*s';
-               ssp=s*s';
+               denom=s'*A_k_minus_1*y;
+               numer_temp=s-A_k_minus_1*y;
+               numer=numer_temp*s'*A_k_minus_1;
    
-               H_k=(I-syp./spy)*H_k_minus_1*(I-ysp./spy)+ssp./spy;
+               A_k=A_k_minus_1+numer./denom;
            end
-        end   
+        end  %spec.Broyden_spec==1 
 
       %alpha_k{1,1}=1;%%%%%%
 
@@ -167,8 +164,8 @@ for k=0:ITER_MAX-2
         alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
        end
 
-      if spec.BFGS_spec==1
-        H_k=eye(size(fun_k_cell{1,1}(:),1));
+      if spec.Broyden_spec==1
+        A_k=eye(size(fun_k_cell{1,1}(:),1));
       end
 
      end% for loop wrt i
@@ -176,27 +173,19 @@ for k=0:ITER_MAX-2
      
    end
 
+   if spec.Broyden_spec==1
+        alpha_k{1,1}=1;
+    end%%%%%%
+
     %%% Update variables %%%%%%%%%%%%%%%
     for i=1:n_var
 
+
         d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
         
-        %%%%%%%%%%%
-        %%d_k_cell{1,1}=fun_k_cell{1,1};%%%%%
-        %%%%%%%%%%%%%
-
-        %%%if spec.minimization_spec(i)==1
-        %%%    d_k_cell{1,i}=-d_k_cell{1,i};% Direction of descending
-        %%%end
-
         
-        if spec.BFGS_spec==1 & k>=2 & i==1
-
-            if alpha_k{1}==0
-                H_k=eye(size(d_k_cell{1,i}(:),1));
-            end
-
-            d_k_cell{1,1}=-H_k*d_k_cell{1,1}(:);
+        if spec.Broyden_spec==1 & k>=2 & i==1
+            d_k_cell{1,1}=-A_k*d_k_cell{1,1}(:);
         end
 
     end % for loop wrt i
@@ -206,14 +195,15 @@ for k=0:ITER_MAX-2
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
     other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
     obj_val_vec,step_size]=...
-        spectral_update_func(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
+        spectral_update_func(fun,x_k_cell,fun_k_cell,alpha_k,d_k_cell,other_input_cell,...
         n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
     else
         [x_k_plus_1_cell, fun_k_plus_1_cell,...
             other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
             obj_val_vec,step_size]=...
-                spectral_update_func_sequential(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
+                spectral_update_func_sequential(fun,x_k_cell,fun_k_cell,alpha_k,d_k_cell,other_input_cell,...
                 n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
+
     end
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
@@ -262,10 +252,10 @@ for k=0:ITER_MAX-2
 	x_k_cell=x_k_plus_1_cell;
     fun_k_cell=fun_k_plus_1_cell;
    
-    if spec.BFGS_spec==1
-        H_k_minus_1=H_k;
+    if spec.Broyden_spec==1
+        A_k_minus_1=A_k;
  
-        if isnan(sum(H_k_minus_1(:)))==1
+        if isnan(sum(A_k_minus_1(:)))==1
              temp=0;
              temp2=0;
         end

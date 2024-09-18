@@ -16,16 +16,16 @@ for k=0:ITER_MAX-2
               alpha_k{1,i}=1;
           end
 
-      elseif spec.BFGS_spec==0
+      elseif spec.Broyden_spec==0
         [alpha_k,alpha_max]=compute_alpha_func(...
          Delta_x_cell,Delta_fun_cell,spec,k);
          spec.alpha_max=alpha_max;
 
-      elseif spec.BFGS_spec==1
+      elseif spec.Broyden_spec==1
          s=Delta_x_cell{1,1}(:);
 
          if sum(abs(s(:)))==0 & spec.dampening_param{1,1}>0
-            H_k=H_k_minus_1;
+            A_k=A_k_minus_1;
          else
             y=Delta_fun_cell{1,1}(:);
 
@@ -35,7 +35,7 @@ for k=0:ITER_MAX-2
             ysp=y*s';
             ssp=s*s';
 
-            H_k=(I-syp./spy)*H_k_minus_1*(I-ysp./spy)+ssp./spy;
+            A_k=(I-syp./spy)*A_k_minus_1*(I-ysp./spy)+ssp./spy;
         end
 
     
@@ -43,8 +43,8 @@ for k=0:ITER_MAX-2
 
   else % k==0
 
-      if spec.BFGS_spec==1
-         H_k=eye(size(fun_k_cell{1,1}(:),1));
+      if spec.Broyden_spec==1
+         A_k=eye(size(fun_k_cell{1,1}(:),1));
       end
    end
 
@@ -52,13 +52,13 @@ for k=0:ITER_MAX-2
    for i=1:n_var
         
 
-        if spec.BFGS_spec==1 & k>=2 & i==1
+        if spec.Broyden_spec==1 & k>=2 & i==1
 
             if alpha_k{1}==0
-                H_k=eye(size(d_k_cell{1,i}(:),1));
+                A_k=eye(size(d_k_cell{1,i}(:),1));
             end
 
-            d_k_cell{1,1}=H_k*d_k_cell{1,1}(:);
+            d_k_cell{1,1}=A_k*d_k_cell{1,1}(:);
         end
 
         alpha_table(k+1,i)=max(alpha_k{1,i}(:));
@@ -78,10 +78,10 @@ for k=0:ITER_MAX-2
     fun_k_cell=fun_k_plus_1_cell;
    
 
-    if spec.BFGS_spec==1
-       H_k_minus_1=H_k;
+    if spec.Broyden_spec==1
+       A_k_minus_1=A_k;
 
-       if isnan(sum(H_k_minus_1(:)))==1
+       if isnan(sum(A_k_minus_1(:)))==1
             temp=0;
             temp2=0;
        end

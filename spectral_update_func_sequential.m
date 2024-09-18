@@ -2,11 +2,12 @@
 function [x_k_plus_1_cell, fun_k_plus_1_cell,...
 other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
 obj_val_vec,step_size]=...
-spectral_update_func_sequential(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
+spectral_update_func_sequential(fun,x_k_cell,fun_k_cell,alpha_k,d_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
 global alpha_k_original
+
 
     step_size=ones(1,n_var);
     alpha_k_original=alpha_k;
@@ -18,7 +19,7 @@ global alpha_k_original
      
         %%%%%%%%%%%%%%%%%%
         if spec.merit_func_spec==1 & iter_line_search==2%%%%%%
-            d_k_cell{1,1}=d_k_cell{1,1}./alpha_k{1,1};
+            d_k_cell{1,1}=fun_k_cell{1,1};
             alpha_k{1,1}=1;%%%%%%
         end%%%%%
         %%%%%%%%%%%%%%%%%%
@@ -136,5 +137,6 @@ global alpha_k_original
         end
 
 %%%%%%%%%%%%%%%%%
+
 
 end
