@@ -6,11 +6,8 @@ spectral_update_func_sequential(fun,x_k_cell,fun_k_cell,alpha_k,d_k_cell,other_i
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
-global alpha_k_original
-
 
     step_size=ones(1,n_var);
-    alpha_k_original=alpha_k;
     obj_val_vec=[];
     merit_func=spec.merit_func;
 
@@ -55,7 +52,7 @@ global alpha_k_original
                 %eta_k=0.0001/((1+k)^2);
                 eta_k=0.01/((1+k)^2);
                 %eta_k=10/((1+k)^2);%%%%
-                %eta_k=1000/((1+k)^2);%%%%
+                eta_k=1000/((1+k)^2);%%%%
                 
                 LHS=merit_obj_k_plus_1;
                 RHS=merit_obj_k+eta_k;
@@ -89,8 +86,6 @@ global alpha_k_original
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
 
     for i=1:n_var
-        %alpha_k{1,1}
-        %alpha_vec(1,i)=max(alpha_k_original{i}(:)); 
         alpha_vec(1,i)=max(alpha_k{1,i}(:)); 
     end
 
