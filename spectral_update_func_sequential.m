@@ -2,7 +2,7 @@
 function [x_k_plus_1_cell, fun_k_plus_1_cell,...
 other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
 obj_val_vec,step_size]=...
-spectral_update_func(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
+spectral_update_func_sequential(fun,x_k_cell,alpha_k,d_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
@@ -93,27 +93,30 @@ global alpha_k_original
     end
 
 %%%%%%%%%%%%%
-     if spec.merit_func_spec==1
         
-       for i=1:n_var
-            x_k_plus_1_cell{1,i}=x_k_cell{1,i}+step_size(i)*d_k_cell{1,i};
-        end % for loop wrt i
 
+            x_k_plus_1_cell{1,1}=x_k_cell{1,1}+step_size(1)*d_k_cell{1,1};
+            x_k_plus_1_cell{1,2}=x_k_cell{1,2};
+            x_k_plus_1_cell{1,3}=x_k_cell{1,3};
+        other_input_cell{end-1}=2;%%% Compute x_updated, dx_dparam_updated, using param_updated and x_initial,dx_dparam_initial
+        [x_k_plus_1_cell,other_output_k_plus_1]=...
+           fun(x_k_plus_1_cell{:},other_input_cell{:});
+  
+
+        
         if spec.bound_spec==1
             x_k_plus_1_cell=projection_func(x_k_plus_1_cell,x_max_cell,x_min_cell);
         end
         
-        other_input_cell{end-1}=0;%%% Compute x_updated, dx_dparam_updated, using param_updated
-        [fun_k_plus_1_cell,other_output_k_plus_1]=...
+        other_input_cell{end-1}=0;% Compute param_updated,x_updated,dx_dparam_updated
+        [x_k_plus_2_cell,other_output_k_plus_1]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});
        
 
 
-        if spec.fixed_point_iter_spec==1
              for i=1:n_var
-                 fun_k_plus_1_cell{1,i}=fun_k_plus_1_cell{1,i}-x_k_plus_1_cell{1,i};
+                 fun_k_plus_1_cell{1,i}=x_k_plus_2_cell{1,i}-x_k_plus_1_cell{1,i};
              end
-        end
 
 
         %%% DIST: sup norm of F(x)=x-Phi(x). 
@@ -131,7 +134,6 @@ global alpha_k_original
             end
         end
 
-    end
 %%%%%%%%%%%%%%%%%
 
 end
