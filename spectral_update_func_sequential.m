@@ -52,9 +52,9 @@ global alpha_k_original
 
                 %%% Simple
                 %eta_k=0.0001/((1+k)^2);
-                %eta_k=0.1/((1+k)^2);
-                eta_k=10/((1+k)^2);%%%%
-                eta_k=1000/((1+k)^2);%%%%
+                eta_k=0.1/((1+k)^2);
+                %eta_k=10/((1+k)^2);%%%%
+                %eta_k=1000/((1+k)^2);%%%%
                 
                 LHS=merit_obj_k_plus_1;
                 RHS=merit_obj_k+eta_k;
@@ -93,28 +93,14 @@ global alpha_k_original
         alpha_vec(1,i)=max(alpha_k{1,i}(:)); 
     end
 
-%%%%%%%%%%%%%
-    if 1==1
-        %x_k_plus_1_cell{1,1}=x_k_cell{1,1}+step_size(1)*d_k_cell{1,1};
-        x_k_plus_1_cell{1,1}=x_k_cell{1,1}+1*d_k_cell{1,1}./alpha_k_original{1,1};
-        
+
+    if step_size(1)==0% If no update of parameters, update x and dx_dparam using the parameters
+        x_k_plus_1_cell{1,1}=x_k_cell{1,1};
         x_k_plus_1_cell{1,2}=x_k_cell{1,2};
         x_k_plus_1_cell{1,3}=x_k_cell{1,3};
         other_input_cell{end-1}=2;%%% Compute x_updated, dx_dparam_updated, using param_updated and x_initial,dx_dparam_initial
-        [x_k_plus_1_cell,other_output_k_plus_1]=...
+        [x_k_plus_1_cell,~]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});
-
-        %%x_k_cell{1,1}-x_k_plus_1_cell{1,1}%%%%
-
-        %%alpha_k{1,1}=1;%%%%
-        x_k_plus_1_cell{1,1}=alpha_k{1,1}*x_k_plus_1_cell{1,1}+...
-            (1-alpha_k{1,1})*x_k_cell{1,1};
-
-        %%alpha_k{1,2}=1;alpha_k{1,3}=1;%%%%
-        x_k_plus_1_cell{1,2}=alpha_k{1,2}*x_k_plus_1_cell{1,2}+...
-            (1-alpha_k{1,2})*x_k_cell{1,2};
-        x_k_plus_1_cell{1,3}=alpha_k{1,3}*x_k_plus_1_cell{1,3}+...
-                (1-alpha_k{1,3})*x_k_cell{1,3};   
     end
   
 
