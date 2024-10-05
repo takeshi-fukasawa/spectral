@@ -35,9 +35,10 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
 
                 x_k_plus_1_cell_temp=x_k_plus_1_cell;
-                x_k_plus_1_cell_temp{1,2}=x_k_cell{1,2};
-                x_k_plus_1_cell_temp{1,3}=x_k_cell{1,3};
-                
+                for m=2:n_var
+                    x_k_plus_1_cell_temp{1,m}=x_k_cell{1,m};
+                end
+
                 if isempty(spec.other_input_merit_func)==1
                     merit_obj_k_plus_1=merit_func(x_k_plus_1_cell_temp);
                 else
@@ -91,9 +92,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
 
     if step_size(1)==0% If no update of parameters, update x and dx_dparam using the parameters
-        x_k_plus_1_cell{1,1}=x_k_cell{1,1};
-        x_k_plus_1_cell{1,2}=x_k_cell{1,2};
-        x_k_plus_1_cell{1,3}=x_k_cell{1,3};
+        x_k_plus_1_cell=x_k_cell;
         other_input_cell{end-1}=2;%%% Compute x_updated, dx_dparam_updated, using param_updated and x_initial,dx_dparam_initial
         [x_k_plus_1_cell,~]=...
            fun(x_k_plus_1_cell{:},other_input_cell{:});

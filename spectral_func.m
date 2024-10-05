@@ -178,6 +178,12 @@ for k=0:ITER_MAX-2
     end%%%%%%
 
     %%% Update variables %%%%%%%%%%%%%%%
+    if spec.merit_func_spec==1%%%%%
+        %alpha_k{1,1}=1;
+        %alpha_k{1,2}=1;
+        %alpha_k{1,3}=1;
+    end
+
     for i=1:n_var
 
 
@@ -296,7 +302,6 @@ iter_info.step_size_table=step_size_table;
 iter_info.spec=spec;
 
 else % spec.SQUAREM_spec==1
-
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
     SQUAREM_func(fun,spec,x_0_cell,other_input_cell{:});
 end
