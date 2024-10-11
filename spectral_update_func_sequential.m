@@ -60,7 +60,25 @@ x_max_cell,x_min_cell,k,obj_val_table)
                 %[LHS,RHS]
                 continue_backtracking_dummy=(LHS>=RHS);
 
-            rho=spec.rho;
+                %%%%%%%%%%%%%%%%%%
+                if 1==1
+                    %%% Update parameters only when x,y mostly converge
+                    DIST_x=zeros(1,n_var-1);
+                    for n=2:n_var
+                        DIST_x(1,n-1)=max(fun_k_cell{n}(:));
+                    end
+                    TOL_x=1.0;
+                    if max(DIST_x)>TOL_x
+                        step_size(1)=0;
+                        DIST_x%%%
+                        break;
+                    else
+                        a="Update param"
+                    end
+                end
+                %%%%%%%%%%%%%%%%%%%
+
+                rho=spec.rho;
 
 
             if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
@@ -91,7 +109,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
     end
 
 
-    if step_size(1)==0% If no update of parameters, update x and dx_dparam using the parameters
+    if step_size(1)==0 % If no update of parameters, update x and dx_dparam using the parameters
         x_k_plus_1_cell=x_k_cell;
         other_input_cell{end-1}=2;%%% Compute x_updated, dx_dparam_updated, using param_updated and x_initial,dx_dparam_initial
         [x_k_plus_1_cell,~]=...

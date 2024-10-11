@@ -89,7 +89,7 @@ feval=1;
             obj_val_table(1,1)=merit_func(x_0_cell);
         else
             obj_val_table(1,1)=merit_func(x_0_cell,spec.other_input_merit_func);
-        end     
+        end
   else
        obj_val_table=NaN(ITER_MAX,n_var);
        obj_val_table(1,:)=DIST_vec.^2;% L2 norm
