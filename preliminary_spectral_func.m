@@ -91,13 +91,14 @@ for i=1:n_var
 end
 
 if isfield(spec,'positive_alpha_spec')==0
-    spec.positive_alpha_spec=1;%%%%%%
+    spec.positive_alpha_spec=0;%%%%%%
 end
 
 if spec.positive_alpha_spec==1
     if isfield(spec,'alpha_min')==0
         spec.alpha_min=1e-8; %% Restrict alpha to be positive
     end
+    spec.compute_alpha_spec=3;
 end
 
 if isfield(spec,'alpha_max')==0
@@ -120,10 +121,6 @@ end
 
 if isfield(spec,'rho')==0
     spec.rho=0.3;
-end
-
-if isfield(spec,'step_min')==0
-    spec.step_min=1e-8;
 end
 
 end % function

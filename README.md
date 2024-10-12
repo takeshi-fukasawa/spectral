@@ -93,8 +93,8 @@ If fixed_point_iter_spec==0, we solve for f(x)=0 by the spectral algorithm.
 
 * TOL (default: 1e-10; scalar or vector): Tolerance level of the convergence. 
 Suppose we want to solve a nonlinear equation $f(x_1,x_2)=0$.
-If we use sup norm, then, we assume that an iteration converges when $||f(x_1,x_2)||_{\infty}<$ TOL.   
-If TOL is a 1 by n_var dimensional vector, we assume that an iteration converges when $||f_{1}(x_1,x_2)||_{\infty}<$ TOL(1) and $||f_{2}(x_1,x_2)||_{\infty}<$ TOL(2) hold.
+If we use sup norm, then, we assume that an iteration converges when $||f(x_{1},x_{2})||_{\infty}<$ TOL.   
+If TOL is a 1 by n_var dimensional vector, we assume that an iteration converges when $||f_{1}(x_{1},x_{2})||_{\infty}<$ TOL(1) and $||f_{1}(x_{1},x_{2})||_{\infty}<$ TOL(2) hold.
 
 
 * ITER_MAX (default:1000): Maximum number of iterations
@@ -109,7 +109,9 @@ If SQUAREM_spec==0, we apply the spectral algorithm. If SQUAREM_spec==1, alterna
 
 * update_spec (default: []):  
 If update_spec==0, apply the standard fixed point iteration. If update_spec==[], apply the spectral algorithm. Here, the step size for each type of variable is a scalar. 
-If update_spec>=1, we introduce variable-dimension-specific step sizes for each type of variable. For instance, suppose we want to solve a fixed point problem f(x)=x, where x is a J by T array. If we expect that the properties of the arrays `x[:,t]` (t=1,..,T) are largely different across t (time), it might be useful to introduce time-specific step sizes. If we let spec.update_spec==2, the values of x is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)}  f(x^{(n)})$ in the spectral algorithm. Here, $\alpha^{(n)}$ is an 1 by T dimensional array. "2" implies that we introduce heterogeneity in the second dimension of the values of $\alpha^{(n)}$.
+
+* dim_hetero_alpha (default: [])
+If dim_hetero_alpha>=1, we introduce variable-dimension-specific step sizes for each type of variable. For instance, suppose we want to solve a fixed point problem f(x)=x, where x is a J by T array. If we expect that the properties of the arrays `x[:,t]` (t=1,..,T) are largely different across t (time), it might be useful to introduce time-specific step sizes. If we let spec.update_spec==2, the values of x is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)}  f(x^{(n)})$ in the spectral algorithm. Here, $\alpha^{(n)}$ is an 1 by T dimensional array. "2" implies that we introduce heterogeneity in the second dimension of the values of $\alpha^{(n)}$.
  For details, see also Section 5.3 of Fukasawa (2024).
 
 * dampening_param (default: []):  
@@ -147,7 +149,8 @@ If compute_alpha_spec==2, let $\alpha^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\
 If compute_alpha_spec==3, let $\alpha^{(n)}=\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.  
 If compute_alpha_spec==4, let $\alpha^{(n)}=sgn\left(s^{(n)\prime}y^{(n)}\right)\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.
 
-
+* positive_alpha_spec (default:0)
+If positive_alpha_spec==1, use positive alpha and step sizes. If $\alpha<0$, instead use 1E-8. If positive_alpha_spec==0, not restrict the sign of alpha and step sizes.
 
 * norm_spec (default: 0): Type of norm used for assessing the convergence of the iteration.
 If norm_spec==0, use sup norm. 
@@ -157,8 +160,11 @@ If norm_spec==10, use unit-free norm, defined by $f(x^{(n)})/x^{(n)}$, if we wan
 ## Globalization strategies (under construction)
 * line_search_spec (default: 0; under construction): If 1, introduce globalization strategies, developed by La Cruz et al. (2006).
 If 0, not introduce globalization strategies.  
-* ITER_MAX_LINE_SEARCH (default: 10; under construction): Maximum number of iterations in each globalization step
+* ITER_MAX_LINE_SEARCH (default: 10; under construction): Maximum number of iterations in each globalization step  
 
+* M (default: 10; under construction)
+
+* gamma (default: 0.3; under construction) 
 
 ## References
 * Barzilai, J., & Borwein, J. M. (1988). Two-point step size gradient methods. IMA journal of numerical analysis, 8(1), 141-148.
