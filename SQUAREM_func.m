@@ -5,7 +5,10 @@ function [x_sol_cell,other_output_k_2,iter_info]=...
 %%% Written by Takeshi Fukasawa in May 2024.
 
 n_var=size(x_0_cell,2);
-run preliminary_spectral.m
+
+spec=preliminary_spectral_func(spec,n_var);
+
+ITER_MAX=spec.ITER_MAX;
 
 %%spec.compute_alpha_spec=1;
 
@@ -39,10 +42,11 @@ for k=0:floor(ITER_MAX/2)-1
        for i=1:n_var
            r_k{1,i}=fun_k_1_cell{1,i}-x_k_cell{1,i};
            DIST_k_1(1,i)=norm_func(r_k{1,i}(:),x_k_cell{1,i}(:),spec.norm_spec(i));
-           DIST_table(k*2+1,:)=DIST_k_1;
-
        end % for loop wrt i
-       if sum(DIST_k_1(1,:))<TOL
+       
+       DIST_table(k*2+1,:)=DIST_k_1;
+
+       if sum(DIST_k_1(1,:))<spec.TOL
             other_output_k_2=other_output_k_1;
             break;
        end % if statement
@@ -58,7 +62,7 @@ for k=0:floor(ITER_MAX/2)-1
            DIST_k_2(1,i)=norm_func(difference(:),fun_k_1_cell{1,i}(:),spec.norm_spec(i));
            
        end % for loop wrt i
-       if sum(DIST_k_2(1,:))<TOL
+       if sum(DIST_k_2(1,:))<spec.TOL
            x_k_plus_1_cell=fun_k_2_cell;
            break;
        end % if statement
@@ -69,7 +73,7 @@ for k=0:floor(ITER_MAX/2)-1
           end
        else
         [alpha_k,alpha_max]=compute_alpha_func(...
-         r_k,v_k,spec,k,DIST_table(k*2+1,:));
+         r_k,v_k,spec,k);
         end
 
       for i=1:n_var
@@ -97,11 +101,11 @@ for k=0:floor(ITER_MAX/2)-1
     end
    
    interval=10;
-    if k-floor(k/interval)*interval==0&DEBUG==1
+    if k-floor(k/interval)*interval==0&spec.DEBUG==1
         DIST_k_2
     end
 
-    if DIST<TOL
+    if DIST<spec.TOL
         %DIST
         FLAG_ERROR=0;
         break;
