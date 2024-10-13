@@ -38,9 +38,10 @@ fun_k_past_mat=NaN(sum(elem_x),ITER_MAX);
 x_k_cell=x_0_cell;
 
 FLAG_ERROR=0;
-m=1;%%%%%
+m=6;%%%%%
 
 for k=0:ITER_MAX-1
+
     [fun_k_cell,other_output_k]=...
        fun_fp(x_k_cell{:},other_input_cell{:});
 
@@ -59,7 +60,7 @@ for k=0:ITER_MAX-1
         weight=1e-10;
         
         if 1==0
-            %%% OLS spec 1
+            %%% Least Square spec 1
             X=Y-resid_past_mat(:,k-m_k+1:k);%[]*k
             X=X./max(max(abs(X)),1);
     
@@ -68,12 +69,31 @@ for k=0:ITER_MAX-1
             alpha_vec=[alpha;1-sum(alpha)];
         else
 
-            %%% OLS spec 2
+            %%% Least Square spec 2
             X=diff(resid_past_mat(:,k-m_k+1:k+1),1,2);%[]*k
             X=X./max(max(abs(X)),1);
-            weight=1e-0;
-            gamma=(X'*X+weight*eye(size(X,2)))\(X'*Y);%k*1
-    
+
+            if isnan(sum(X(:)))==1
+                FLAG_ERROR=1;
+                break;
+            end
+
+            %%% Based on the computation of X'*X
+            %gamma=(X'*X+weight*eye(size(X,2)))\(X'*Y);%k*1
+            
+            %%% Based on QR factorization
+            [Q,R]=qr(X);
+            Q1=Q(:,1:size(X,2));
+            R1=R(1:size(X,2),:);
+            gamma=inv(R1)*Q1'*Y;
+
+            %%% Based on SVD
+            %[U,S,V] = svd(X);
+            %U1=U(:,1:size(X,2));
+            %S1=S(1:size(X,2),:);
+            %gamma=V*inv(S1)*(U1')*Y;
+
+
             alpha_vec=zeros(size(gamma,1)+1,1);
             for id=1:size(alpha_vec,1)
                 if id==1
