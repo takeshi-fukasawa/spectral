@@ -13,10 +13,9 @@ ITER_MAX=spec.ITER_MAX;
 %% Additional parameters
 m=5;%%%%%
 weight=0;
-type_I_Anderson_spec=0;
+type_I_Anderson_spec=1;%1
 %%%%%%%%%%%%%%%%
 
-t_Anderson=tic;
 
 % varargin:1*XXX
 
@@ -27,7 +26,7 @@ FLAG_ERROR=0;
 other_input_cell=varargin;
 
 
-DIST_table=NaN(ITER_MAX,n_var);
+DIST_table=NaN(ITER_MAX,1);
 
 for i=1:n_var
    elem_x(1,i)=prod(size(x_0_cell{i}));
@@ -35,7 +34,9 @@ end
 
 resid_past_mat=NaN(sum(elem_x),ITER_MAX);
 x_past_mat=NaN(sum(elem_x),ITER_MAX);
-fun_k_past_mat=NaN(sum(elem_x),ITER_MAX);
+fun_past_mat=NaN(sum(elem_x),ITER_MAX);
+
+t_Anderson=tic;
 
 
 
