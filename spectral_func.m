@@ -194,9 +194,13 @@ iter_info.norm_spec=spec.norm_spec;
 iter_info.step_size_table=step_size_table;
 iter_info.spec=spec;
 
-else % spec.SQUAREM_spec==1
+elseif spec.SQUAREM_spec==1
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
     SQUAREM_func(fun,spec,x_0_cell,other_input_cell{:});
+
+elseif spec.SQUAREM_spec==2
+    [x_sol_cell,other_output_k_plus_1,iter_info]=...
+    Anderson_func(fun,spec,x_0_cell,other_input_cell{:});
 end
 
 return
