@@ -40,6 +40,10 @@ x_k_cell=x_0_cell;
 FLAG_ERROR=0;
 m=6;%%%%%
 
+[fun_k_cell,other_output_k]=...
+       fun_fp(x_0_cell{:},other_input_cell{:});
+x_k_cell=x_0_cell;
+
 for k=0:ITER_MAX-1
 
     [fun_k_cell,other_output_k]=...
@@ -117,6 +121,22 @@ for k=0:ITER_MAX-1
             x_k_plus_1_cell{1,i}=reshape(x_k_plus_1(loc:loc+elem_x(1,i)-1),size(x_0_cell{i}));
             loc=loc+elem_x(1,i);
         end
+
+        if 1==0 % Stabilization ??
+            [fun_k_plus_1_cell,other_output_k]=...
+            fun_fp(x_k_plus_1_cell{:},other_input_cell{:});
+    
+            DIST_fp=0;DIST_Anderson=0;
+            for i=1:n_var
+                DIST_fp=DIST_fp+sum(fun_k_cell{i}(:)-x_k_cell{i}(:));
+                DIST_Anderson=DIST_Anderson+sum(fun_k_plus_1_cell{i}(:)-x_k_plus_1_cell{i}(:));
+            end
+    
+            if DIST_fp<DIST_Anderson
+                x_k_plus_1_cell=fun_k_cell;
+            end
+        end
+
 
            
         DIST=max(abs(resid_past_mat(:,k+1)));
