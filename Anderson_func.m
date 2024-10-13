@@ -38,7 +38,7 @@ fun_k_past_mat=NaN(sum(elem_x),ITER_MAX);
 x_k_cell=x_0_cell;
 
 FLAG_ERROR=0;
-m=6;%%%%%
+m=10;%%%%%
 
 [fun_k_cell,other_output_k]=...
        fun_fp(x_0_cell{:},other_input_cell{:});
@@ -83,13 +83,13 @@ for k=0:ITER_MAX-1
             end
 
             %%% Based on the computation of X'*X
-            %gamma=(X'*X+weight*eye(size(X,2)))\(X'*Z);%k*1
+            gamma=(X'*X+weight*eye(size(X,2)))\(X'*Z);%k*1
             
             %%% Based on QR factorization
-            [Q,R]=qr(X);
-            Q1=Q(:,1:size(X,2));
-            R1=R(1:size(X,2),:);
-            gamma=inv(R1)*Q1'*Z;
+            %[Q,R]=qr(X);
+            %Q1=Q(:,1:size(X,2));
+            %R1=R(1:size(X,2),:);
+            %gamma=inv(R1)*Q1'*Z;
 
             %%% Based on SVD
             %[U,S,V] = svd(X);
