@@ -189,6 +189,7 @@ iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.DIST_table=DIST_table;
+iter_info.type_I_Anderson_spec=type_I_Anderson_spec;
 
 
 end
