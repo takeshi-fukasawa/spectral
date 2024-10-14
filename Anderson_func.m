@@ -4,17 +4,27 @@ function [x_sol_cell,other_output_k,iter_info]=...
 
 %%% Written by Takeshi Fukasawa in May 2024.
 
+warning('off','all')
+
 n_var=size(x_0_cell,2);
 
 spec=preliminary_spectral_func(spec,n_var);
 
 ITER_MAX=spec.ITER_MAX;
 
-%% Additional parameters
-m=5;%%%%%
-weight=0;
-type_I_Anderson_spec=1;%1
-%%%%%%%%%%%%%%%%
+if isfield(spec,'m_Anderson')==0
+    spec.m=5;
+else
+    spec.m=spec.m_Anderson;
+end
+
+if isfield(spec,'type_Anderson')==0
+    spec.type_Anderson=1;% Type I Anderson
+end
+
+m=spec.m;
+type_Anderson=spec.type_Anderson;
+
 
 
 % varargin:1*XXX
@@ -32,10 +42,6 @@ for i=1:n_var
    elem_x(1,i)=prod(size(x_0_cell{i}));
 end
 
-resid_past_mat=NaN(sum(elem_x),ITER_MAX);
-x_past_mat=NaN(sum(elem_x),ITER_MAX);
-fun_past_mat=NaN(sum(elem_x),ITER_MAX);
-
 t_Anderson=tic;
 
 
@@ -45,8 +51,6 @@ x_k_cell=x_0_cell;
 
 FLAG_ERROR=0;
 
-[fun_k_cell,other_output_k]=...
-       fun_fp(x_0_cell{:},other_input_cell{:});
 x_k_cell=x_0_cell;
 
 for k=0:ITER_MAX-1
@@ -54,48 +58,52 @@ for k=0:ITER_MAX-1
     [fun_k_cell,other_output_k]=...
        fun_fp(x_k_cell{:},other_input_cell{:});
 
-    loc=1;
-    for i=1:n_var
-        resid_past_mat(loc:loc+elem_x(1,i)-1,k+1)=fun_k_cell{i}(:)-x_k_cell{i}(:);
-        x_past_mat(loc:loc+elem_x(1,i)-1,k+1)=x_k_cell{i}(:);
-        fun_past_mat(loc:loc+elem_x(1,i)-1,k+1)=fun_k_cell{i}(:);
-        loc=loc+elem_x(1,i);
-    end
+   fun_k_vec=fun_k_cell{1}(:);
+   x_k_vec=x_k_cell{1}(:);
+   
+   if n_var>=2
+       for i=2:n_var
+            fun_k_vec=[fun_k_vec;fun_k_cell{i}(:)];
+            x_k_vec=[x_k_vec;x_k_cell{i}(:)];
+       end
+   end    
+   resid_k_vec=fun_k_vec-x_k_vec;
+
+   if k==0
+      resid_past_mat=resid_k_vec;
+      fun_past_mat=fun_k_vec;
+      x_past_mat=x_k_vec;
+   else
+     resid_past_mat=[resid_past_mat,resid_k_vec];%[]*(k+1)
+     x_past_mat=[x_past_mat,x_k_vec];
+     fun_past_mat=[fun_past_mat,fun_k_vec];
+   end 
 
     if k>=1
         m_k=min(m,k);
 
         Z=resid_past_mat(:,k+1);%[]*1
         
-        if 1==0
-            %%% Least Square spec 1
-            DF=Z-resid_past_mat(:,k-m_k+1:k);%[]*k
-            %DF=DF./max(max(abs(DF)),1);
-    
-            alpha=(DF'*DF+weight*eye(size(DF,2)))\(DF'*Z);%k*1
-    
-            alpha_vec=[alpha;1-sum(alpha)];
-        else
 
-            %%% Least Square spec 2
-            DF=diff(resid_past_mat(:,k-m_k+1:k+1),1,2);%[]*k
-            %%DF=DF./max(max(abs(DF)),1);
+
+        DF=diff(resid_past_mat(:,k-m_k+1:k+1),1,2);%[]*k
+        %%DF=DF./max(max(abs(DF)),1);
 
             if isnan(sum(DF(:)))==1
                 FLAG_ERROR=1;
                 break;
             end
 
-            if type_I_Anderson_spec==1
+            if type_Anderson==1
                 %%% Type I Anderson (Corresponding to Good Broyden update)%%% 
                 DX=diff(x_past_mat(:,k-m_k+1:k+1),1,2);%[]*k
                 %DX=DX./max(max(abs(DX(:))),1);%%%
                 gamma=(DX'*DF)\(DX'*Z);
             
-            else
+            else % type_Anderson==2
                 %%% Type II Anderson (Corresponding to Good Broyden update)
                 %%% Based on the computation of DF'*DF
-                gamma=(DF'*DF+weight*eye(size(DF,2)))\(DF'*Z);%k*1
+                gamma=(DF'*DF)\(DF'*Z);%k*1
                 
 
                 %%% Based on QR factorization (Slow??)
@@ -122,13 +130,16 @@ for k=0:ITER_MAX-1
                     alpha_vec(id)=1-gamma(id-1);
                 end
             end
-        end % OLS spec
 
 
         beta_val=1;
-        x_k_plus_1=beta_val*fun_past_mat(:,k-m_k+1:k+1)*alpha_vec+...
-            (1-beta_val)*x_past_mat(k-m_k+1:k+1)*alpha_vec;%[]*1
-        %x_k_plus_1=fun_past_mat(:,k);
+       if beta_val==1
+            x_k_plus_1=fun_past_mat(:,k-m_k+1:k+1)*alpha_vec;%[]*1
+       else
+            x_k_plus_1=beta_val*fun_past_mat(:,k-m_k+1:k+1)*alpha_vec+...
+                (1-beta_val)*x_past_mat(k-m_k+1:k+1)*alpha_vec;%[]*1
+       end
+       %x_k_plus_1=fun_past_mat(:,k);
 
         loc=1;
         for i=1:n_var
@@ -190,7 +201,7 @@ iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.DIST_table=DIST_table;
-iter_info.type_I_Anderson_spec=type_I_Anderson_spec;
+iter_info.type_Anderson=type_Anderson;
 
 
 end
