@@ -211,7 +211,7 @@ elseif spec.SQUAREM_spec==3
          for i=2:n_var
              x0=[x0;x_0_cell{i}(:)];
          end
-     end
+     end  
      algorithm="aa2";
      param=[];
      
@@ -225,7 +225,7 @@ function x_updated=F(x)
     for ii=1:n_var
         x_cell{1,ii}=reshape(x(loc:loc+elem_x(1,ii)-1),size(x_0_cell{1,ii}));
         loc=loc+elem_x(1,ii);
-    end
+    endx
 
     x_updated_cell=fun(x_cell,other_input_cell{:});
     

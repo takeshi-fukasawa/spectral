@@ -47,7 +47,6 @@ t_Anderson=tic;
 
 
 %%%%%%%% Loop %%%%%%%%%%%
-x_k_cell=x_0_cell;
 
 FLAG_ERROR=0;
 
@@ -58,15 +57,8 @@ for k=0:ITER_MAX-1
     [fun_k_cell,other_output_k]=...
        fun_fp(x_k_cell{:},other_input_cell{:});
 
-   fun_k_vec=fun_k_cell{1}(:);
-   x_k_vec=x_k_cell{1}(:);
-   
-   if n_var>=2
-       for i=2:n_var
-            fun_k_vec=[fun_k_vec;fun_k_cell{i}(:)];
-            x_k_vec=[x_k_vec;x_k_cell{i}(:)];
-       end
-   end    
+   fun_k_vec=cell_to_vec_func(fun_k_cell);
+   x_k_vec=cell_to_vec_func(x_k_cell);
    resid_k_vec=fun_k_vec-x_k_vec;
 
    if k==0
@@ -141,11 +133,7 @@ for k=0:ITER_MAX-1
        end
        %x_k_plus_1=fun_past_mat(:,k);
 
-        loc=1;
-        for i=1:n_var
-            x_k_plus_1_cell{1,i}=reshape(x_k_plus_1(loc:loc+elem_x(1,i)-1),size(x_0_cell{i}));
-            loc=loc+elem_x(1,i);
-        end
+       x_k_plus_1_cell=vec_to_cell_func(x_k_plus_1,elem_x,x_0_cell);
 
         if 1==0 % Stabilization ??
             [fun_k_plus_1_cell,other_output_k]=...
