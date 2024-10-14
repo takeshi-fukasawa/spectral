@@ -1,12 +1,22 @@
 function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, varargin)
 
+    param.mem_size = 5;
+    param.itermax = 200; 
+    param.theta = 0.01;
+    param.tau = 0.001;
+    param.D = 1e6;
+    param.epsilon = 1e-6;
+
+
     algorithm=varargin{1};
 
+    n_var=size(x_0_cell,2);
     for i=1:n_var
         elem_x(1,i)=prod(size(x_0_cell{i}));
-     end
+    end
 
-     x0=cell_to_vec_func(x_0_cell);
+    
+    x0=cell_to_vec_func(x_0_cell);
 
 
     %%% acceleration algorithm iterations
@@ -30,7 +40,12 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             if mod(i, 20) == 1
                 fprintf('iteration = %d\n', i);
             end
-            x0 = F(x0);
+
+            x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+            x_0_cell = F(x_0_cell{:},varargin{2:end});
+            x0=cell_to_vec_func(x_0_cell);
+
+
             x_rec(:, i+1) = x0;
             t_rec(i+1) = cputime - t0;
         end
@@ -39,7 +54,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
         mem_size = param.mem_size;
         Smem = [];
         Ymem = [];
-        Fx0 = F(x0);
+
+        x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        Fx0=cell_to_vec_func(Fx0_cell);
+
         g0 = x0 - Fx0;
         t0 = cputime;
         t_rec(1) = 0;
@@ -52,7 +71,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             else
                 x1 = x0 - g0 - (Smem - Ymem) * ((Smem'*Ymem) \ (Smem' * g0));
             end
-            Fx1 = F(x1);
+
+            x_1_cell=vec_to_cell_func(x1,elem_x,x_0_cell);
+            Fx1_cell = F(x_1_cell{:},varargin{2:end});
+            Fx1=cell_to_vec_func(Fx1_cell);
+    
             if i <= mem_size - 1
                 Smem(:, i) = x1 - x0;
                 Ymem(:, i) = x1 - Fx1 - g0;
@@ -64,6 +87,8 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             t_rec(i+1) = cputime - t0;
             x0 = x1;
             g0 = x0 - Fx1; 
+
+            
         end
         
     elseif strcmp(algorithm, 'aa1-safe')
@@ -72,7 +97,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
         tau = param.tau;
         D = param.D;
         epsilon = param.epsilon;
-        Fx0 = F(x0);
+
+        x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        Fx0=cell_to_vec_func(Fx0_cell);
+
         g0 = x0 - Fx0;
         Ubar = norm(g0);
         Shat_mem = [];
@@ -96,7 +125,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             end
             % update using the AA trial update
             s0 = x1 - x0;
-            Fx1 = F(x1);
+
+            x_1_cell=vec_to_cell_func(x1,elem_x,x_0_cell);
+            Fx1_cell = F(x_1_cell{:},varargin{2:end});
+            Fx1=cell_to_vec_func(Fx1_cell);
+    
             g1 = x1 - Fx1;
             y0 = g1 - g0;
             
@@ -110,7 +143,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
                 rec.safeguard = [rec.safeguard, i];
                 x1 = beta * x0 + (1-beta) * Fx0;
                 x0 = x1;
-                Fx0 = F(x0);
+
+                x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                Fx0=cell_to_vec_func(Fx0_cell);
+        
             end
             x_rec(:, i+1) = x0;
             t_rec(i+1) = cputime - t0;
@@ -158,7 +195,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
     elseif strcmp(algorithm, 'aa2')
         mem_size = param.mem_size;
         mem = x0;
-        Fmem = F(x0);
+
+        x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        Fmem=cell_to_vec_func(Fx0_cell);
+
         t0 = cputime;
         t_rec(1) = 0;
         for i = 1 : itermax
@@ -175,10 +216,20 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             x0 = beta * mem * alp + (1-beta) * Fmem * alp;
             if i <= mem_size - 1
                 mem(:, i+1) = x0;
-                Fmem(:, i+1) = F(x0);
+
+                x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                Fx0=cell_to_vec_func(Fx0_cell);
+        
+                Fmem(:, i+1) = Fx0;
             else
                 mem = [mem(:, 2:end), x0];
-                Fmem = [Fmem(:, 2:end), F(x0)];
+
+                x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                Fx0=cell_to_vec_func(Fx0_cell);
+        
+                Fmem = [Fmem(:, 2:end), Fx0];
             end
             x_rec(:, i+1) = x0;
             t_rec(i+1) = cputime - t0;
@@ -188,7 +239,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
         mem_size = param.mem_size;
         mu = param.mu;
         mem = x0;
-        Fmem = F(x0);
+
+        x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        Fmem=cell_to_vec_func(Fx0_cell);
+
         t0 = cputime;
         t_rec(1) = 0;
         for i = 1 : itermax
@@ -206,10 +261,20 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             x0 = beta * mem * alp + (1-beta) * Fmem * alp;
             if i <= mem_size - 1
                 mem(:, i+1) = x0;
-                Fmem(:, i+1) = F(x0);
+
+                x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                Fx0=cell_to_vec_func(Fx0_cell);
+        
+                Fmem(:, i+1) = Fx0;
             else
                 mem = [mem(:, 2:end), x0];
-                Fmem = [Fmem(:, 2:end), F(x0)];
+
+                x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
+                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                Fx0=cell_to_vec_func(Fx0_cell);
+        
+                Fmem = [Fmem(:, 2:end), Fx0];
             end
             x_rec(:, i+1) = x0;
             t_rec(i+1) = cputime - t0;

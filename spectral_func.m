@@ -202,41 +202,17 @@ elseif spec.SQUAREM_spec==2
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
     Anderson_func(fun,spec,x_0_cell,other_input_cell{:});
 elseif spec.SQUAREM_spec==3
-    for i=1:n_var
-        elem_x(1,i)=prod(size(x_0_cell{i}));
-     end
-
-     x0=x_0_cell{1}(:);
-     if n_var>=2
-         for i=2:n_var
-             x0=[x0;x_0_cell{i}(:)];
-         end
-     end
-     algorithm="aa2";
-     param=[];
      
-     [x_rec, t_rec, rec] = alg_iter(x0, F, param, algorithm)
+    param=[];
+    algorithm="aa1";
+     [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, fun, ...
+         param, algorithm,...
+         other_input_cell{:});
+
      
 end
 
 
-function x_updated=F(x)
-    loc=1;
-    for ii=1:n_var
-        x_cell{1,ii}=reshape(x(loc:loc+elem_x(1,ii)-1),size(x_0_cell{1,ii}));
-        loc=loc+elem_x(1,ii);
-    end
-
-    x_updated_cell=fun(x_cell,other_input_cell{:});
-    
-    x_updated=x_updated_cell{1}(:);
-    if n_var>=2
-        for ii=2:n_var
-            x_updated=[x_updated;x_updated_cell{ii}(:)];
-        end
-    end
- 
-end
 
 end
 
