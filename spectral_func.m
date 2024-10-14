@@ -204,11 +204,11 @@ elseif spec.SQUAREM_spec==2
 elseif spec.SQUAREM_spec==3
      
     param=[];
-    algorithm="aa1";
-     [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, fun, ...
+    algorithm="aa1-safe";
+     [x_sol_cell,other_output_k_plus_1,iter_info] = Anderson_acceleration_func(x_0_cell, fun, ...
          param, algorithm,...
          other_input_cell{:});
-
+    
      
 end
 

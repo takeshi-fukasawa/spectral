@@ -1,16 +1,28 @@
-function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, varargin)
+function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_cell, F, spec, varargin)
 
+    n_var=size(x_0_cell,2);
+    spec=preliminary_spectral_func(spec,n_var);
+
+    other_output=[];%%%%
+
+    %%%%%%%%%%%%%%%%%%%%
+    param=[];
     param.mem_size = 5;
-    param.itermax = 200; 
+    param.itermax = spec.ITER_MAX;
+    param.TOL=spec.TOL; 
     param.theta = 0.01;
     param.tau = 0.001;
     param.D = 1e6;
     param.epsilon = 1e-6;
+    %%%%%%%%%%%%%%%%%%%%
 
+    TOL=param.TOL;
+
+    DIST_table=NaN(param.itermax,1);
 
     algorithm=varargin{1};
 
-    n_var=size(x_0_cell,2);
+
     for i=1:n_var
         elem_x(1,i)=prod(size(x_0_cell{i}));
     end
@@ -42,8 +54,16 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             end
 
             x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-            x_0_cell = F(x_0_cell{:},varargin{2:end});
-            x0=cell_to_vec_func(x_0_cell);
+            Fx_0_cell = F(x_0_cell{:},varargin{2:end});
+            Fx0=cell_to_vec_func(Fx_0_cell);
+
+            DIST=norm(Fx0-x0); 
+            x0=Fx0;
+
+            DIST_table(i)=DIST;
+            if DIST<TOL
+                break;
+            end
 
 
             x_rec(:, i+1) = x0;
@@ -88,6 +108,11 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             x0 = x1;
             g0 = x0 - Fx1; 
 
+            DIST=norm(g0);
+            DIST_table(i)=DIST;
+            if DIST<TOL
+                break;
+            end
             
         end
         
@@ -154,6 +179,12 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             g_1 = g0; % maintain g_{k-1} for Powell's trick
             g0 = x0 - Fx0;
             
+            DIST=norm(g0); 
+            DIST_table(i)=DIST;
+            if DIST<TOL
+                break;
+            end
+
             %%% Restart checking
             if m <= mem_size
                 if ~isempty(Shat_mem) % only do when nonempty memory
@@ -233,6 +264,13 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             end
             x_rec(:, i+1) = x0;
             t_rec(i+1) = cputime - t0;
+
+            DIST=norm(x0-Fx0); 
+            DIST_table(i)=DIST;
+            if DIST<TOL
+                break;
+            end
+
         end
         
     elseif strcmp(algorithm, 'aa2-reg')
@@ -278,5 +316,24 @@ function [x_rec, t_rec, rec] = Anderson_acceleration_func(x_0_cell, F, param, va
             end
             x_rec(:, i+1) = x0;
             t_rec(i+1) = cputime - t0;
+
+            DIST=norm(x0-Fx0); 
+            DIST_table(i)=DIST;
+            if DIST<TOL
+                break;
+            end
+
         end
     end
+
+    %%% i :Number of iterations
+    x_sol_cell=vec_to_cell_func(x_rec(:,i),elem_x,x_0_cell);
+    %iter_info.x_rec=x_rec;
+    iter_info.t_rec=t_rec;
+    iter_info.t_cpu=t_rec(i);
+    iter_info.rec=rec;
+    iter_info.n_iter=i;
+    iter_info.feval=i;%%%
+    
+    iter_info.DIST_table=DIST_table;
+
