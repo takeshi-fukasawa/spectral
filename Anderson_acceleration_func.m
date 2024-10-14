@@ -1,6 +1,19 @@
-function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_cell, F, spec, varargin)
+function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_cell, F, varargin)
 
     n_var=size(x_0_cell,2);
+
+    spec=varargin{1};
+
+    if isfield(spec,'Anderson_algorithm')==0
+        spec.Anderson_algorithm="aa1-safe";
+        %spec.Anderson_algorithm="aa1";
+        
+    else
+        spec.Anderson_algorithm=spec.Anderson_algorithm;
+    end
+    algorithm=spec.Anderson_algorithm;
+
+    
     spec=preliminary_spectral_func(spec,n_var);
 
     other_output=[];%%%%
@@ -14,13 +27,15 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
     param.tau = 0.001;
     param.D = 1e6;
     param.epsilon = 1e-6;
+    param.DEBUG=spec.DEBUG;
     %%%%%%%%%%%%%%%%%%%%
+
+    FLAG_ERROR=0;%%%%
 
     TOL=param.TOL;
 
     DIST_table=NaN(param.itermax,1);
 
-    algorithm=varargin{1};
 
 
     for i=1:n_var
@@ -49,18 +64,23 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
         t0 = cputime;
         t_rec(1) = 0;
         for i = 1 : itermax
-            if mod(i, 20) == 1
+            if mod(i, 20) == 1 & spec.DEBUG==1
                 fprintf('iteration = %d\n', i);
             end
 
             x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-            Fx_0_cell = F(x_0_cell{:},varargin{2:end});
+            [Fx_0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
             Fx0=cell_to_vec_func(Fx_0_cell);
 
             DIST=norm(Fx0-x0); 
             x0=Fx0;
 
             DIST_table(i)=DIST;
+            if isnan(DIST)==1
+                FLAG_ERROR=1;
+                break;
+            end
+
             if DIST<TOL
                 break;
             end
@@ -76,14 +96,14 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
         Ymem = [];
 
         x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
         Fx0=cell_to_vec_func(Fx0_cell);
 
         g0 = x0 - Fx0;
         t0 = cputime;
         t_rec(1) = 0;
         for i = 1 : itermax
-            if mod(i, 20) == 1
+            if mod(i, 20) == 1 & spec.DEBUG==1
                 fprintf('iteration = %d\n', i);
             end
             if i == 1
@@ -93,7 +113,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
             end
 
             x_1_cell=vec_to_cell_func(x1,elem_x,x_0_cell);
-            Fx1_cell = F(x_1_cell{:},varargin{2:end});
+            [Fx1_cell,other_output] = F(x_1_cell{:},varargin{2:end});
             Fx1=cell_to_vec_func(Fx1_cell);
     
             if i <= mem_size - 1
@@ -110,6 +130,12 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
 
             DIST=norm(g0);
             DIST_table(i)=DIST;
+
+            if isnan(DIST)==1
+                FLAG_ERROR=1;
+                break;
+            end
+            
             if DIST<TOL
                 break;
             end
@@ -124,7 +150,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
         epsilon = param.epsilon;
 
         x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
         Fx0=cell_to_vec_func(Fx0_cell);
 
         g0 = x0 - Fx0;
@@ -140,7 +166,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
         rec.safeguard = [];
         for i = 1 : itermax
             m = m + 1; % default increase of memory
-            if mod(i, 20) == 1
+            if mod(i, 20) == 1 & spec.DEBUG==1
                 fprintf('###iteration = %d\n', i);
             end
             if i == 1
@@ -152,7 +178,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
             s0 = x1 - x0;
 
             x_1_cell=vec_to_cell_func(x1,elem_x,x_0_cell);
-            Fx1_cell = F(x_1_cell{:},varargin{2:end});
+            [Fx1_cell,other_output] = F(x_1_cell{:},varargin{2:end});
             Fx1=cell_to_vec_func(Fx1_cell);
     
             g1 = x1 - Fx1;
@@ -170,7 +196,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
                 x0 = x1;
 
                 x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
                 Fx0=cell_to_vec_func(Fx0_cell);
         
             end
@@ -181,6 +207,12 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
             
             DIST=norm(g0); 
             DIST_table(i)=DIST;
+
+            if isnan(DIST)==1
+                FLAG_ERROR=1;
+                break;
+            end
+            
             if DIST<TOL
                 break;
             end
@@ -190,7 +222,10 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
                 if ~isempty(Shat_mem) % only do when nonempty memory
                     s0hat = s0 - ((Shat_mem * s0)' * Shat_mem)';
                 else
-                    fprintf('iter=%d: no orthogonalization\n', i);
+
+                    if spec.DEBUG==1
+                        fprintf('iter=%d: no orthogonalization\n', i);
+                    end
                     s0hat = s0;
                 end
                 if norm(s0hat) < tau * norm(s0) % restart
@@ -228,13 +263,13 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
         mem = x0;
 
         x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
         Fmem=cell_to_vec_func(Fx0_cell);
 
         t0 = cputime;
         t_rec(1) = 0;
         for i = 1 : itermax
-            if mod(i, 20) == 1
+            if mod(i, 20) == 1 & spec.DEBUG==1
                 fprintf('iteration = %d\n', i);
                 param.print = true;
             else
@@ -249,7 +284,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
                 mem(:, i+1) = x0;
 
                 x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
                 Fx0=cell_to_vec_func(Fx0_cell);
         
                 Fmem(:, i+1) = Fx0;
@@ -257,7 +292,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
                 mem = [mem(:, 2:end), x0];
 
                 x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
                 Fx0=cell_to_vec_func(Fx0_cell);
         
                 Fmem = [Fmem(:, 2:end), Fx0];
@@ -267,6 +302,12 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
 
             DIST=norm(x0-Fx0); 
             DIST_table(i)=DIST;
+
+            if isnan(DIST)==1
+                FLAG_ERROR=1;
+                break;
+            end
+            
             if DIST<TOL
                 break;
             end
@@ -279,13 +320,13 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
         mem = x0;
 
         x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-        Fx0_cell = F(x_0_cell{:},varargin{2:end});
+        [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
         Fmem=cell_to_vec_func(Fx0_cell);
 
         t0 = cputime;
         t_rec(1) = 0;
         for i = 1 : itermax
-            if mod(i, 20) == 1
+            if mod(i, 20) == 1 & spec.DEBUG==1
                 fprintf('iteration = %d\n', i);
                 param.print = true;
             else
@@ -301,7 +342,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
                 mem(:, i+1) = x0;
 
                 x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
                 Fx0=cell_to_vec_func(Fx0_cell);
         
                 Fmem(:, i+1) = Fx0;
@@ -309,7 +350,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
                 mem = [mem(:, 2:end), x0];
 
                 x_0_cell=vec_to_cell_func(x0,elem_x,x_0_cell);
-                Fx0_cell = F(x_0_cell{:},varargin{2:end});
+                [Fx0_cell,other_output] = F(x_0_cell{:},varargin{2:end});
                 Fx0=cell_to_vec_func(Fx0_cell);
         
                 Fmem = [Fmem(:, 2:end), Fx0];
@@ -319,6 +360,12 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
 
             DIST=norm(x0-Fx0); 
             DIST_table(i)=DIST;
+
+            if isnan(DIST)==1
+                FLAG_ERROR=1;
+                break;
+            end
+            
             if DIST<TOL
                 break;
             end
@@ -335,5 +382,8 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
     iter_info.n_iter=i;
     iter_info.feval=i;%%%
     
+    iter_info.ITER_MAX=param.itermax;
+    iter_info.FLAG_ERROR=FLAG_ERROR;
+
     iter_info.DIST_table=DIST_table;
 

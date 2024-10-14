@@ -198,17 +198,12 @@ elseif spec.SQUAREM_spec==1
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
     SQUAREM_func(fun,spec,x_0_cell,other_input_cell{:});
 
-elseif spec.SQUAREM_spec==2
+elseif spec.SQUAREM_spec==2 % Anderson
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
     Anderson_func(fun,spec,x_0_cell,other_input_cell{:});
-elseif spec.SQUAREM_spec==3
-     
-    param=[];
-    algorithm="aa1-safe";
-     [x_sol_cell,other_output_k_plus_1,iter_info] = Anderson_acceleration_func(x_0_cell, fun, ...
-         param, algorithm,...
+elseif spec.SQUAREM_spec==3% Anderson code based on Zhang et al. (2020)
+     [x_sol_cell,other_output_k_plus_1,iter_info] = Anderson_acceleration_func(x_0_cell, fun,spec,...
          other_input_cell{:});
-    
      
 end
 
