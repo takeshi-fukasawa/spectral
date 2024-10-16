@@ -94,12 +94,6 @@ if isfield(spec,'positive_alpha_spec')==0
     spec.positive_alpha_spec=0;%%%%%%
 end
 
-if spec.positive_alpha_spec==1
-    if isfield(spec,'alpha_min')==0
-        spec.alpha_min=1e-8; %% Restrict alpha to be positive
-    end
-    spec.compute_alpha_spec=3;
-end
 
 if isfield(spec,'alpha_max')==0
     spec.alpha_max=10^10;
@@ -109,6 +103,13 @@ if isfield(spec,'alpha_min')==0
     spec.alpha_min=-10^10;
 end
 
+
+if spec.positive_alpha_spec==1
+    if isfield(spec,'alpha_min')==0
+        spec.alpha_min=1e-8; %% Restrict alpha to be positive
+    end
+    spec.compute_alpha_spec=3;
+end
 
 %%%% Line search parameters
 if isfield(spec,'M')==0

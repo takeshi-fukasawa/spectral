@@ -6,7 +6,7 @@ function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_ce
 
     if isfield(spec,'Anderson_algorithm')==0
         spec.Anderson_algorithm="aa1-safe";
-        %spec.Anderson_algorithm="aa1";
+        spec.Anderson_algorithm="aa1";
         
     else
         spec.Anderson_algorithm=spec.Anderson_algorithm;

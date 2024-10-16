@@ -19,7 +19,7 @@ else
 end
 
 if isfield(spec,'type_Anderson')==0
-    spec.type_Anderson=1;% Type I Anderson
+    spec.type_Anderson=2;% Type II Anderson
 end
 
 m=spec.m;
