@@ -76,7 +76,7 @@ fun_k_minus_1_cell=fun_0_cell;%%%
 %%%%%%%% Loop %%%%%%%%%%%
 
 if conv==0 & ITER_MAX>=2
-for k=0:ITER_MAX-2
+for k=0:ITER_MAX-1
 
 
    if k>=1
@@ -198,12 +198,12 @@ elseif spec.SQUAREM_spec==1
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
     SQUAREM_func(fun,spec,x_0_cell,other_input_cell{:});
 
-elseif spec.SQUAREM_spec==2 % Anderson
+elseif spec.Anderson_acceleration==1 % Anderson
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
     Anderson_func(fun,spec,x_0_cell,other_input_cell{:});
-elseif spec.SQUAREM_spec==3% Anderson code based on Zhang et al. (2020)
-     [x_sol_cell,other_output_k_plus_1,iter_info] = Anderson_acceleration_func(x_0_cell, fun,spec,...
-         other_input_cell{:});
+    % Anderson code based on Zhang et al. (2020)
+    % [x_sol_cell,other_output_k_plus_1,iter_info] = Anderson_acceleration_func(x_0_cell, fun,spec,...
+    %     other_input_cell{:});
      
 end
 

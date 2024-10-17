@@ -124,6 +124,14 @@ if isfield(spec,'rho')==0
     spec.rho=0.3;
 end
 
+if isfield(spec,'Anderson_acceleration')==0
+    spec.Anderson_acceleration=0;
+end
+
+if spec.Anderson_acceleration==1
+    spec.SQUAREM_spec=[];
+end
+
 end % function
 
 
