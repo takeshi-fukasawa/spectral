@@ -1,11 +1,11 @@
-# MATLAB code of the Spectral and SQUAREM algorithm
-This repository contains the MATLAB code of the spectral algorithm (e.g., Barzilai and Borwein, 1988; La Cruz et al., 2006) and the SQUAREM algorithm (e.g., Varadhan and Roland, 2008) for solving nonlinear equations and fixed point problems, based on the discussion in Section 5 of Fukasawa (2024).
+# MATLAB code of the Spectral, SQUAREM, and the Anderson acceleration algorithm
+This repository contains the MATLAB code of the spectral algorithm (e.g., Barzilai and Borwein, 1988; La Cruz et al., 2006), the SQUAREM algorithm (e.g., Varadhan and Roland, 2008), and the Anderson acceleration method (e.g., Anderson, 1995) for solving nonlinear equations and fixed point problems, based on the discussion in Section 5 of Fukasawa (2024).
 
 Spectral_func is the main function. It is designed to apply the spectral algorithm to solve nonlinear equations or fixed point problems.
 
-It also introduces variable-type-specific step sizes in the spectral algorithm, which sometimes accelerate the convergence. For details, see Section 5.3 of Fukasawa (2024).
+It also introduces variable-type-specific step sizes in the spectral algorithm, which sometimes accelerate the convergence. For details, see Section 5 of Fukasawa (2024).
 
-Besides, if we let `spec.SQUAREM_spec==1`, we can alternatively use the SQUAREM algorithm (SQUAREM_func). 
+Besides, if we let `spec.SQUAREM_spec==1`, we can alternatively use the SQUAREM algorithm (SQUAREM_func). If we let `spec.Anderson_acceleration==1`, we can apply the Anderson acceleration (Anderson_func). 
 
 The section "Examples" concisely describes the usage of the function. My other repository takeshi-fukasawa/BLP_algorithm shows the usage of the function, in the context of BLP estimation (estimation of random coefficient logit models using aggregate data) in economics. 
 
@@ -157,6 +157,8 @@ If norm_spec==0, use sup norm.
 If norm_spec==2, use L2 norm. 
 If norm_spec==10, use unit-free norm, defined by $f(x^{(n)})/x^{(n)}$, if we want to solve f(x)=0.
 
+* Anderson_acceleration (default: 0): If 1, alternatively use (Type-II) Anderson acceleration.
+
 ## Globalization strategies (under construction)
 * line_search_spec (default: 0; under construction): If 1, introduce globalization strategies, developed by La Cruz et al. (2006).
 If 0, not introduce globalization strategies.  
@@ -167,6 +169,7 @@ If 0, not introduce globalization strategies.
 * gamma (default: 0.3; under construction) 
 
 ## References
+* Anderson, D. G. (1965). Iterative procedures for nonlinear integral equations. Journal of the ACM (JACM), 12(4), 547-560.
 * Barzilai, J., & Borwein, J. M. (1988). Two-point step size gradient methods. IMA journal of numerical analysis, 8(1), 141-148.
 * Conlon, C., & Gortmaker, J. (2020). Best practices for differentiated products demand estimation with pyblp. The RAND Journal of Economics, 51(4), 1108-1161.  
 * Fukasawa, T. (2024). Fast and simple inner-loop algorithms of static/dynamic BLP estimations. arXiv preprint arXiv:2404.04494.  

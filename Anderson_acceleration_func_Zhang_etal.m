@@ -1,5 +1,7 @@
 function [x_sol_cell,other_output,iter_info] = Anderson_acceleration_func(x_0_cell, F, varargin)
-
+    % Based on the replication code of Zhang et al. (2020)
+    % Zhang, J., O'Donoghue, B., & Boyd, S. (2020). Globally convergent type-I Anderson acceleration for nonsmooth fixed-point iterations. SIAM Journal on Optimization, 30(4), 3170-3197.
+    
     n_var=size(x_0_cell,2);
 
     spec=varargin{1};
