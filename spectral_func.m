@@ -166,7 +166,7 @@ end %% end of for loop wrt k=0:ITER_MAX-1
 
 else % no iteration
     k=0;
-    x_k_plus_1_cell=fun_0_cell;
+    x_k_plus_1_cell=x_0_cell;
     other_output_k_plus_1=other_output_0;
     fun_k_cell=fun_0_cell;
 end
