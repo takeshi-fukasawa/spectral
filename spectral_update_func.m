@@ -31,10 +31,13 @@ x_max_cell,x_min_cell,k,obj_val_table)
  
         %%% DIST: sup norm of F(x)=x-Phi(x). 
         DIST_vec=ones(1,n_var);
+        obj_val_vec=zeros(1,n_var);
+
         for i=1:n_var
             DIST_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),spec.norm_spec(i));
+
+            obj_val_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),2).^2;
         end
-        obj_val_vec=DIST_vec.^2;
 
 
         if spec.line_search_spec==1

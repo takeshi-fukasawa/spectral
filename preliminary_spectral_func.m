@@ -74,9 +74,6 @@ if isfield(spec,'norm_spec')==0
     spec.norm_spec=0;
 end
 
-if spec.line_search_spec==1
-    spec.norm_spec=2;
-end
 
 if size(spec.norm_spec(:),1)==1
     spec.norm_spec=ones(1,n_var).*(spec.norm_spec);
