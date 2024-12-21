@@ -168,16 +168,12 @@ end %% end of for loop wrt k=0:ITER_MAX-1
 
 else % no iteration
     k=0;
-<<<<<<< Updated upstream
-    x_k_plus_1_cell=fun_0_cell;
-=======
     if spec.fixed_point_iter_spec==1
         x_k_plus_1_cell=fun_0_cell_temp;% Use f(x0), where f is the fixed point mapping
     else
        x_k_plus_1_cell=x_0_cell;% Use x0
     end
 
->>>>>>> Stashed changes
     other_output_k_plus_1=other_output_0;
     fun_k_cell=fun_0_cell;
 end
