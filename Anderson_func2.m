@@ -67,7 +67,7 @@ for k=0:ITER_MAX-1
     if spec.common_alpha_spec==1
         x_k_vec_cell{1}=cell_to_vec_func(x_k_cell);
         fun_k_vec_cell{1}=cell_to_vec_func(fun_k_cell);
-    else
+    else %spec.common_alpha_spec==[]
         for i=1:n_var
             x_k_vec_cell{i}=x_k_cell{i}(:);
             fun_k_vec_cell{i}=fun_k_cell{i}(:);
@@ -174,7 +174,8 @@ for k=0:ITER_MAX-1
         end
         DIST=max(DIST_vec);
 
-        if DIST<spec.TOL
+        conv=(sum((DIST_vec<spec.TOL),'all')==n_var_type);
+        if conv==1
             FLAG_ERROR=0;
             break;
         end
@@ -202,7 +203,7 @@ iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.DIST_table=DIST_table;
 iter_info.type_Anderson=type_Anderson;
-
+iter_info.spec=spec;
 
 end
 
