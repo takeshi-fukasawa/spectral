@@ -164,7 +164,9 @@ for k=0:ITER_MAX-1
            x_k_plus_1_cell{i}=x_k_plus_1_i;
        end
 
-        DIST_vec(i)=max(abs(resid_past_mat_cell{i}(:,k+1)));
+        %DIST_vec(i)=max(abs(resid_past_mat_cell{i}(:,k+1)));
+        DIST_vec(i)=norm_func(resid_past_mat_cell{i}(:,k+1),x_past_mat_cell{i}(:,1),spec.norm_spec(i));
+
 
     end%i=1:n_var_type
 
