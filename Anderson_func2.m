@@ -161,7 +161,7 @@ for k=0:ITER_MAX-1
        if spec.common_alpha_spec==1
            x_k_plus_1_cell=vec_to_cell_func(x_k_plus_1_i,elem_x,x_0_cell);
        else
-           x_k_plus_1_cell{i}=x_k_plus_1_i;
+           x_k_plus_1_cell{i}=reshape(x_k_plus_1_i,size(x_0_cell{i}));
        end
 
         %DIST_vec(i)=max(abs(resid_past_mat_cell{i}(:,k+1)));
