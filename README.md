@@ -128,10 +128,10 @@ The introduction may lead to more stable convergence of the algorithm.
 
 * alpha_min (default: -10^10): Minimum value of the step size $\alpha^{(n)}$.
 
-* common_alpha_spec (default: 0):
-Suppose we want to solve a nonlinear equation $f(x_1,x_2)=0$. If common_alpha_spec==0, two types of variables x1 and x2 are updated by
+* common_spectral_coef_spec (default: 0):
+Suppose we want to solve a nonlinear equation $f(x_1,x_2)=0$. If common_spectral_coef_spec==0, two types of variables x1 and x2 are updated by
 $x_1^{(n+1)}=x_1^{(n)}+\alpha_{1}^{(n)} f(x_1^{(n)},x_2^{(n)})$, $x_2^{(n+1)}=x_2^{(n)}+\alpha_{2}^{(n)} f(x_1^{(n)},x_2^{(n)})$. 
-If common_alpha_spec==1, we do not distinguish the type of variables, and the updating equations are $x_1^{(n+1)}=x_1^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$, 
+If common_spectral_coef_spec==1, we do not distinguish the type of variables, and the updating equations are $x_1^{(n+1)}=x_1^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$, 
 $x_2^{(n+1)}=x_2^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$. See also Section 5.3 of Fukasawa (2024).
  
 
@@ -139,15 +139,15 @@ $x_2^{(n+1)}=x_2^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$. See also Section 5.
 *  DEBUG (default: 0): If 1, display the convergence process during the iteration every 10 iterations.
 
 
-* compute_alpha_spec (default: 3):  
-compute_alpha_spec specifies the formula of $\alpha^{(n)}$. 
-If compute_alpha_spec==1,2,3, we use the step size S1,S2,S3 defined in Fukasawa (2024). Note that they are equivalent to the three specifications in Varadhan and Roland (2008). S1 corresponds to the first step size used in Barzilai and Borwein (1988), and S2 corresponds to the second step size used in Barzilai and Borwein (1988) and the one used by La Cruz et al. (2006). Please note that some of the previous studies and built-in packages have specified the sign of the step sizes differently, and we should be careful about it. For details, see also Fukasawa (2024).
-If we let compute_alpha_spec==4, we use the step size corresponding to the third specification used in the BB package (R language; Varadhan and Gilbert (2010)).  
+* spectral_coef_spec (default: 3):  
+spectral_coef_spec specifies the formula of $\alpha^{(n)}$. 
+If spectral_coef_spec==1,2,3, we use the step size S1,S2,S3 defined in Fukasawa (2024). Note that they are equivalent to the three specifications in Varadhan and Roland (2008). S1 corresponds to the first step size used in Barzilai and Borwein (1988), and S2 corresponds to the second step size used in Barzilai and Borwein (1988) and the one used by La Cruz et al. (2006). Please note that some of the previous studies and built-in packages have specified the sign of the step sizes differently, and we should be careful about it. For details, see also Fukasawa (2024).
+If we let spectral_coef_spec==4, we use the step size corresponding to the third specification used in the BB package (R language; Varadhan and Gilbert (2010)).  
 More specifically, it is mathematically formulated as follows. Suppose we want to solve a nonlinear equation f(x)=0. Let $s^{(n)}\equiv x^{(n)}-x^{(n-1)}$, and $y^{(n)}\equiv f(x^{(n)})- f(x^{(n-1)})$.  
-If compute_alpha_spec==1, let $\alpha^{(n)}=-\frac{s^{(n)\prime}y^{(n)}}{y^{(n)\prime}y^{(n)}}$.  
-If compute_alpha_spec==2, let $\alpha^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\prime}y^{(n)}}$.  
-If compute_alpha_spec==3, let $\alpha^{(n)}=\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.  
-If compute_alpha_spec==4, let $\alpha^{(n)}=sgn\left(s^{(n)\prime}y^{(n)}\right)\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.
+If spectral_coef_spec==1, let $\alpha^{(n)}=-\frac{s^{(n)\prime}y^{(n)}}{y^{(n)\prime}y^{(n)}}$.  
+If spectral_coef_spec==2, let $\alpha^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\prime}y^{(n)}}$.  
+If spectral_coef_spec==3, let $\alpha^{(n)}=\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.  
+If spectral_coef_spec==4, let $\alpha^{(n)}=sgn\left(s^{(n)\prime}y^{(n)}\right)\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.
 
 * positive_alpha_spec (default:0)
 If positive_alpha_spec==1, use positive alpha and step sizes. If $\alpha<0$, instead use 1E-8. If positive_alpha_spec==0, not restrict the sign of alpha and step sizes.

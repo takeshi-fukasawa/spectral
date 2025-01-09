@@ -205,7 +205,7 @@ elseif spec.SQUAREM_spec==1
 
 elseif spec.Anderson_acceleration==1 % Anderson
     [x_sol_cell,other_output_k_plus_1,iter_info]=...
-    Anderson_func(fun,spec,x_0_cell,other_input_cell{:});
+    Anderson_func2(fun,spec,x_0_cell,other_input_cell{:});
     % Anderson code based on Zhang et al. (2020)
     % [x_sol_cell,other_output_k_plus_1,iter_info] = Anderson_acceleration_func(x_0_cell, fun,spec,...
     %     other_input_cell{:});

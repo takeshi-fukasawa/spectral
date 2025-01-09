@@ -42,7 +42,7 @@ end
 
 t_Anderson=tic;
 
-if spec.common_alpha_spec==1
+if spec.common_spectral_coef_spec==1
   n_var_type=1;
 else
    n_var_type=n_var;
@@ -64,10 +64,10 @@ for k=0:ITER_MAX-1
     [fun_k_cell,other_output_k]=...
        fun_fp(x_k_cell{:},other_input_cell{:});
 
-    if spec.common_alpha_spec==1
+    if spec.common_spectral_coef_spec==1
         x_k_vec_cell{1}=cell_to_vec_func(x_k_cell);
         fun_k_vec_cell{1}=cell_to_vec_func(fun_k_cell);
-    else %spec.common_alpha_spec==[]
+    else %spec.common_spectral_coef_spec==[]
         for i=1:n_var
             x_k_vec_cell{i}=x_k_cell{i}(:);
             fun_k_vec_cell{i}=fun_k_cell{i}(:);
@@ -158,7 +158,7 @@ for k=0:ITER_MAX-1
                 (1-beta_val)*x_past_mat_cell{i}(k-m_k+1:k+1)*alpha_vec;%[]*1
        end%beta_val==1
 
-       if spec.common_alpha_spec==1
+       if spec.common_spectral_coef_spec==1
            x_k_plus_1_cell=vec_to_cell_func(x_k_plus_1_i,elem_x,x_0_cell);
        else
            x_k_plus_1_cell{i}=reshape(x_k_plus_1_i,size(x_0_cell{i}));

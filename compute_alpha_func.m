@@ -17,7 +17,7 @@ function [alpha_k,alpha_max]=compute_alpha_func(...
             sum_Delta_x_fun_cell{1,i}=sum(Delta_x_cell{1,i}.*Delta_fun_cell{1,i},sum_dim_ids,'omitnan');%vector  
     end % loop wrt i
     
-    if spec.common_alpha_spec==1
+    if spec.common_spectral_coef_spec==1
         sum_Delta_x_x=0;
         sum_Delta_fun_fun=0;
         sum_Delta_x_fun=0;
@@ -38,23 +38,23 @@ function [alpha_k,alpha_max]=compute_alpha_func(...
     end % if statement
     
     for i=1:n_var
-    if spec.compute_alpha_spec>=3
+    if spec.spectral_coef_spec>=3
         %%%% Specification proposed in Varadhan and Roland (2008)
         alpha_k{1,i}=sqrt(sum_Delta_x_x_cell{1,i}./sum_Delta_fun_fun_cell{1,i});%scalar or vector (wrt the dimension specified in "dim_hetero_alpha")
     
-        if spec.compute_alpha_spec==4
+        if spec.spectral_coef_spec==4
             %%% Sign can be negative
             alpha_k{1,i}=-alpha_k{1,i}.*sign(sum_Delta_x_fun_cell{1,i});
         end % if statement
     
-    elseif spec.compute_alpha_spec==1
+    elseif spec.spectral_coef_spec==1
         %%%% Barzilai and Borwein (1988) first spec
         alpha_k{1,i}=-sum_Delta_x_fun_cell{1,i}./sum_Delta_fun_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "dim_hetero_alpha")
     
-    elseif spec.compute_alpha_spec==2
+    elseif spec.spectral_coef_spec==2
         %%%% Barzilai and Borwein (1988) second spec
         alpha_k{1,i}=-sum_Delta_x_x_cell{1,i}./sum_Delta_x_fun_cell{1,i};%scalar or vector (wrt the dimension specified in "dim_hetero_alpha")
-    end % compute_alpha_spec
+    end % spectral_coef_spec
         
         alpha_k{1,i}((isnan(alpha_k{1,i})==1))=1;%%%
         alpha_k{1,i}((isinf(alpha_k{1,i})==1))=1;%%%

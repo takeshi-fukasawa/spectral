@@ -10,7 +10,7 @@ spec=preliminary_spectral_func(spec,n_var);
 
 ITER_MAX=spec.ITER_MAX;
 
-%%spec.compute_alpha_spec=1;
+%%spec.spectral_coef_spec=1;
 
 t_SQUAREM=tic;
 

@@ -32,8 +32,8 @@ if isfield(spec,'alpha_0')==0
 end
 
 
-if isfield(spec,'common_alpha_spec')==0
-    spec.common_alpha_spec=0;
+if isfield(spec,'common_spectral_coef_spec')==0
+    spec.common_spectral_coef_spec=0;
 end
 
 if isfield(spec,'TOL')==0
@@ -62,8 +62,8 @@ if isfield(spec,'DEBUG')==0
     spec.DEBUG=0;
 end
 
-if isfield(spec,'compute_alpha_spec')==0
-    spec.compute_alpha_spec=3;
+if isfield(spec,'spectral_coef_spec')==0
+    spec.spectral_coef_spec=3;
 end
 
 if isfield(spec,'SQUAREM_spec')==0
@@ -91,7 +91,7 @@ if isfield(spec,'positive_alpha_spec')==0
     spec.positive_alpha_spec=1;%%%%%%
 end
 
-if spec.compute_alpha_spec==3
+if spec.spectral_coef_spec==3
     spec.positive_alpha_spec=1;
 end
 
@@ -111,14 +111,14 @@ if spec.positive_alpha_spec==1
     if isfield(spec,'alpha_min')==0
         spec.alpha_min=1e-10; %% Restrict alpha to be positive
     end
-    spec.compute_alpha_spec=3;
+    spec.spectral_coef_spec=3;
 end
 
 if spec.positive_alpha_spec==1
     if isfield(spec,'alpha_min')==0
         spec.alpha_min=1e-8; %% Restrict alpha to be positive
     end
-    spec.compute_alpha_spec=3;
+    spec.spectral_coef_spec=3;
 end
 
 %%%% Line search parameters
