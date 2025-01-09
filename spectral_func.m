@@ -30,13 +30,15 @@ tic_spectral=tic;
  if spec.bound_spec==1
     x_0_cell=projection_func(x_0_cell,x_max_cell,x_min_cell);
  end
- [fun_0_cell,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
+ [fun_0_cell_temp,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 
  if spec.fixed_point_iter_spec==1
      for i=1:n_var
-         fun_0_cell{1,i}=fun_0_cell{1,i}-x_0_cell{1,i};
+         fun_0_cell{1,i}=fun_0_cell_temp{1,i}-x_0_cell{1,i};
      end
- end
+ else
+       fun_0_cell=fun_0_cell_temp;
+   end
 
 
 feval=1;
@@ -166,7 +168,12 @@ end %% end of for loop wrt k=0:ITER_MAX-1
 
 else % no iteration
     k=0;
-    x_k_plus_1_cell=x_0_cell;
+    if spec.fixed_point_iter_spec==1
+        x_k_plus_1_cell=fun_0_cell_temp;% Use f(x0), where f is the fixed point mapping
+    else
+       x_k_plus_1_cell=x_0_cell;% Use x0
+    end
+
     other_output_k_plus_1=other_output_0;
     fun_k_cell=fun_0_cell;
 end
