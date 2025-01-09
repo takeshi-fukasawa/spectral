@@ -106,9 +106,9 @@ if isfield(spec,'alpha_min')==0
     spec.alpha_min=-10^10;
 end
 
-if spec.positive_alpha_spec==1
-    spec.alpha_min=1e-10;
-end
+%if spec.positive_alpha_spec==1
+%    spec.alpha_min=1e-10;
+%end
 
 if spec.positive_alpha_spec==1
     if isfield(spec,'alpha_min')==0
