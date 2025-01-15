@@ -36,6 +36,10 @@ if isfield(spec,'common_spectral_coef_spec')==0
     spec.common_spectral_coef_spec=0;
 end
 
+if isfield(spec,'common_Anderson_coef_spec')==0
+    spec.common_Anderson_coef_spec=1;
+end
+
 if isfield(spec,'TOL')==0
     spec.TOL=1e-10;
 end
