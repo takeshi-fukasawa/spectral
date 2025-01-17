@@ -62,7 +62,7 @@ d_k_cell=[];
 [fun_fp_k_cell,other_output_k]=...
        fun_fp(x_k_cell{:},other_input_cell{:});
 
-fun_fp_k_plus_1_cell=fun_fp_k_cell;
+%%fun_fp_k_plus_1_cell=fun_fp_k_cell;
 feval=1;
 
 for i=1:n_var_type
@@ -230,11 +230,12 @@ for k=0:ITER_MAX-1
         DIST_table(k+2,:)=DIST_vec;
         obj_val_table(k+2,:)=obj_val_vec;
         step_size_table(k+2,:)=step_size;
+
+        fun_fp_k_cell=fun_fp_k_plus_1_cell;
         
     end % k==0 or not
 
-    x_k_cell=x_k_plus_1_cell;
-    fun_fp_k_cell=fun_fp_k_plus_1_cell;
+    x_k_cell=x_k_plus_1_cell;%%%
 
 end %% end of for loop wrt k=0:ITER_MAX-1
 
