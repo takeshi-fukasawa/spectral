@@ -255,6 +255,6 @@ iter_info.DIST_table=DIST_table;
 iter_info.step_size_table=step_size_table;
 iter_info.obj_val_table=obj_val_table;
 iter_info.spec=spec;
-iter_info.resid_k_vec_cell=resid_k_vec_cell;
+iter_info.resid_past_mat_cell=resid_past_mat_cell;
 
 end

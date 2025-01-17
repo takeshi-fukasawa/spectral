@@ -191,6 +191,7 @@ iter_info.FLAG_ERROR=FLAG_ERROR;
 iter_info.DIST_table=DIST_table;
 iter_info.type_Anderson=type_Anderson;
 
+iter_info.resid_past_mat=resid_past_mat;
 
 end
 
