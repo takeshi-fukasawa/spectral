@@ -1,14 +1,14 @@
 %%%%%%%%%%%%%%%%%%
 function [x_k_plus_1_cell, fun_k_plus_1_cell,...
-other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
+other_output_k_plus_1,DIST_vec,iter_line_search,...
 obj_val_vec,step_size]=...
-spectral_update_func(fun,x_k_cell,fun_k_cell,alpha_k,d_k_cell,other_input_cell,...
+update_func(fun,x_k_cell,d_k_cell,other_input_cell,...
 n_var,spec,...
 x_max_cell,x_min_cell,k,obj_val_table)
 
     step_size=ones(1,n_var);
     
-    %%% Update variables in the spectral algorithm %%%%%%%%%%%
+    %%% Update variables
     for iter_line_search=1:spec.ITER_MAX_LINE_SEARCH
      
        for i=1:n_var
@@ -48,15 +48,10 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
             rho=spec.rho;
 
-
-            %if continue_backtracking_dummy==1 & spec.positive_spectral_coef_spec==1
-            %    step_size=step_size.*rho; 
-            
-            %elseif
-            if continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0) % & spec.positive_spectral_coef_spec==0
+            if continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0) 
                 step_size=step_size.*(-rho);
 
-            elseif continue_backtracking_dummy==1 & mod(iter_line_search,2)==1% & spec.positive_spectral_coef_spec==0
+            elseif continue_backtracking_dummy==1 & mod(iter_line_search,2)==1
                 step_size=step_size.*(-1);
                  
             else
@@ -65,10 +60,6 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
         end% line search spec==1
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
-
-    for i=1:n_var
-        alpha_vec(1,i)=max(alpha_k{1,i}(:));     
-    end
 
 
 end

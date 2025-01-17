@@ -9,7 +9,10 @@ warning('off','all')
 
 n_var=size(x_0_cell,2);
 
-spec=preliminary_spectral_func(spec,n_var);
+spec=preliminary_setting_func(spec,n_var);
+
+x_max_cell=spec.x_max_cell;
+x_min_cell=spec.x_min_cell;
 
 ITER_MAX=spec.ITER_MAX;
 
@@ -51,48 +54,57 @@ DIST_table=NaN(ITER_MAX,n_var_type);
 DIST_vec=NaN(1,n_var_type);
 
 
-
 %%%%%%%% Loop %%%%%%%%%%%
 
 FLAG_ERROR=0;
 
 x_k_cell=x_0_cell;
 x_k_plus_1_cell=[];
+d_k_cell=[];
+
+[fun_fp_k_cell,other_output_k]=...
+       fun_fp(x_k_cell{:},other_input_cell{:});
+
+fun_fp_k_plus_1_cell=fun_fp_k_cell;
+
+for i=1:n_var_type
+     DIST_vec(i)=norm_func(fun_fp_k_cell{i}(:)-x_k_cell{i}(:),x_k_cell{i}(:),spec.norm_spec(i));
+end
+
+obj_val_table=NaN(ITER_MAX,n_var_type);
+obj_val_table(1,:)=DIST_vec.^2;% L2 norm
+
+step_size_table=NaN(ITER_MAX,n_var_type);
 
 for k=0:ITER_MAX-1
 
-    [fun_k_cell,other_output_k]=...
-       fun_fp(x_k_cell{:},other_input_cell{:});
-
     if spec.common_Anderson_coef_spec==1
         x_k_vec_cell{1}=cell_to_vec_func(x_k_cell);
-        fun_k_vec_cell{1}=cell_to_vec_func(fun_k_cell);
+        fun_fp_k_vec_cell{1}=cell_to_vec_func(fun_fp_k_cell);
     else %spec.common_Anderson_coef_spec==[]
         for i=1:n_var
             x_k_vec_cell{i}=x_k_cell{i}(:);
-            fun_k_vec_cell{i}=fun_k_cell{i}(:);
+            fun_fp_k_vec_cell{i}=fun_fp_k_cell{i}(:);
        end
    end
 
     for i=1:n_var_type
-       resid_k_vec_cell{i}=fun_k_vec_cell{i}-x_k_vec_cell{i};
+       resid_k_vec_cell{i}=fun_fp_k_vec_cell{i}-x_k_vec_cell{i};
     end
-
     
-
 
    if k==0
         for i=1:n_var_type
           resid_past_mat_cell{i}=resid_k_vec_cell{i};
-          fun_past_mat_cell{i}=fun_k_vec_cell{i};
+          fun_fp_past_mat_cell{i}=fun_fp_k_vec_cell{i};
           x_past_mat_cell{i}=x_k_vec_cell{i};
        end
 
-   else
+   else%k>=1
 
         for i=1:n_var_type
           resid_past_mat_cell{i}=[resid_past_mat_cell{i},resid_k_vec_cell{i}];%[]*(k+1)
-          fun_past_mat_cell{i}=[fun_past_mat_cell{i},fun_k_vec_cell{i}];
+          fun_fp_past_mat_cell{i}=[fun_fp_past_mat_cell{i},fun_fp_k_vec_cell{i}];
           x_past_mat_cell{i}=[x_past_mat_cell{i},x_k_vec_cell{i}];
 
           
@@ -150,25 +162,50 @@ for k=0:ITER_MAX-1
             end%id
 
 
+     %% Update x_k_plus_1
         beta_val=1;
        if beta_val==1
-            x_k_plus_1_i=fun_past_mat_cell{i}(:,k-m_k+1:k+1)*alpha_vec;%[]*1
+            x_k_plus_1_i=fun_fp_past_mat_cell{i}(:,k-m_k+1:k+1)*alpha_vec;%[]*1
        else
-            x_k_plus_1_i=beta_val*fun_past_mat_cell{i}(:,k-m_k+1:k+1)*alpha_vec+...
+            x_k_plus_1_i=beta_val*fun_fp_past_mat_cell{i}(:,k-m_k+1:k+1)*alpha_vec+...
                 (1-beta_val)*x_past_mat_cell{i}(k-m_k+1:k+1)*alpha_vec;%[]*1
        end%beta_val==1
 
        if spec.common_Anderson_coef_spec==1
-           x_k_plus_1_cell=vec_to_cell_func(x_k_plus_1_i,elem_x,x_0_cell);
+            x_k_plus_1_cell=vec_to_cell_func(x_k_plus_1_i,elem_x,x_0_cell);
+            d_k_cell={x_k_plus_1_cell{1}-x_k_cell{1}};
        else
            x_k_plus_1_cell{i}=reshape(x_k_plus_1_i,size(x_0_cell{i}));
+           d_k_cell{i}={x_k_plus_1_cell{i}-x_k_cell{i}};
        end
 
-        %DIST_vec(i)=max(abs(resid_past_mat_cell{i}(:,k+1)));
-        DIST_vec(i)=norm_func(resid_past_mat_cell{i}(:,k+1),x_past_mat_cell{i}(:,1),spec.norm_spec(i));
-
-
     end%i=1:n_var_type
+
+    if spec.line_search_spec==0
+       [fun_fp_k_plus_1_cell,other_output_k_plus_1]=...
+       fun_fp(x_k_plus_1_cell{:},other_input_cell{:});
+
+       for i=1:n_var_type
+          DIST_vec(i)=norm_func(fun_fp_k_plus_1_cell{i}(:)-x_k_plus_1_cell{i}(:),reshape(x_past_mat_cell{i}(:,1),[],1),spec.norm_spec(i));
+       end
+      step_size=ones(1,n_var_type);
+      obj_val_vec=DIST_vec.^2;
+
+
+    else%spec.line_search_spec==1
+        [x_k_plus_1_cell, fun_k_plus_1_cell,...
+        other_output_k_plus_1,DIST_vec,iter_line_search,...
+        obj_val_vec,step_size]=...
+        update_func(fun_fp,x_k_cell,d_k_cell,other_input_cell,...
+        n_var_type,spec,x_max_cell,x_min_cell,k,obj_val_table);
+
+        for i=1:n_var_type
+            fun_fp_k_plus_1_cell{i}=fun_k_plus_1_cell{i}+x_k_plus_1_cell{i};
+        end
+    end%spec.line_search_spec==0 or 1
+
+
+    other_output_k=other_output_k_plus_1;
 
         interval=10;
         if k-floor(k/interval)*interval==0&spec.DEBUG==1
@@ -182,12 +219,15 @@ for k=0:ITER_MAX-1
             break;
         end
         DIST_table(k,:)=DIST_vec;
+        obj_val_table(k,:)=obj_val_vec;
+        step_size_table(k,:)=step_size;
         
     else % k==0
-        x_k_plus_1_cell=fun_k_cell;
+        x_k_plus_1_cell=fun_fp_k_cell;
     end % k==0 or not
 
     x_k_cell=x_k_plus_1_cell;
+    fun_fp_k_cell=fun_fp_k_plus_1_cell;
 
 end %% end of for loop wrt k=0:ITER_MAX-1
 
@@ -204,6 +244,7 @@ iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.DIST_table=DIST_table;
+iter_info.step_size_table=step_size_table;
 iter_info.type_Anderson=type_Anderson;
 iter_info.spec=spec;
 

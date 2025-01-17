@@ -6,7 +6,7 @@ function [x_sol_cell,other_output_k_plus_1,iter_info]=...
 
 n_var=size(x_0_cell,2);
 
-spec=preliminary_spectral_func(spec,n_var);
+spec=preliminary_setting_func(spec,n_var);
 
 other_input_cell=varargin;
 
@@ -32,13 +32,13 @@ tic_spectral=tic;
  end
  [fun_0_cell_temp,other_output_0]=fun(x_0_cell{:},other_input_cell{:});
 
- if spec.fixed_point_iter_spec==1
+if spec.fixed_point_iter_spec==1
      for i=1:n_var
          fun_0_cell{1,i}=fun_0_cell_temp{1,i}-x_0_cell{1,i};
      end
- else
+else
        fun_0_cell=fun_0_cell_temp;
-   end
+end
 
 
 feval=1;
@@ -78,10 +78,16 @@ fun_k_minus_1_cell=fun_0_cell;%%%
 %%%%%%%% Loop %%%%%%%%%%%
 
 if conv==0 & ITER_MAX>=2
-for k=0:ITER_MAX-1
 
+    for i=1:n_var
+        alpha_k{1,i}=alpha_0{1,i};
+        if isempty(spec.dampening_param)==0
+            alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
+        end
+    end
 
-   if k>=1
+for k=1:ITER_MAX-1
+
       for i=1:n_var
         Delta_x_cell{1,i}=x_k_cell{i}-x_k_minus_1_cell{i};
         Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
@@ -98,6 +104,10 @@ for k=0:ITER_MAX-1
          spec.alpha_max=alpha_max;
       end
 
+    for i=1:n_var
+        alpha_vec(1,i)=max(alpha_k{1,i}(:));     
+    end
+
     %%% Update variables %%%%%%%%%%%%%%%
 
     for i=1:n_var
@@ -107,9 +117,9 @@ for k=0:ITER_MAX-1
 
 
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
-    other_output_k_plus_1,DIST_vec,iter_line_search,alpha_vec,...
+    other_output_k_plus_1,DIST_vec,iter_line_search,...
     obj_val_vec,step_size]=...
-        spectral_update_func(fun,x_k_cell,fun_k_cell,alpha_k,d_k_cell,other_input_cell,...
+        update_func(fun,x_k_cell,d_k_cell,other_input_cell,...
         n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
 
     ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
@@ -148,21 +158,7 @@ for k=0:ITER_MAX-1
 
 	x_k_cell=x_k_plus_1_cell;
     fun_k_cell=fun_k_plus_1_cell;
-   
 
-    
-  else % k==0
-    for i=1:n_var
-     alpha_k{1,i}=alpha_0{1,i};
-     if isempty(spec.dampening_param)==0
-      alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
-     end
-
-
-   end% for loop wrt i
-
-   
- end%k>=1 or k==0
 end %% end of for loop wrt k=0:ITER_MAX-1
 
 

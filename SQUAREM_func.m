@@ -6,7 +6,7 @@ function [x_sol_cell,other_output_k_2,iter_info]=...
 
 n_var=size(x_0_cell,2);
 
-spec=preliminary_spectral_func(spec,n_var);
+spec=preliminary_setting_func(spec,n_var);
 
 ITER_MAX=spec.ITER_MAX;
 

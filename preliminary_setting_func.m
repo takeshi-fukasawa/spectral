@@ -1,4 +1,4 @@
-function spec=preliminary_spectral_func(spec,n_var);
+function spec=preliminary_setting_func(spec,n_var);
 
 if isfield(spec,'x_max_cell')==0
     spec.x_max_cell=cell(1,n_var);
@@ -144,6 +144,7 @@ end
 
 if spec.Anderson_acceleration==1
     spec.SQUAREM_spec=[];
+    Spec.fixed_point_iter_spec=1;
 end
 
 end % function
