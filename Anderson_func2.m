@@ -97,6 +97,9 @@ for k=0:ITER_MAX-1
           x_past_mat_cell{i}=x_k_vec_cell{i};
        end
 
+       x_k_plus_1_cell=fun_fp_k_cell;
+
+
    else%k>=1
 
         for i=1:n_var_type
@@ -104,9 +107,7 @@ for k=0:ITER_MAX-1
           fun_fp_past_mat_cell{i}=[fun_fp_past_mat_cell{i},fun_fp_k_vec_cell{i}];
           x_past_mat_cell{i}=[x_past_mat_cell{i},x_k_vec_cell{i}];
         end
-   end
 
-    if k>=1
         m_k=min(m,k);
 
         for i=1:n_var_type 
@@ -230,8 +231,6 @@ for k=0:ITER_MAX-1
         obj_val_table(k+2,:)=obj_val_vec;
         step_size_table(k+2,:)=step_size;
         
-    else % k==0
-        x_k_plus_1_cell=fun_fp_k_cell;
     end % k==0 or not
 
     x_k_cell=x_k_plus_1_cell;
