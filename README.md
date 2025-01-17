@@ -149,8 +149,8 @@ If spectral_coef_spec==2, let $\alpha^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\
 If spectral_coef_spec==3, let $\alpha^{(n)}=\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.  
 If spectral_coef_spec==4, let $\alpha^{(n)}=sgn\left(s^{(n)\prime}y^{(n)}\right)\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.
 
-* positive_alpha_spec (default:0)
-If positive_alpha_spec==1, use positive alpha and step sizes. If $\alpha<0$, instead use 1E-8. If positive_alpha_spec==0, not restrict the sign of alpha and step sizes.
+* positive_spectral_coef_spec (default:0)
+If positive_spectral_coef_spec==1, use positive alpha and step sizes. If $\alpha<0$, instead use 1E-8. If positive_spectral_coef_spec==0, not restrict the sign of alpha and step sizes.
 
 * norm_spec (default: 0): Type of norm used for assessing the convergence of the iteration.
 If norm_spec==0, use sup norm. 

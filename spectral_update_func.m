@@ -46,17 +46,17 @@ x_max_cell,x_min_cell,k,obj_val_table)
             continue_backtracking_dummy=line_search_terminate_func(...
                      obj_val_vec,obj_val_table,n_var,k,step_size(1),spec);
 
-
             rho=spec.rho;
 
 
-            if continue_backtracking_dummy==1 & spec.positive_alpha_spec==1
-                step_size=step_size.*rho; 
-                
-            elseif continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0)  & spec.positive_alpha_spec==0
+            %if continue_backtracking_dummy==1 & spec.positive_spectral_coef_spec==1
+            %    step_size=step_size.*rho; 
+            
+            %elseif
+            if continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0) % & spec.positive_spectral_coef_spec==0
                 step_size=step_size.*(-rho);
 
-            elseif continue_backtracking_dummy==1 & mod(iter_line_search,2)==1 & spec.positive_alpha_spec==0
+            elseif continue_backtracking_dummy==1 & mod(iter_line_search,2)==1% & spec.positive_spectral_coef_spec==0
                 step_size=step_size.*(-1);
                  
             else
