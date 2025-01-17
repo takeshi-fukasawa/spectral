@@ -29,11 +29,7 @@ end
 m=spec.m;
 type_Anderson=spec.type_Anderson;
 
-
-
 % varargin:1*XXX
-
-
 FLAG_ERROR=0;
 
 %% Read inputs
@@ -52,6 +48,7 @@ else
 end
 DIST_table=NaN(ITER_MAX,n_var_type);
 DIST_vec=NaN(1,n_var_type);
+ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 
 
 %%%%%%%% Loop %%%%%%%%%%%
@@ -66,6 +63,7 @@ d_k_cell=[];
        fun_fp(x_k_cell{:},other_input_cell{:});
 
 fun_fp_k_plus_1_cell=fun_fp_k_cell;
+feval=1;
 
 for i=1:n_var_type
      DIST_vec(i)=norm_func(fun_fp_k_cell{i}(:)-x_k_cell{i}(:),x_k_cell{i}(:),spec.norm_spec(i));
@@ -91,7 +89,6 @@ for k=0:ITER_MAX-1
     for i=1:n_var_type
        resid_k_vec_cell{i}=fun_fp_k_vec_cell{i}-x_k_vec_cell{i};
     end
-    
 
    if k==0
         for i=1:n_var_type
@@ -106,10 +103,8 @@ for k=0:ITER_MAX-1
           resid_past_mat_cell{i}=[resid_past_mat_cell{i},resid_k_vec_cell{i}];%[]*(k+1)
           fun_fp_past_mat_cell{i}=[fun_fp_past_mat_cell{i},fun_fp_k_vec_cell{i}];
           x_past_mat_cell{i}=[x_past_mat_cell{i},x_k_vec_cell{i}];
-
-          
         end
-   end 
+   end
 
     if k>=1
         m_k=min(m,k);
@@ -121,6 +116,7 @@ for k=0:ITER_MAX-1
            %%DF=DF./max(max(abs(DF)),1);
 
             if isnan(sum(DF(:)))==1
+                warning ("NaN DF")
                 FLAG_ERROR=1;
                 break;
             end
@@ -191,6 +187,7 @@ for k=0:ITER_MAX-1
       step_size=ones(1,n_var_type);
       obj_val_vec=DIST_vec.^2;
 
+      iter_line_search=1;
 
     else%spec.line_search_spec==1
         [x_k_plus_1_cell, fun_k_plus_1_cell,...
@@ -203,6 +200,8 @@ for k=0:ITER_MAX-1
             fun_fp_k_plus_1_cell{i}=fun_k_plus_1_cell{i}+x_k_plus_1_cell{i};
         end
     end%spec.line_search_spec==0 or 1
+
+    feval=feval+iter_line_search;
 
 
     other_output_k=other_output_k_plus_1;
@@ -218,9 +217,18 @@ for k=0:ITER_MAX-1
             FLAG_ERROR=0;
             break;
         end
-        DIST_table(k,:)=DIST_vec;
-        obj_val_table(k,:)=obj_val_vec;
-        step_size_table(k,:)=step_size;
+
+        if isnan(DIST)==1|isinf(DIST)==1
+            %warning("Error ?? ")
+            x_k_plus_1_cell=x_k_cell;
+            FLAG_ERROR=1;
+            break;
+         end
+     
+        ITER_table_LINE_SEARCH(k+2,:)=iter_line_search;
+        DIST_table(k+2,:)=DIST_vec;
+        obj_val_table(k+2,:)=obj_val_vec;
+        step_size_table(k+2,:)=step_size;
         
     else % k==0
         x_k_plus_1_cell=fun_fp_k_cell;
@@ -238,16 +246,16 @@ x_sol_cell=x_k_plus_1_cell;
 t_cpu=toc(t_Anderson);
 iter_info.t_cpu=t_cpu;
 iter_info.n_iter=k+1;
-iter_info.feval=iter_info.n_iter;
+iter_info.feval=feval;
+iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 
 iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.DIST_table=DIST_table;
 iter_info.step_size_table=step_size_table;
-iter_info.type_Anderson=type_Anderson;
+iter_info.obj_val_table=obj_val_table;
 iter_info.spec=spec;
+iter_info.resid_k_vec_cell=resid_k_vec_cell;
 
 end
-
-

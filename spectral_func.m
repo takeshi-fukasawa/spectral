@@ -122,10 +122,9 @@ for k=1:ITER_MAX-1
         update_func(fun,x_k_cell,d_k_cell,other_input_cell,...
         n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
 
-    ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
-
     feval=feval+iter_line_search;
 
+    ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
     DIST_table(k+2,:)=DIST_vec;
     alpha_table(k+2,:)=alpha_vec;
     obj_val_table(k+2,:)=obj_val_vec;
@@ -133,7 +132,7 @@ for k=1:ITER_MAX-1
     DIST=nanmax(DIST_vec);
     
 
-    if isnan(DIST)==1|isinf(sum(DIST_table(k+2,:)))==1|isnan(sum(DIST_table(k+2,:)))==1
+    if isnan(DIST)==1|isinf(DIST)==1
        %warning("Error ?? ")
        x_k_plus_1_cell=x_k_cell;
        FLAG_ERROR=1;
@@ -190,7 +189,6 @@ iter_info.fun_cell=fun_k_cell;
 iter_info.DIST_table=DIST_table;
 iter_info.alpha_table=alpha_table;
 iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
-iter_info.norm_spec=spec.norm_spec;
 
 iter_info.step_size_table=step_size_table;
 iter_info.spec=spec;
