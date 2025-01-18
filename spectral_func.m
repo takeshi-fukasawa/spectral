@@ -78,30 +78,36 @@ fun_k_minus_1_cell=fun_0_cell;%%%
 
 if conv==0 & ITER_MAX>=2
 
-    for i=1:n_var
-        alpha_k{1,i}=alpha_0{1,i};
-        if isempty(spec.dampening_param)==0
-            alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
+
+for k=0:ITER_MAX-1
+
+    if k>=1
+        for i=1:n_var
+            Delta_x_cell{1,i}=x_k_cell{i}-x_k_minus_1_cell{i};
+            Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
+        end % loop wrt i
+        
+        if isempty(spec.update_spec)==1 | spec.update_spec~=0
+            [alpha_k,alpha_max]=compute_alpha_func(...
+            Delta_x_cell,Delta_fun_cell,spec,k);
+            spec.alpha_max=alpha_max;
         end
-    end
 
-for k=1:ITER_MAX-1
+    else% k==0
+        for i=1:n_var
+            alpha_k{1,i}=alpha_0{1,i};
+            if isempty(spec.dampening_param)==0
+                alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
+            end
+        end
+    end% k>=1 or 0
 
-      for i=1:n_var
-        Delta_x_cell{1,i}=x_k_cell{i}-x_k_minus_1_cell{i};
-        Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
-      end % loop wrt i
+    if spec.update_spec==0
+        for i=1:n_var
+            alpha_k{1,i}=1;
+        end
+    end  %if spec.update_spec==0
 
-
-      if spec.update_spec==0
-          for i=1:n_var
-              alpha_k{1,i}=1;
-          end
-      else
-        [alpha_k,alpha_max]=compute_alpha_func(...
-         Delta_x_cell,Delta_fun_cell,spec,k);
-         spec.alpha_max=alpha_max;
-      end
 
     for i=1:n_var
         alpha_vec(1,i)=max(alpha_k{1,i}(:));     
