@@ -15,7 +15,7 @@ FLAG_ERROR=0;
 x_max_cell=spec.x_max_cell;
 x_min_cell=spec.x_min_cell;
 
-if spec.SQUAREM_spec==0
+if spec.SQUAREM_spec==0 & spec.Anderson_acceleration==0
 
 % varargin:1*XXX
 
