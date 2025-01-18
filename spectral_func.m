@@ -25,6 +25,7 @@ DIST_table=NaN(ITER_MAX,n_var);
 alpha_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 step_size_table=NaN(ITER_MAX,n_var);
+obj_val_table=NaN(ITER_MAX,n_var);
 
 tic_spectral=tic;
  if spec.bound_spec==1
@@ -43,10 +44,11 @@ end
 
 feval=1;
     
-    %%% DIST: sup norm of F(x)=x-Phi(x). 
+    %%% DIST: norm of F(x)=x-Phi(x). 
     DIST_vec=ones(1,n_var);
     for i=1:n_var
       DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),x_0_cell{1,i}(:),spec.norm_spec(i));
+      obj_val_table(1,i)=sum(fun_0_cell{1,i}(:).^2);%(L2 norm)^2
 
       alpha_0{1,i}=spec.alpha_0;
       
@@ -62,9 +64,6 @@ feval=1;
     DIST=nanmax(DIST_vec);
     DIST_table(1,:)=DIST_vec;
 
-
-    obj_val_table=NaN(ITER_MAX,n_var);
-    obj_val_table(1,:)=DIST_vec.^2;% L2 norm
 
 conv=(sum((DIST_vec<spec.TOL),'all')==n_var);
 
@@ -124,11 +123,11 @@ for k=1:ITER_MAX-1
 
     feval=feval+iter_line_search;
 
-    ITER_table_LINE_SEARCH(k+2,1)=iter_line_search;%% Number of line search iterations
+    ITER_table_LINE_SEARCH(k+1,1)=iter_line_search;%% Number of line search iterations
     DIST_table(k+2,:)=DIST_vec;
-    alpha_table(k+2,:)=alpha_vec;
-    obj_val_table(k+2,:)=obj_val_vec;
-    step_size_table(k+2,:)=step_size;
+    alpha_table(k+1,:)=alpha_vec;
+    obj_val_table(k+1,:)=obj_val_vec;
+    step_size_table(k+1,:)=step_size;
     DIST=nanmax(DIST_vec);
     
 

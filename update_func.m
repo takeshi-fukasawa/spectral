@@ -36,7 +36,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
         for i=1:n_var
             DIST_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),spec.norm_spec(i));
 
-            obj_val_vec(1,i)=norm_func(fun_k_plus_1_cell{1,i}(:),x_k_plus_1_cell{1,i}(:),2).^2;
+            obj_val_vec(1,i)=sum(fun_k_plus_1_cell{1,i}(:).^2);% (L2 norm)^2
         end
 
 
