@@ -44,7 +44,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
             %%% Implicitly assume common step size for all the variables %%%%
             continue_backtracking_dummy=line_search_terminate_func(...
-                     obj_val_vec,obj_val_table,n_var,k,step_size(1),spec);
+                     obj_val_vec,obj_val_table,k,step_size(1),spec);
 
             rho=spec.rho;
 

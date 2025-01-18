@@ -73,7 +73,7 @@ feval=feval+1;
 
 for i=1:n_var
      DIST_vec(i)=norm_func(fun_fp_k_cell{i}(:)-x_k_cell{i}(:),x_k_cell{i}(:),spec.norm_spec(i));
-     obj_val_table(k+1,i)=sum((fun_fp_k_cell{i}(:)-x_k_cell{i}(:)).^2);%(L2 norm)^2
+     obj_val_table(1,i)=sum((fun_fp_k_cell{i}(:)-x_k_cell{i}(:)).^2);%(L2 norm)^2
 end
 
 DIST_table(1,:)=DIST_vec;
