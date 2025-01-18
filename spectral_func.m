@@ -130,7 +130,7 @@ for k=0:ITER_MAX-1
     ITER_table_LINE_SEARCH(k+1,1)=iter_line_search;%% Number of line search iterations
     DIST_table(k+2,:)=DIST_vec;
     alpha_table(k+1,:)=alpha_vec;
-    obj_val_table(k+1,:)=obj_val_vec;
+    obj_val_table(k+2,:)=obj_val_vec;
     step_size_table(k+1,:)=step_size;
     DIST=nanmax(DIST_vec);
     

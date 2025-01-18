@@ -49,9 +49,11 @@ x_max_cell,x_min_cell,k,obj_val_table)
             rho=spec.rho;
 
             if continue_backtracking_dummy==1 & (mod(iter_line_search,2)==0) 
+                %step_size=step_size.*(rho);
                 step_size=step_size.*(-rho);
 
             elseif continue_backtracking_dummy==1 & mod(iter_line_search,2)==1
+                %step_size=step_size.*(rho);
                 step_size=step_size.*(-1);
                  
             else
