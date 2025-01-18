@@ -87,10 +87,9 @@ for k=0:floor(ITER_MAX/2)-1
     for i=1:n_var
         %%alpha_vec(1,i)=mean(alpha_k{i}(:));
         alpha_vec(1,i)=max(alpha_k{i}(:));
-        
     end
 
-    alpha_table(k+2,:)=alpha_vec;
+    alpha_table(k+1,:)=alpha_vec;
     DIST=nanmax(DIST_k_2);
 
     if isnan(DIST)==1|isinf(sum(DIST))==1|isnan(sum(DIST))==1
