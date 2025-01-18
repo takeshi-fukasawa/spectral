@@ -1,4 +1,4 @@
-function continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,n_var,k,step_size,spec)
+function continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_val_table,k,step_size,spec)
 
      M=spec.M;
      gamma=spec.gamma;
