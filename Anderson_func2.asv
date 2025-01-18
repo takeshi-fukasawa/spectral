@@ -152,10 +152,10 @@ for k=1:ITER_MAX-1
        [fun_fp_k_plus_1_cell,other_output_k_plus_1]=...
        fun_fp(x_k_plus_1_cell{:},other_input_cell{:});
 
-       for i=1:n_var
+       for i=1:n_var_type
           DIST_vec(i)=norm_func(fun_fp_k_plus_1_cell{i}(:)-x_k_plus_1_cell{i}(:),reshape(x_past_mat_cell{i}(:,1),[],1),spec.norm_spec(i));
        end
-      step_size=ones(1,n_var);
+      step_size=ones(1,n_var_type);
       obj_val_vec=sum((fun_fp_k_plus_1_cell{i}(:)-x_k_plus_1_cell{i}(:)).^2);%(L2 norm)^2
 
       iter_line_search=1;
@@ -167,7 +167,7 @@ for k=1:ITER_MAX-1
         update_func(fun_fp,x_k_cell,d_k_cell,other_input_cell,...
         n_var,spec,x_max_cell,x_min_cell,k,obj_val_table);
 
-        for i=1:n_var
+        for i=1:n_var_type
             fun_fp_k_plus_1_cell{i}=fun_k_plus_1_cell{i}+x_k_plus_1_cell{i};
         end
     end%spec.line_search_spec==0 or 1
@@ -181,9 +181,9 @@ for k=1:ITER_MAX-1
         if k-floor(k/interval)*interval==0&spec.DEBUG==1
             DIST_vec
         end
-        DIST=max(DIST_vec);
+        DIST=max(DIST_vec)
 
-        conv=(sum((DIST_vec<spec.TOL),'all')==n_var);
+        conv=(sum((DIST_vec<spec.TOL),'all')==n_var_type);
         if conv==1
             FLAG_ERROR=0;
             break;
