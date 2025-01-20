@@ -7,7 +7,7 @@ function [x_k_plus_1,FLAG_ERROR]=Anderson_update_func(resid_past_mat,x_past_mat,
            DF=diff(resid_past_mat(:,k-m_k+1:k+1),1,2);%[]*m_k;Df_{k-mk},...,Df_{k-1}; Df_{k-1}=f_{k}-f_{k-1}
 
             if isnan(sum(DF(:)))==1
-                warning ("NaN DF")
+                message="NaN DF"
                 FLAG_ERROR=1;
             end
 

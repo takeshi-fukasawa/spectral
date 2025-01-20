@@ -136,7 +136,7 @@ for k=0:ITER_MAX-1
     
 
     if isnan(DIST)==1|isinf(DIST)==1
-       %warning("Error ?? ")
+       message="NaN or Inf DIST"
        x_k_plus_1_cell=x_k_cell;
        FLAG_ERROR=1;
        break;

@@ -44,7 +44,7 @@ x_max_cell,x_min_cell,k,obj_val_table)
 
             %%% Implicitly assume common step size for all the variables %%%%
             continue_backtracking_dummy=line_search_terminate_func(...
-                     obj_val_vec,obj_val_table,k,step_size(1),spec);
+                     obj_val_vec,obj_val_table,d_k_cell,k,step_size(1),spec);
 
             rho=spec.rho;
 
@@ -63,5 +63,10 @@ x_max_cell,x_min_cell,k,obj_val_table)
         end% line search spec==1
     end % end iter_line_search=1:ITER_MAX_LINE_SEARCH loop
 
+    if isnan(sum(DIST_vec))==1
+        fun_k_plus_1_cell{1,1}
+        x_k_plus_1_cell{1,1}
+
+    end
 
 end
