@@ -86,7 +86,7 @@ end
 
 spec.bound_spec=0;
 for i=1:n_var
-   if isempty(spec.x_max_cell{1,i})==0 | isempty(spec.x_min_cell{1,i})==0
+   if isempty(spec.x_max_cell{1,i})==0 || isempty(spec.x_min_cell{1,i})==0
      spec.bound_spec=1;
    end
 end
