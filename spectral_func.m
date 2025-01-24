@@ -87,7 +87,7 @@ for k=0:ITER_MAX-1
             Delta_fun_cell{1,i}=fun_k_cell{i}-fun_k_minus_1_cell{i};
         end % loop wrt i
         
-        if isempty(spec.update_spec)==1 | spec.update_spec~=0
+        if isempty(spec.update_spec)==1 || spec.update_spec~=0
             [alpha_k,alpha_max]=compute_alpha_func(...
             Delta_x_cell,Delta_fun_cell,spec,k);
             spec.alpha_max=alpha_max;
@@ -102,7 +102,7 @@ for k=0:ITER_MAX-1
         end
     end% k>=1 or 0
 
-    if spec.update_spec==0
+    if isempty(spec.update_spec)==1||spec.update_spec==0
         for i=1:n_var
             alpha_k{1,i}=1;
         end
@@ -135,7 +135,7 @@ for k=0:ITER_MAX-1
     DIST=nanmax(DIST_vec);
     
 
-    if isnan(DIST)==1|isinf(DIST)==1
+    if isnan(DIST)==1||isinf(DIST)==1
        message="NaN or Inf DIST"
        x_k_plus_1_cell=x_k_cell;
        FLAG_ERROR=1;
@@ -209,7 +209,7 @@ elseif spec.Anderson_acceleration==1 % Anderson
      
 end
 
-
+iter_info.fun=fun;
 
 end
 
