@@ -16,15 +16,16 @@ function continue_backtracking_dummy=line_search_terminate_func(obj_val_vec,obj_
     %%% Otherwise (LHS>RHS), continue the iteration.
     continue_backtracking_dummy=(RHS-LHS<0);
 
-    %% Li Fukushima 
-    d_k_L2_norm_squared=0;
-    for i=1:size(d_k_cell,2)
-        d_k_L2_norm_squared=d_k_L2_norm_squared+sum(d_k_cell{i}(:).^2);
+    if 1==0
+        %% Li Fukushima 
+        d_k_L2_norm_squared=0;
+        for i=1:size(d_k_cell,2)
+            d_k_L2_norm_squared=d_k_L2_norm_squared+sum(d_k_cell{i}(:).^2);
+        end
+
+        LHS=sqrt(sum(obj_val_vec));%f(x_{k+1})
+        RHS=(1+eta_k)*sqrt(f_k)-(gamma*step_size^2*d_k_L2_norm_squared);
+
+        continue_backtracking_dummy=(RHS-LHS<0);
     end
-
-    LHS=sqrt(sum(obj_val_vec));%f(x_{k+1})
-    RHS=(1+eta_k)*sqrt(f_k)-(gamma*step_size^2*d_k_L2_norm_squared);
-
-    continue_backtracking_dummy=(RHS-LHS<0);
-
 end
