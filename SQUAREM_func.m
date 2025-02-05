@@ -92,7 +92,7 @@ for k=0:floor(ITER_MAX/2)-1
     alpha_table(k+1,:)=alpha_vec;
     DIST=nanmax(DIST_k_2);
 
-    if isnan(DIST)==1||isinf(DIST)==1
+    if isnan(sum(DIST_k_2))==1||isinf(sum(DIST_k_2))==1
        message="Inf or NaN DIST"
        x_k_plus_1_cell=x_k_cell;
        FLAG_ERROR=1;
