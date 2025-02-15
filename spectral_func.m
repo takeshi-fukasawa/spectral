@@ -78,7 +78,7 @@ fun_k_minus_1_cell=fun_0_cell;%%%
 
 if conv==0 & ITER_MAX>=2
 
-for k=0:ITER_MAX-1
+for k=0:ITER_MAX-2
 
     if k>=1
         for i=1:n_var
