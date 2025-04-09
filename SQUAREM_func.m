@@ -25,7 +25,7 @@ other_input_cell=varargin;
 
 
 DIST_table=NaN(ITER_MAX,n_var);
-alpha_table=NaN(ITER_MAX,n_var);
+spectral_coef_table=NaN(ITER_MAX,n_var);
     
 %%%%%%%% Loop %%%%%%%%%%%
 x_k_cell=x_0_cell;
@@ -69,27 +69,27 @@ for k=0:floor(ITER_MAX/2)-1
 
        if spec.update_spec==0
           for i=1:n_var
-              alpha_k{1,i}=1;% fixed point iterations
+              spectral_coef_k{1,i}=1;% fixed point iterations
           end
        else
-        [alpha_k,alpha_max]=compute_alpha_func(...
+        [spectral_coef_k,spectral_coef_max]=compute_spectral_coef_func(...
          r_k,v_k,spec,k);
         end
 
       for i=1:n_var
             x_k_plus_1_cell{1,i}=...
-                x_k_cell{1,i}+2*alpha_k{1,i}.*r_k{1,i}+v_k{1,i}.*(alpha_k{1,i}).^2;
+                x_k_cell{1,i}+2*spectral_coef_k{1,i}.*r_k{1,i}+v_k{1,i}.*(spectral_coef_k{1,i}).^2;
        end % for loop wrt i
 
     %%DIST_table(k+2,:)=DIST_k_2;
     DIST_table(k*2+2,:)=DIST_k_2;
 
     for i=1:n_var
-        %%alpha_vec(1,i)=mean(alpha_k{i}(:));
-        alpha_vec(1,i)=max(alpha_k{i}(:));
+        %%spectral_coef_vec(1,i)=mean(spectral_coef_k{i}(:));
+        spectral_coef_vec(1,i)=max(spectral_coef_k{i}(:));
     end
 
-    alpha_table(k+1,:)=alpha_vec;
+    spectral_coef_table(k+1,:)=spectral_coef_vec;
     DIST=nanmax(DIST_k_2);
 
     if isnan(sum(DIST_k_2))==1||isinf(sum(DIST_k_2))==1
@@ -127,7 +127,7 @@ iter_info.ITER_MAX=ITER_MAX;
 iter_info.FLAG_ERROR=FLAG_ERROR;
 
 iter_info.DIST_table=DIST_table;
-iter_info.alpha_table=alpha_table;
+iter_info.spectral_coef_table=spectral_coef_table;
 iter_info.norm_spec=spec.norm_spec;
 
 

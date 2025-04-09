@@ -16,10 +16,10 @@ if isfield(spec,'update_spec')==0
     spec.update_spec=[];
 end
 
-if isfield(spec,'dim_hetero_alpha')==0
-    spec.dim_hetero_alpha=[];
-elseif size(spec.dim_hetero_alpha(:),1)==1
-    spec.dim_hetero_alpha=ones(n_var,1)*(spec.dim_hetero_alpha);
+if isfield(spec,'dim_hetero_spectral_coef')==0
+    spec.dim_hetero_spectral_coef=[];
+elseif size(spec.dim_hetero_spectral_coef(:),1)==1
+    spec.dim_hetero_spectral_coef=ones(n_var,1)*(spec.dim_hetero_spectral_coef);
 end
 
 if isfield(spec,'dampening_param')==0
@@ -27,8 +27,8 @@ if isfield(spec,'dampening_param')==0
 end
 
 
-if isfield(spec,'alpha_0')==0
-    spec.alpha_0=1;
+if isfield(spec,'spectral_coef_0')==0
+    spec.spectral_coef_0=1;
 end
 
 
@@ -99,28 +99,28 @@ if spec.spectral_coef_spec==3
     spec.positive_spectral_coef_spec=1;
 end
 
-if isfield(spec,'alpha_max')==0
-    spec.alpha_max=10^10;
+if isfield(spec,'spectral_coef_max')==0
+    spec.spectral_coef_max=10^10;
 end
 
-if isfield(spec,'alpha_min')==0
-    spec.alpha_min=-10^10;
+if isfield(spec,'spectral_coef_min')==0
+    spec.spectral_coef_min=-10^10;
 end
 
 %if spec.positive_spectral_coef_spec==1
-%    spec.alpha_min=1e-10;
+%    spec.spectral_coef_min=1e-10;
 %end
 
 if spec.positive_spectral_coef_spec==1
-    if isfield(spec,'alpha_min')==0
-        spec.alpha_min=1e-10; %% Restrict alpha to be positive
+    if isfield(spec,'spectral_coef_min')==0
+        spec.spectral_coef_min=1e-10; %% Restrict spectral_coef to be positive
     end
     spec.spectral_coef_spec=3;
 end
 
 if spec.positive_spectral_coef_spec==1
-    if isfield(spec,'alpha_min')==0
-        spec.alpha_min=1e-8; %% Restrict alpha to be positive
+    if isfield(spec,'spectral_coef_min')==0
+        spec.spectral_coef_min=1e-8; %% Restrict spectral_coef to be positive
     end
     spec.spectral_coef_spec=3;
 end

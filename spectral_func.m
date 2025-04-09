@@ -22,7 +22,7 @@ if spec.SQUAREM_spec==0 & spec.Anderson_acceleration==0
 %% Read inputs
 ITER_MAX=spec.ITER_MAX;
 DIST_table=NaN(ITER_MAX,n_var);
-alpha_table=NaN(ITER_MAX,n_var);
+spectral_coef_table=NaN(ITER_MAX,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 step_size_table=NaN(ITER_MAX,n_var);
 obj_val_table=NaN(ITER_MAX,n_var);
@@ -50,13 +50,13 @@ feval=1;
       DIST_vec(1,i)=norm_func(fun_0_cell{1,i}(:),x_0_cell{1,i}(:),spec.norm_spec(i));
       obj_val_table(1,i)=sum(fun_0_cell{1,i}(:).^2);%(L2 norm)^2
 
-      alpha_0{1,i}=spec.alpha_0;
+      spectral_coef_0{1,i}=spec.spectral_coef_0;
       
       if spec.update_spec==0
-        alpha_0{1,i}=1;
+        spectral_coef_0{1,i}=1;
       end
 
-      alpha_table(1,i)=alpha_0{1,i};
+      spectral_coef_table(1,i)=spectral_coef_0{1,i};
       
     end % loop wrt i
 
@@ -89,35 +89,35 @@ for k=0:ITER_MAX-2
         dummy=(isempty(spec.update_spec)==1 || spec.update_spec~=0);
         
         if dummy==1
-            [alpha_k,alpha_max]=compute_alpha_func(...
+            [spectral_coef_k,spectral_coef_max]=compute_spectral_coef_func(...
             Delta_x_cell,Delta_fun_cell,spec,k);
-            spec.alpha_max=alpha_max;
+            spec.spectral_coef_max=spectral_coef_max;
         end
 
     else% k==0
         for i=1:n_var
-            alpha_k{1,i}=alpha_0{1,i};
+            spectral_coef_k{1,i}=spectral_coef_0{1,i};
             if isempty(spec.dampening_param)==0
-                alpha_k{1,i}=alpha_k{1,i}*(spec.dampening_param{1,i});
+                spectral_coef_k{1,i}=spectral_coef_k{1,i}*(spec.dampening_param{1,i});
             end
         end
     end% k>=1 or 0
 
     if spec.update_spec==0
         for i=1:n_var
-            alpha_k{1,i}=1;
+            spectral_coef_k{1,i}=1;
         end
     end  %if spec.update_spec==0
 
 
     for i=1:n_var
-        alpha_vec(1,i)=max(alpha_k{1,i}(:));     
+        spectral_coef_vec(1,i)=max(spectral_coef_k{1,i}(:));     
     end
 
     %%% Update variables %%%%%%%%%%%%%%%
 
     for i=1:n_var
-        d_k_cell{1,i}=alpha_k{1,i}.*fun_k_cell{1,i};
+        d_k_cell{1,i}=spectral_coef_k{1,i}.*fun_k_cell{1,i};
     end % for loop wrt i
 
     [x_k_plus_1_cell, fun_k_plus_1_cell,...
@@ -130,7 +130,7 @@ for k=0:ITER_MAX-2
 
     ITER_table_LINE_SEARCH(k+1,1)=iter_line_search;%% Number of line search iterations
     DIST_table(k+2,:)=DIST_vec;
-    alpha_table(k+1,:)=alpha_vec;
+    spectral_coef_table(k+1,:)=spectral_coef_vec;
     obj_val_table(k+2,:)=obj_val_vec;
     step_size_table(k+1,:)=step_size;
     DIST=max(DIST_vec);
@@ -191,7 +191,7 @@ iter_info.obj_val_table=obj_val_table;
 iter_info.fun_cell=fun_k_cell;
 
 iter_info.DIST_table=DIST_table;
-iter_info.alpha_table=alpha_table;
+iter_info.spectral_coef_table=spectral_coef_table;
 iter_info.ITER_table_LINE_SEARCH=ITER_table_LINE_SEARCH;
 
 iter_info.step_size_table=step_size_table;

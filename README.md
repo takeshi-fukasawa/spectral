@@ -110,29 +110,29 @@ If SQUAREM_spec==0, we apply the spectral algorithm. If SQUAREM_spec==1, alterna
 * update_spec (default: []):  
 If update_spec==0, apply the standard fixed point iteration. If update_spec==[], apply the spectral algorithm. Here, the step size for each type of variable is a scalar. 
 
-* dim_hetero_alpha (default: [])
-If dim_hetero_alpha>=1, we introduce variable-dimension-specific step sizes for each type of variable. For instance, suppose we want to solve a fixed point problem f(x)=x, where x is a J by T array. If we expect that the properties of the arrays `x[:,t]` (t=1,..,T) are largely different across t (time), it might be useful to introduce time-specific step sizes. If we let spec.update_spec==2, the values of x is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)}  f(x^{(n)})$ in the spectral algorithm. Here, $\alpha^{(n)}$ is an 1 by T dimensional array. "2" implies that we introduce heterogeneity in the second dimension of the values of $\alpha^{(n)}$.
+* dim_hetero_spectral_coef (default: [])
+If dim_hetero_spectral_coef>=1, we introduce variable-dimension-specific step sizes for each type of variable. For instance, suppose we want to solve a fixed point problem f(x)=x, where x is a J by T array. If we expect that the properties of the arrays `x[:,t]` (t=1,..,T) are largely different across t (time), it might be useful to introduce time-specific step sizes. If we let spec.update_spec==2, the values of x is updated by $x^{(n+1)}=x^{(n)}+\spectral_coef^{(n)}  f(x^{(n)})$ in the spectral algorithm. Here, $\spectral_coef^{(n)}$ is an 1 by T dimensional array. "2" implies that we introduce heterogeneity in the second dimension of the values of $\spectral_coef^{(n)}$.
  For details, see also Section 5.3 of Fukasawa (2024).
 
 * dampening_param (default: []):  
 Suppose we want to solve f(x)=0.
-In the spectral algorithm, x, the variable we want to solve, is updated by $x^{(n+1)}=x^{(n)}+\alpha^{(n)} f(x^{(n)})$.
-$\alpha^{(n)}$ is computed by a prespecified formula.
-If we further introduce dampening_param, the variable is alternatively updated by $x^{(n+1)}=x^{(n)}+\text{(dampening param)} \cdot \alpha^{(n)}  f(x^{(n)})$.
+In the spectral algorithm, x, the variable we want to solve, is updated by $x^{(n+1)}=x^{(n)}+\spectral_coef^{(n)} f(x^{(n)})$.
+$\spectral_coef^{(n)}$ is computed by a prespecified formula.
+If we further introduce dampening_param, the variable is alternatively updated by $x^{(n+1)}=x^{(n)}+\text{(dampening param)} \cdot \spectral_coef^{(n)}  f(x^{(n)})$.
 The introduction may lead to more stable convergence of the algorithm.
 
 
-* alpha_0 (default: 1): The value of alpha_0, which should be exogenously determined in the spectral algorithm.
+* spectral_coef_0 (default: 1): The value of spectral_coef_0, which should be exogenously determined in the spectral algorithm.
 
-* alpha_max (default: 10^10): Maximum value of the step size $\alpha^{(n)}$. If the value exceeds alpha_max, let $\alpha^{(n)}=$ alpha_max.
+* spectral_coef_max (default: 10^10): Maximum value of the step size $\spectral_coef^{(n)}$. If the value exceeds spectral_coef_max, let $\spectral_coef^{(n)}=$ spectral_coef_max.
 
-* alpha_min (default: -10^10): Minimum value of the step size $\alpha^{(n)}$.
+* spectral_coef_min (default: -10^10): Minimum value of the step size $\spectral_coef^{(n)}$.
 
 * common_spectral_coef_spec (default: 0):
 Suppose we want to solve a nonlinear equation $f(x_1,x_2)=0$. If common_spectral_coef_spec==0, two types of variables x1 and x2 are updated by
-$x_1^{(n+1)}=x_1^{(n)}+\alpha_{1}^{(n)} f(x_1^{(n)},x_2^{(n)})$, $x_2^{(n+1)}=x_2^{(n)}+\alpha_{2}^{(n)} f(x_1^{(n)},x_2^{(n)})$. 
-If common_spectral_coef_spec==1, we do not distinguish the type of variables, and the updating equations are $x_1^{(n+1)}=x_1^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$, 
-$x_2^{(n+1)}=x_2^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$. See also Section 5.3 of Fukasawa (2024).
+$x_1^{(n+1)}=x_1^{(n)}+\spectral_coef_{1}^{(n)} f(x_1^{(n)},x_2^{(n)})$, $x_2^{(n+1)}=x_2^{(n)}+\spectral_coef_{2}^{(n)} f(x_1^{(n)},x_2^{(n)})$. 
+If common_spectral_coef_spec==1, we do not distinguish the type of variables, and the updating equations are $x_1^{(n+1)}=x_1^{(n)}+\spectral_coef^{(n)} f(x_1^{(n)},x_2^{(n)})$, 
+$x_2^{(n+1)}=x_2^{(n)}+\spectral_coef^{(n)} f(x_1^{(n)},x_2^{(n)})$. See also Section 5.3 of Fukasawa (2024).
  
 
 
@@ -140,17 +140,17 @@ $x_2^{(n+1)}=x_2^{(n)}+\alpha^{(n)} f(x_1^{(n)},x_2^{(n)})$. See also Section 5.
 
 
 * spectral_coef_spec (default: 3):  
-spectral_coef_spec specifies the formula of $\alpha^{(n)}$. 
+spectral_coef_spec specifies the formula of $\spectral_coef^{(n)}$. 
 If spectral_coef_spec==1,2,3, we use the step size S1,S2,S3 defined in Fukasawa (2024). Note that they are equivalent to the three specifications in Varadhan and Roland (2008). S1 corresponds to the first step size used in Barzilai and Borwein (1988), and S2 corresponds to the second step size used in Barzilai and Borwein (1988) and the one used by La Cruz et al. (2006). Please note that some of the previous studies and built-in packages have specified the sign of the step sizes differently, and we should be careful about it. For details, see also Fukasawa (2024).
 If we let spectral_coef_spec==4, we use the step size corresponding to the third specification used in the BB package (R language; Varadhan and Gilbert (2010)).  
 More specifically, it is mathematically formulated as follows. Suppose we want to solve a nonlinear equation f(x)=0. Let $s^{(n)}\equiv x^{(n)}-x^{(n-1)}$, and $y^{(n)}\equiv f(x^{(n)})- f(x^{(n-1)})$.  
-If spectral_coef_spec==1, let $\alpha^{(n)}=-\frac{s^{(n)\prime}y^{(n)}}{y^{(n)\prime}y^{(n)}}$.  
-If spectral_coef_spec==2, let $\alpha^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\prime}y^{(n)}}$.  
-If spectral_coef_spec==3, let $\alpha^{(n)}=\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.  
-If spectral_coef_spec==4, let $\alpha^{(n)}=sgn\left(s^{(n)\prime}y^{(n)}\right)\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.
+If spectral_coef_spec==1, let $\spectral_coef^{(n)}=-\frac{s^{(n)\prime}y^{(n)}}{y^{(n)\prime}y^{(n)}}$.  
+If spectral_coef_spec==2, let $\spectral_coef^{(n)}=-\frac{s^{(n)\prime}s^{(n)}}{s^{(n)\prime}y^{(n)}}$.  
+If spectral_coef_spec==3, let $\spectral_coef^{(n)}=\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.  
+If spectral_coef_spec==4, let $\spectral_coef^{(n)}=sgn\left(s^{(n)\prime}y^{(n)}\right)\frac{\left\Vert s^{(n)}\right\Vert _{2}}{\left\Vert y^{(n)}\right\Vert _{2}}$.
 
 * positive_spectral_coef_spec (default:0)
-If positive_spectral_coef_spec==1, use positive alpha and step sizes. If $\alpha<0$, instead use 1E-8. If positive_spectral_coef_spec==0, not restrict the sign of alpha and step sizes.
+If positive_spectral_coef_spec==1, use positive spectral_coef and step sizes. If $\spectral_coef<0$, instead use 1E-8. If positive_spectral_coef_spec==0, not restrict the sign of spectral_coef and step sizes.
 
 * norm_spec (default: 0): Type of norm used for assessing the convergence of the iteration.
 If norm_spec==0, use sup norm. 
