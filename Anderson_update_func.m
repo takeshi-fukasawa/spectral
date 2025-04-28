@@ -6,7 +6,8 @@ function [x_k_plus_1,FLAG_ERROR]=Anderson_update_func(resid_past_mat,x_past_mat,
         
            DF=diff(resid_past_mat(:,k-m_k+1:k+1),1,2);%[]*m_k;Df_{k-mk},...,Df_{k-1}; Df_{k-1}=f_{k}-f_{k-1}
 
-            if isnan(sum(DF(:)))==1
+
+            if isnan(sum(DF(:),'omitnan'))==1
                 %message="NaN DF"
                 FLAG_ERROR=1;
             end
@@ -14,13 +15,19 @@ function [x_k_plus_1,FLAG_ERROR]=Anderson_update_func(resid_past_mat,x_past_mat,
             if type_Anderson==1
                 %%% Type I Anderson (Corresponding to Good Broyden update)%%% 
                 DX=diff(x_past_mat(:,k-m_k+1:k+1),1,2);%[]*m_k; Dx_{k-mk},...,Dx_{k-1}
-                gamma=(DX'*DF)\(DX'*Z);
-            
+
+
+                %gamma=(DX'*DF)\(DX'*Z);
+
+                gamma=sum(DX.*DF,'omitnan')\sum(DX.*Z,'omitnan');
+
             else % type_Anderson==2
-                %%% Type II Anderson (Corresponding to Good Broyden update)
+                %%% Type II Anderson (Corresponding to Bad Broyden update)
                 %%% Based on the computation of DF'*DF
-                gamma=(DF'*DF)\(DF'*Z);%m_k*1
+                %gamma0=(DF'*DF)\(DF'*Z);%m_k*1
                 
+                gamma=sum(DF.*DF,'omitnan')\sum(DF.*Z,'omitnan');
+
 
                 %%% Based on QR factorization (Slow??)
                 %[Q,R]=qr(DF);

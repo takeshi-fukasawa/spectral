@@ -73,7 +73,7 @@ feval=feval+1;
 
 for i=1:n_var
      DIST_vec(i)=norm_func(fun_fp_k_cell{i}(:)-x_k_cell{i}(:),x_k_cell{i}(:),spec.norm_spec(i));
-     obj_val_table(1,i)=sum((fun_fp_k_cell{i}(:)-x_k_cell{i}(:)).^2);%(L2 norm)^2
+     obj_val_table(1,i)=sum((fun_fp_k_cell{i}(:)-x_k_cell{i}(:)).^2,'omitnan');%(L2 norm)^2
 end
 
 DIST_table(1,:)=DIST_vec;
@@ -104,7 +104,7 @@ x_k_cell=fun_fp_k_cell;
 
 for i=1:n_var
      DIST_vec(i)=norm_func(fun_fp_k_cell{i}(:)-x_k_cell{i}(:),x_k_cell{i}(:),spec.norm_spec(i));
-    obj_val_table(2,i)=sum((fun_fp_k_cell{i}(:)-x_k_cell{i}(:)).^2);%(L2 norm)^2
+    obj_val_table(2,i)=sum((fun_fp_k_cell{i}(:)-x_k_cell{i}(:)).^2,'omitnan');%(L2 norm)^2
 end
 DIST_table(2,:)=DIST_vec;
 
@@ -157,7 +157,7 @@ for k=1:ITER_MAX-1
           DIST_vec(i)=norm_func(fun_fp_k_plus_1_cell{i}(:)-x_k_plus_1_cell{i}(:),reshape(x_k_plus_1_cell{i}(:),[],1),spec.norm_spec(i));
        end
       step_size=ones(1,n_var);
-      obj_val_vec(i)=sum((fun_fp_k_plus_1_cell{i}(:)-x_k_plus_1_cell{i}(:)).^2);%(L2 norm)^2
+      obj_val_vec(i)=sum((fun_fp_k_plus_1_cell{i}(:)-x_k_plus_1_cell{i}(:)).^2,'omitnan');%(L2 norm)^2
 
       iter_line_search=1;
 
