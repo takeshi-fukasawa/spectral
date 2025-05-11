@@ -26,6 +26,7 @@ if isfield(spec,'type_Anderson')==0
     spec.type_Anderson=2;% Type II Anderson
 end
 
+
 m=spec.m;
 type_Anderson=spec.type_Anderson;
 
@@ -47,7 +48,7 @@ else
 end
 
 DIST_table=NaN(ITER_MAX,n_var);
-DIST_vec=NaN(1,n_var_type);
+DIST_vec=NaN(1,n_var);
 obj_val_vec=NaN(1,n_var);
 ITER_table_LINE_SEARCH=NaN(ITER_MAX,1);
 obj_val_table=NaN(ITER_MAX,n_var);
